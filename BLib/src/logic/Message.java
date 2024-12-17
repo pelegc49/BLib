@@ -24,12 +24,19 @@ public class Message implements Serializable {
     public Message(String command, Object ... args) {
         this.command = command;
         arguments = new ArrayList<Object>();
-
         // Adding each argument to the list of arguments
         for (Object o : args) {
             arguments.add(o);
         }
     }
+
+	public String getCommand() {
+		return command;
+	}
+
+	public List<Object> getArguments() {
+		return arguments;
+	}
 	
 	
 }
