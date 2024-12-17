@@ -26,28 +26,38 @@ public class BLibServer extends AbstractServer {
 				case "login":
 					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1));
 					if (ret != null) {
-						client.sendToClient(new Message("loginSuccess", (String)ret));
-					}else {
+						client.sendToClient(new Message("loginSuccess", (String) ret));
+					} else {
 						client.sendToClient(new Message("loginFail"));
 					}
 					break;
 				case "getsubscriber":
 					ret = BLibDBC.getSubscriberByID((Integer) args.get(0));
 					if (ret != null) {
-						client.sendToClient(new Message("subscriberFound", (Subscriber)ret));
-					}else {
+						client.sendToClient(new Message("subscriberFound", (Subscriber) ret));
+					} else {
 						client.sendToClient(new Message("subscriberNotFound"));
 					}
-					
+					break;
+
+				case "updatesubscriber":
+					ret = BLibDBC.updateSubscriber((Subscriber)args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("subscriberUpdated"));
+					} else {
+						client.sendToClient(new Message("subscriberFailedUpdated"));
+					}
+					break;
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 
 	}
+
 	public static void main(String[] args) {
 		BLibServer s = new BLibServer(5555);
 		BLibDBC.connect();

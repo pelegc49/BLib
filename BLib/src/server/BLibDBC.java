@@ -23,6 +23,14 @@ public class BLibDBC {
 			return null;
 		}
 	}
+	public static Boolean updateSubscriber(Subscriber newSubscriber) {
+		try {
+			return stmt.execute(
+		"UPDATE subscribers SET subscriber_email = '"+newSubscriber.getEmail()+"', subscriber_phone_number = '"+newSubscriber.getPhone()+"' WHERE subscriber_id = "+newSubscriber.getId());
+		} catch (SQLException e) {
+			return null;
+		}
+	}
 	
 	public static String login(int userid,String password ) {
 		try {
