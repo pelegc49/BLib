@@ -1,8 +1,9 @@
 package logic;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Borrow {
+public class Borrow implements Serializable{
 
 	private Date dateOfBorrow;
 	private Date dueDate;

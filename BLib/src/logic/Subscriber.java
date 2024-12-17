@@ -1,6 +1,8 @@
 package logic;
 
-public class Subscriber {
+import java.io.Serializable;
+
+public class Subscriber implements Serializable{
 
 	private int id;
 	private String name;

@@ -1,6 +1,8 @@
 package logic;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable{
 
 	private int id;
 	
