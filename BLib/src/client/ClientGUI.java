@@ -10,7 +10,7 @@ public class ClientGUI extends Application {
 	/**
 	 * The default port to connect on.
 	 */
-	BLibClient client;
+	public static BLibClient client;
 	public static int DEFAULT_PORT;
 
 	public ClientGUI(String host, int port) {
@@ -29,8 +29,8 @@ public class ClientGUI extends Application {
 		Subscriber sb = new Subscriber(123, "Jhon", "054555", "Jhon@mail.com");
 		String newMail = "JhonSmith@mail.com";
 		String newPhoneNumber = "052333";
-		cl.client.getSubscriberData();
-		cl.client.updateSubscriber(new Subscriber(sb.getId(), sb.getName(), newPhoneNumber,	newMail));
+		client.getSubscriberData();
+		client.updateSubscriber(new Subscriber(sb.getId(), sb.getName(), newPhoneNumber,	newMail));
 		if(sb.getPhone().equals(newPhoneNumber) && sb.getEmail().equals(newMail))
 			System.out.println("ITS WORKING!");
 		else

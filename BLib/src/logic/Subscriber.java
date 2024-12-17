@@ -15,6 +15,14 @@ public class Subscriber {
 		this.email = email;
 		this.status = "active";
 	}
+	
+	public Subscriber(int id, String name, String phone, String email, String status) {
+		this.id = id;
+		this.name = name;
+		this.phone = phone;
+		this.email = email;
+		this.status = status;
+	}
 
 	public int getId() {
 		return id;
