@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 
+import GUI.AuthenticationController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import logic.Subscriber;
@@ -15,7 +16,7 @@ public class ClientGUI extends Application {
 	public static BLibClient client;
 	public static int DEFAULT_PORT;
 
-	public ClientGUI(String host, int port) {
+	public ClientGUI(String host, int port) throws IOException {
 		try {
 			client = new BLibClient(host, port, this);
 		} catch (IOException exception) {
@@ -25,7 +26,7 @@ public class ClientGUI extends Application {
 	}
 	
 	public static void main(String args[]) throws Exception {
-		//launch(args);
+		launch(args);
 		// for the prototype
 		ClientGUI cl = new ClientGUI("localhost", 5555);
 		Subscriber sb = new Subscriber(123, "Jhon", "054555", "Jhon@mail.com");
@@ -42,6 +43,10 @@ public class ClientGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		client = new BLibClient("localhost", 5555, this);
+		
+		AuthenticationController aFrame = new AuthenticationController(); // create StudentFrame
+
+		aFrame.start(primaryStage);
 	}
 	
 	public void display(String message) {
