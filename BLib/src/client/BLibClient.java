@@ -18,9 +18,9 @@ public class BLibClient extends AbstractClient {
 
 	public static boolean awaitResponse = false;
 
-	public BLibClient(String host, int port, ClientGUI clientUI) throws IOException {
+	public BLibClient(String host, int port) throws IOException {
 		super(host, port);
-		this.clientUI = clientUI;
+		//this.clientUI = clientUI;
 	}
 
 	@Override
@@ -66,7 +66,25 @@ public class BLibClient extends AbstractClient {
 		}
 		System.exit(0);
 	}
-
+	
+	public static void main(String[] args) {
+		BLibClient cl;
+		try {
+			cl = new BLibClient("localhost", 5555);
+			cl.login("user", "pass");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void login(String userName, String password) {
+		msg = new Message("login", userName, password);
+		handleMessageFromClientUI(msg);
+		System.out.println(msg);
+	}
+	
 	public void searchBook(String keyWord) {
 		msg = new Message("searchBook", keyWord);
 		handleMessageFromClientUI(msg);
@@ -95,11 +113,13 @@ public class BLibClient extends AbstractClient {
 	public List<Activity> getSubscriberHistory(Subscriber sub) {
 		msg = new Message("getSubscriberHistory", sub);
 		handleMessageFromClientUI(msg);
+		return null;
 	}
 
 	public List<Subscriber> getSubscriberReaderCards() {
 		msg = new Message("getSubscriberReaderCards");
 		handleMessageFromClientUI(msg);
+		return null;
 	}
 
 	public void updateBorrowDueDate(Borrow borrow, Date newDate) {
@@ -110,5 +130,6 @@ public class BLibClient extends AbstractClient {
 	public boolean updateSubscriber(Subscriber updated) {
 		msg = new Message("updateSubscriber", updated);
 		handleMessageFromClientUI(msg);
+		return false;
 	}
 }

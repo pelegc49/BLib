@@ -2,7 +2,6 @@ package client;
 
 import java.io.IOException;
 
-import common.BLibIF;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
