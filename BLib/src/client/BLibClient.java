@@ -4,11 +4,11 @@ import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Flow.Subscriber;
 
 import common.Activity;
 import logic.Borrow;
 import logic.Message;
+import logic.Subscriber;
 import ocsf.client.AbstractClient;
 
 public class BLibClient extends AbstractClient {
@@ -18,7 +18,7 @@ public class BLibClient extends AbstractClient {
 
 	public static boolean awaitResponse = false;
 
-	public BLibClient(String host, int port) throws IOException {
+	public BLibClient(String host, int port, ClientGUI clientUI) throws IOException {
 		super(host, port);
 		//this.clientUI = clientUI;
 	}
@@ -67,23 +67,22 @@ public class BLibClient extends AbstractClient {
 		System.exit(0);
 	}
 	
-	public static void main(String[] args) {
-		BLibClient cl;
-		try {
-			cl = new BLibClient("localhost", 5555);
-			cl.login("user", "pass");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void login(String userName, String password) {
-		msg = new Message("login", userName, password);
+	public void getSubscriberData() {
+		// for the prototype
+		/* expected: get an subscriber_id, subscriber_name, detailed_subscription_history,
+		 * subscriber_phone_number, subscriber_email
+		 */
+		msg = new Message("getSubscriberData");
 		handleMessageFromClientUI(msg);
+		// after analyzing the message I want to print it.
 		System.out.println(msg);
 	}
+	
+//	public void login(String userName, String password) {
+//		msg = new Message("login", userName, password);
+//		handleMessageFromClientUI(msg);
+//		System.out.println(msg);
+//	}
 	
 	public void searchBook(String keyWord) {
 		msg = new Message("searchBook", keyWord);
@@ -128,8 +127,15 @@ public class BLibClient extends AbstractClient {
 	}
 
 	public boolean updateSubscriber(Subscriber updated) {
+		// for the prototype
+		/* expect to send a subscriber and get a "Success" message.
+		 * if so - return true, otherwise - return false.
+		 */
 		msg = new Message("updateSubscriber", updated);
 		handleMessageFromClientUI(msg);
+		if (msg.getCommand().equals("Success")) {
+			return true;
+		}
 		return false;
 	}
 }

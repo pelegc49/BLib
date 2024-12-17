@@ -6,16 +6,14 @@ public class Subscriber {
 	private String name;
 	private String phone;
 	private String email;
-	private String userName;
 	private String status;
 
-	public Subscriber(int id, String name, String phone, String email, String userName, String status) {
+	public Subscriber(int id, String name, String phone, String email) {
 		this.id = id;
 		this.name = name;
 		this.phone = phone;
 		this.email = email;
-		this.userName = userName;
-		this.status = status;
+		this.status = "active";
 	}
 
 	public int getId() {
@@ -48,14 +46,6 @@ public class Subscriber {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public String getStatus() {
