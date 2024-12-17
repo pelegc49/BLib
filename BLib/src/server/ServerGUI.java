@@ -11,13 +11,12 @@ public class ServerGUI extends Application{
 		launch(args);
 	}
 	
-	
-	
-	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		ServerController aFrame = new ServerController();
 		aFrame.start(primaryStage);
 	}
 
+	
+	
 }

@@ -4,6 +4,7 @@ package GUI;
 import java.awt.Button;
 import java.io.IOException;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +15,6 @@ import javafx.stage.Stage;
 public class ServerController {
 	@FXML
 	private TextArea text;
-	
 	@FXML
 	private Button exitBtn;
 	@FXML
@@ -27,9 +27,16 @@ public class ServerController {
 		primaryStage.setTitle("BLib Server");
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
 	}
+
 	
-	
+//	public void refresh(ActionEvent e) {
+//		
+//		
+//	}
+//	
+//	public void exit(ActionEvent e) {
+//		System.exit(0);
+//	}
+//	
 }
