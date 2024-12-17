@@ -5,11 +5,13 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import logic.Subscriber;
+import logic.User;
 
 public class ClientGUI extends Application {
 	/**
 	 * The default port to connect on.
 	 */
+	public static User user;
 	public static BLibClient client;
 	public static int DEFAULT_PORT;
 
@@ -29,7 +31,7 @@ public class ClientGUI extends Application {
 		Subscriber sb = new Subscriber(123, "Jhon", "054555", "Jhon@mail.com");
 		String newMail = "JhonSmith@mail.com";
 		String newPhoneNumber = "052333";
-		client.getSubscriberData();
+		client.getSubscriberData(sb.getId());
 		client.updateSubscriber(new Subscriber(sb.getId(), sb.getName(), newPhoneNumber,	newMail));
 		if(sb.getPhone().equals(newPhoneNumber) && sb.getEmail().equals(newMail))
 			System.out.println("ITS WORKING!");
