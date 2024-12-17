@@ -4,7 +4,7 @@ package common;
 * This interface implements the abstract method used to display
 * objects onto the client or server UIs.
 */
-public interface BlibIF {
+public interface BLibIF {
 	/**
 	* Method that when overriden is used to display objects onto
 	* a UI.

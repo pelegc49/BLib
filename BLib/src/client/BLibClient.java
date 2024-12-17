@@ -6,18 +6,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Flow.Subscriber;
 
-import common.BlibIF;
+import common.BLibIF;
 import logic.Message;
 import ocsf.client.AbstractClient;
 
 public class BLibClient extends AbstractClient {
 
-	BlibIF clientUI;
+	BLibIF clientUI;
 	public static Message msg;
 
 	public static boolean awaitResponse = false;
 
-	public BLibClient(String host, int port, BlibIF clientUI)  throws IOException{
+	public BLibClient(String host, int port, BLibIF clientUI)  throws IOException{
 		super(host, port);
 		this.clientUI = clientUI;
 	}
