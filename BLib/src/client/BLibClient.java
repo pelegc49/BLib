@@ -15,7 +15,6 @@ public class BLibClient extends AbstractClient {
 
 	ClientGUI clientUI;
 	public static Message msg;
-
 	public static boolean awaitResponse = false;
 
 	public BLibClient(String host, int port, ClientGUI clientUI) throws IOException {
@@ -67,12 +66,12 @@ public class BLibClient extends AbstractClient {
 		System.exit(0);
 	}
 	
-	public void getSubscriberData() {
+	public void getSubscriberData(int id) {
 		// for the prototype
-		/* expected: get an subscriber_id, subscriber_name, detailed_subscription_history,
+		/* expected: by id print the subscriber_id, subscriber_name, detailed_subscription_history,
 		 * subscriber_phone_number, subscriber_email
 		 */
-		msg = new Message("getSubscriberData");
+		msg = new Message("getSubscriberData", id);
 		handleMessageFromClientUI(msg);
 		// after analyzing the message I want to print it.
 		System.out.println(msg);
@@ -137,5 +136,23 @@ public class BLibClient extends AbstractClient {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean isSubscriber(int id) {
+		// I want to know if the id is valid.
+		msg = new Message("isSubscriber", id);
+		handleMessageFromClientUI(msg);
+		if(msg.getCommand().equals("Success"))
+			return true;
+		return false;
+	}
+	
+	public Subscriber getSubscriber(int id) {
+		// I want to get the subscriber by his id.
+		msg = new Message("getSubscriber", id);
+		handleMessageFromClientUI(msg);
+		if(msg.getCommand().equals("Success"))
+			return (Subscriber)msg.getArguments().get(0);
+		return null;
 	}
 }
