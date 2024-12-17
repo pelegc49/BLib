@@ -2,6 +2,8 @@ package server;
 
 import java.sql.*;
 
+import logic.Subscriber;
+
 public class BLibDBC {
 	private static Connection conn;
 	private static Statement stmt;
@@ -9,13 +11,25 @@ public class BLibDBC {
 		connect();
 	}
 	
-	public static String login(String username,String password ) {
+	public static Subscriber getSubscriberByID(int subscriberid) {
 		try {
 			ResultSet rs = stmt.executeQuery(
-		"SELECT * FROM users WHERE user_name = '"+username+"'"
-					);
+		"SELECT * FROM subscribers WHERE subscriber_id = "+subscriberid);
 			if(rs.next()) {
-				if(username.equalsIgnoreCase(rs.getString(1)) && password.equals(rs.getString(2)))
+					return new Subscriber(subscriberid, rs.getString(2), rs.getString(4), rs.getString(5), rs.getString(6));
+			}
+			return null;
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+	
+	public static String login(int userid,String password ) {
+		try {
+			ResultSet rs = stmt.executeQuery(
+		"SELECT * FROM users WHERE user_id = "+userid);
+			if(rs.next()) {
+				if(userid == rs.getInt(1) && password.equals(rs.getString(2)))
 					return rs.getString(3);
 			}
 			return null;
