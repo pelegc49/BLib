@@ -13,7 +13,7 @@ public class ClientGUIController {
 	private Subscriber s;
 
 	@FXML
-	private Label lblId;
+	private Label lblstid;
 	@FXML
 	private Label lblName;
 	@FXML
@@ -22,7 +22,7 @@ public class ClientGUIController {
 	private Label lblEmail;
 
 	@FXML
-	private TextField txtId;
+	private TextField txtid;
 	@FXML
 	private TextField txtName;
 	@FXML
@@ -31,13 +31,13 @@ public class ClientGUIController {
 	private TextField txtEmail;
 
 	@FXML
-	private Button btnClose = null;
+	private Button btnclose = null;
 	@FXML
 	private Button btnSave = null;
 
 	public void loadSubscriber(Subscriber s1) {
 		this.s = s1;
-		this.txtId.setText(String.valueOf(s.getId()));
+		this.txtid.setText(String.valueOf(s.getId()));
 		this.txtName.setText(s.getName());
 		this.txtPhone.setText(s.getPhone());
 		this.txtEmail.setText(s.getEmail());
