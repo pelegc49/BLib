@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import logic.Message;
+import logic.Subscriber;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -19,18 +20,24 @@ public class BLibServer extends AbstractServer {
 		System.out.println("recive message");
 		if (msg instanceof Message) {
 			List<Object> args = ((Message) msg).getArguments();
-			String ret;
 			try {
+				Object ret;
 				switch (((Message) msg).getCommand().toLowerCase()) {
 				case "login":
 					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1));
 					if (ret != null) {
-						client.sendToClient(new Message("loginSuccess", ret));
+						client.sendToClient(new Message("loginSuccess", (String)ret));
 					}else {
 						client.sendToClient(new Message("loginFail"));
 					}
+					break;
 				case "getsubscriber":
-					
+					ret = BLibDBC.getSubscriberByID((Integer) args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("subscriberFound", (Subscriber)ret));
+					}else {
+						client.sendToClient(new Message("subscriberNotFound"));
+					}
 					
 				}
 			} catch (IOException e) {
