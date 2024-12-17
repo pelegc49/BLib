@@ -3,13 +3,15 @@ package client;
 import java.io.IOException;
 
 import common.BLibIF;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class ClientGUI implements BLibIF {
+public class ClientGUI extends Application {
 	/**
 	 * The default port to connect on.
 	 */
-	public static int DEFAULT_PORT;
 	BLibClient client;
+	public static int DEFAULT_PORT;
 
 	public ClientGUI(String host, int port) {
 		try {
@@ -19,11 +21,16 @@ public class ClientGUI implements BLibIF {
 			System.exit(1);
 		}
 	}
-
-	public void accept(Object str) {
-		client.handleMessageFromClientUI(str);
+	
+	public static void main(String args[]) throws Exception {
+		launch(args);
 	}
 
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		client = new BLibClient("localhost", 5555, this);
+	}
+	
 	public void display(String message) {
 		System.out.println("> " + message);
 	}
