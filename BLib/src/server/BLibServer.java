@@ -82,6 +82,8 @@ public class BLibServer extends AbstractServer {
 		}
 
 	}
-
+	public static void main(String[] args) {
+		new BLibServer(5555);
+	}
 
 }
