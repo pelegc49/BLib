@@ -37,7 +37,7 @@
 <?import javafx.scene.text.TextFlow?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="302.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.ServerController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0" prefWidth="302.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ServerController">
    <children>
       <Button fx:id="exitBtn" layoutX="253.0" layoutY="364.0" mnemonicParsing="false" onAction="#exit" text="Exit" />
       <Button fx:id="refreshBtn" layoutX="14.0" layoutY="364.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
