@@ -14,7 +14,13 @@ public class BLibServer extends AbstractServer {
 	private static Set<ConnectionToClient> connectedClients = new HashSet<>();
 	public BLibServer(int port) {
 		super(port);
-		// TODO Auto-generated constructor stub
+		BLibDBC.connect();
+		try {
+			listen();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
@@ -76,17 +82,6 @@ public class BLibServer extends AbstractServer {
 		}
 
 	}
-	
 
-	public static void main(String[] args) {
-		BLibServer s = new BLibServer(5555);
-		BLibDBC.connect();
-		try {
-			s.listen();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 }
