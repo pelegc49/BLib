@@ -27,10 +27,6 @@ public class BLibServer extends AbstractServer {
 		connectedClients.add(client);
 	}
 	@Override
-	protected synchronized void clientDisconnected(ConnectionToClient client) {
-		connectedClients.remove(client);
-	}
-	@Override
 	protected synchronized void clientException(ConnectionToClient client, Throwable exception) {
 		try {
 			client.close();
@@ -40,6 +36,9 @@ public class BLibServer extends AbstractServer {
 		}
 	}
 
+	public Set<ConnectionToClient> getConnectedClients(){
+		return connectedClients;
+	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("recive message");
