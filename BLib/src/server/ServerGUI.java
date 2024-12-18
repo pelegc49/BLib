@@ -1,6 +1,6 @@
 package server;
 
-import gui.ServerController;
+import GUI.ServerController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
