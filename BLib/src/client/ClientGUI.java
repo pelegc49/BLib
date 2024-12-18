@@ -2,7 +2,7 @@ package client;
 
 import java.io.IOException;
 
-import GUI.AuthenticationController;
+import gui.AuthenticationController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import logic.Subscriber;
