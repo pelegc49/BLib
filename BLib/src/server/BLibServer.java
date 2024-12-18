@@ -1,8 +1,9 @@
 package server;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import logic.Message;
@@ -11,7 +12,7 @@ import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
 public class BLibServer extends AbstractServer {
-	private static Set<ConnectionToClient> connectedClients = new HashSet<>();
+	private static Map<ConnectionToClient,String[]> connectedClients = new HashMap<>();
 	public BLibServer(int port) {
 		super(port);
 		BLibDBC.connect();
@@ -24,7 +25,7 @@ public class BLibServer extends AbstractServer {
 	}
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
-		connectedClients.add(client);
+		connectedClients.put(client,new String[]{client.getInetAddress().getHostAddress(),client.getInetAddress().getHostName()});
 	}
 	@Override
 	protected synchronized void clientException(ConnectionToClient client, Throwable exception) {
@@ -36,7 +37,7 @@ public class BLibServer extends AbstractServer {
 		}
 	}
 
-	public Set<ConnectionToClient> getConnectedClients(){
+	public Map<ConnectionToClient,String[]> getConnectedClients(){
 		return connectedClients;
 	}
 	@Override

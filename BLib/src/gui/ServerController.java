@@ -3,6 +3,7 @@ package gui;
 
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -51,12 +52,14 @@ public class ServerController implements Initializable {
 		StringBuilder sb = new StringBuilder("");
 		boolean isEmpty = true;
 		int i = 1;
-		for (ConnectionToClient c : ServerGUI.server.getConnectedClients()) {
-			sb.append(i+"#IP: "+c.getInetAddress().getHostAddress()+"\n");
-			sb.append(i+"#HOST: "+c.getInetAddress().getHostName()+"\n");
-			sb.append(i+"#STATUS: "+(c.isAlive()?"Connected":"Disconnected")+"\n");
+		for (Map.Entry<ConnectionToClient, String[]> c : ServerGUI.server.getConnectedClients().entrySet()) {
+			sb.append(i+"#IP    : "+c.getValue()[0]+"\n");
+			sb.append(i+"#HOST  : "+c.getValue()[1]+"\n");
+			sb.append(i+"#STATUS: "+(c.getKey().isAlive()?"Connected":"Disconnected")+"\n\n");
 			isEmpty = false;
+			i++;
 		}
+		
 		if(isEmpty) {
 			sb.append("no clients connected");
 		}
