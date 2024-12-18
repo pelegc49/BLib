@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import client.ClientGUI;
 import javafx.event.ActionEvent;
@@ -17,16 +17,15 @@ public class AuthenticationController {
 	private ClientGUIController sfc;
 
 	@FXML
+	private TextField txtId;
+	@FXML
 	private Button btnExit = null;
-
 	@FXML
 	private Button btnSend = null;
 
-	@FXML
-	private TextField idtxt;
 
 	private String getID() {
-		return idtxt.getText();
+		return txtId.getText();
 	}
 
 	public void Send(ActionEvent event) throws Exception {
@@ -74,7 +73,7 @@ public class AuthenticationController {
 		System.exit(1);
 	}
 
-	public void loadStudent(Subscriber s1) {
+	public void loadSubscriber(Subscriber s1) {
 		this.sfc.loadSubscriber(s1);
 	}
 

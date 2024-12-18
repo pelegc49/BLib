@@ -21,12 +21,12 @@ public class BLibClient extends AbstractClient {
 		super(host, port);
 		this.clientUI = clientUI;
 		
-		try {
-			this.clientUI = new ClientGUI(host, port);
-		} catch (IOException exception) {
-			System.out.println("Error: Can't setup connection!" + " Terminating client.");
-			System.exit(1);
-		}
+//		try {
+//			this.clientUI = new ClientGUI(host, port);
+//		} catch (IOException exception) {
+//			System.out.println("Error: Can't setup connection!" + " Terminating client.");
+//			System.exit(1);
+//		}
 	}
 
 	@Override

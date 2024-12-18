@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import client.ClientGUI;
 import javafx.event.ActionEvent;
@@ -13,7 +13,7 @@ public class ClientGUIController {
 	private Subscriber s;
 
 	@FXML
-	private Label lblstid;
+	private Label lblId;
 	@FXML
 	private Label lblName;
 	@FXML
@@ -22,7 +22,7 @@ public class ClientGUIController {
 	private Label lblEmail;
 
 	@FXML
-	private TextField txtid;
+	private TextField txtId;
 	@FXML
 	private TextField txtName;
 	@FXML
@@ -31,13 +31,13 @@ public class ClientGUIController {
 	private TextField txtEmail;
 
 	@FXML
-	private Button btnclose = null;
+	private Button btnClose = null;
 	@FXML
 	private Button btnSave = null;
 
 	public void loadSubscriber(Subscriber s1) {
 		this.s = s1;
-		this.txtid.setText(String.valueOf(s.getId()));
+		this.txtId.setText(String.valueOf(s.getId()));
 		this.txtName.setText(s.getName());
 		this.txtPhone.setText(s.getPhone());
 		this.txtEmail.setText(s.getEmail());
@@ -49,9 +49,10 @@ public class ClientGUIController {
 	}
 
 	public void getBtnSave(ActionEvent event) throws Exception {
-		s.setName(txtName.getText());
-		s.setEmail(txtEmail.getText());
-		s.setPhone(txtPhone.getText());
+		this.s.setName(txtName.getText());
+		this.s.setEmail(txtEmail.getText());
+		this.s.setPhone(txtPhone.getText());
+		
 		ClientGUI.client.updateSubscriber(s);
 		System.out.println("saved Succesfully");
 	}
