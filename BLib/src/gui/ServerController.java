@@ -23,7 +23,7 @@ public class ServerController {
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("test.fxml"));
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/GUI/Server.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("Server.css").toExternalForm());
 		primaryStage.setTitle("BLib Server");
 		primaryStage.setScene(scene);
 		primaryStage.show();

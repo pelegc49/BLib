@@ -43,12 +43,12 @@ public class AuthenticationController {
 				System.out.println("Subscriber ID Found");
 				((Node) event.getSource()).getScene().getWindow().hide(); // hiding primary window
 				Stage primaryStage = new Stage();
-				Pane root = loader.load(getClass().getResource("/gui/ClientGUI.fxml").openStream());
+				Pane root = loader.load(getClass().getResource("ClientGUI.fxml").openStream());
 				ClientGUIController clientGUIController = loader.getController();
 				clientGUIController.loadSubscriber(ClientGUI.client.getSubscriber(Integer.valueOf(id)));
 
 				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("/gui/ClientGUI.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("ClientGUI.css").toExternalForm());
 				primaryStage.setTitle("Subscriber Managment Tool");
 
 				primaryStage.setScene(scene);
@@ -58,10 +58,10 @@ public class AuthenticationController {
 	}
 
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("/gui/AuthenticationFrame.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("AuthenticationFrame.fxml"));
 
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/AuthenticationFrame.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("AuthenticationFrame.css").toExternalForm());
 		primaryStage.setTitle("Authentication Managment Tool");
 		primaryStage.setScene(scene);
 
