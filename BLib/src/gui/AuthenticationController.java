@@ -19,25 +19,26 @@ public class AuthenticationController {
 	@FXML
 	private TextField txtId;
 	@FXML
+	private TextField txtPassword;
+	@FXML
 	private Button btnExit = null;
 	@FXML
 	private Button btnSend = null;
-
-
-	private String getID() {
-		return txtId.getText();
-	}
 
 	public void Send(ActionEvent event) throws Exception {
 		String id;
 		FXMLLoader loader = new FXMLLoader();
 		
-		id = getID();
+		id = txtId.getText();
+		String password = txtPassword.getText();
+		try {
+			Integer.parseInt(id);
+		} catch(Exception e)
 		if (id.trim().isEmpty()) {
-			System.out.println("You must enter an id number");
+			System.out.println("You must enter an id number");			
 		}
 		else {
-			if (!ClientGUI.client.isSubscriber(Integer.valueOf(id))) {
+			if (!ClientGUI.client.login(Integer.valueOf(id), password)) {
 				System.out.println("Subscriber ID Not Found");
 			} else {
 				System.out.println("Subscriber ID Found");

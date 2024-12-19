@@ -84,11 +84,13 @@ public class BLibClient extends AbstractClient {
 		System.out.println(msg);
 	}
 	
-//	public void login(String userName, String password) {
-//		msg = new Message("login", userName, password);
-//		handleMessageFromClientUI(msg);
-//		System.out.println(msg);
-//	}
+	public void login(String userName, String password) {
+		msg = new Message("login", userName, password);
+		handleMessageFromClientUI(msg);
+		if(msg.getCommand().equals("loginSuccess")) {
+			System.out.println(msg.getArguments());
+		}
+	}
 	
 	public void searchBook(String keyWord) {
 		msg = new Message("searchBook", keyWord);
@@ -145,20 +147,13 @@ public class BLibClient extends AbstractClient {
 		return false;
 	}
 	
-	public boolean isSubscriber(int id) {
-		// I want to know if the id is valid.
-		msg = new Message("isSubscriber", id);
-		handleMessageFromClientUI(msg);
-		if(msg.getCommand().equals("Success"))
-			return true;
-		return false;
-	}
+
 	
 	public Subscriber getSubscriber(int id) {
 		// I want to get the subscriber by his id.
 		msg = new Message("getSubscriber", id);
 		handleMessageFromClientUI(msg);
-		if(msg.getCommand().equals("Success"))
+		if(msg.getCommand().equals("subscriberFound"))
 			return (Subscriber)msg.getArguments().get(0);
 		return null;
 	}
