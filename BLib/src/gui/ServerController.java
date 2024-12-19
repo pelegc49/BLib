@@ -25,17 +25,6 @@ public class ServerController implements Initializable {
 	@FXML
 	private Button refreshBtn;
 	
-	private class Refresher extends Thread{
-
-		@Override
-		public void run() {
-			try{
-				sleep(2000);
-			}catch (InterruptedException e) {}
-			
-		}
-		
-	}
 
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("test.fxml"));
@@ -60,12 +49,9 @@ public class ServerController implements Initializable {
 					}
 				}
 			});
-			refresher.setDaemon(true);
+			refresher.setDaemon(true); // ensuring this thread will stop when the main thread is stopped
 			refresher.start();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (Exception e) {}
 		
 	}
 	

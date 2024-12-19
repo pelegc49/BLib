@@ -31,14 +31,11 @@ public class AuthenticationController {
 		
 		id = txtId.getText();
 		String password = txtPassword.getText();
-		try {
-			Integer.parseInt(id);
-		} catch(Exception e)
 		if (id.trim().isEmpty()) {
 			System.out.println("You must enter an id number");			
 		}
 		else {
-			if (!ClientGUI.client.login(Integer.valueOf(id), password)) {
+			if (!ClientGUI.client.login(id, password)) {
 				System.out.println("Subscriber ID Not Found");
 			} else {
 				System.out.println("Subscriber ID Found");

@@ -84,12 +84,14 @@ public class BLibClient extends AbstractClient {
 		System.out.println(msg);
 	}
 	
-	public void login(String userName, String password) {
+	public boolean login(String userName, String password) {
 		msg = new Message("login", userName, password);
 		handleMessageFromClientUI(msg);
 		if(msg.getCommand().equals("loginSuccess")) {
 			System.out.println(msg.getArguments());
+			return true;
 		}
+		return false;
 	}
 	
 	public void searchBook(String keyWord) {

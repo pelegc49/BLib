@@ -13,6 +13,7 @@ import ocsf.server.ConnectionToClient;
 
 public class BLibServer extends AbstractServer {
 	private static Map<ConnectionToClient,String[]> connectedClients = new HashMap<>();
+	
 	public BLibServer(int port) {
 		super(port);
 		BLibDBC.connect();
@@ -42,7 +43,7 @@ public class BLibServer extends AbstractServer {
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		System.out.println("recive message");
+		System.out.println("receive message");
 		if (msg instanceof Message) {
 			List<Object> args = ((Message) msg).getArguments();
 			try {
