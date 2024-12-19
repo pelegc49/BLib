@@ -1,11 +1,15 @@
 package client;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 import gui.AuthenticationController;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import logic.Subscriber;
 import logic.User;
 
 public class ClientGUI extends Application {
@@ -14,6 +18,7 @@ public class ClientGUI extends Application {
 	 */
 	public static User user;
 	public static BLibClient client;
+	public static String host;
 
 	public ClientGUI() {
 		// must have empty constructor so JavaFX would run
@@ -46,13 +51,20 @@ public class ClientGUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		client = new BLibClient("localhost", 5555, this);
-		
+		Scanner scanner = null;
+		String host ="";
+		try {
+			File file = new File("ip.txt");
+			scanner = new Scanner(file);
+			host = scanner.nextLine();
+			scanner.close();
+		}catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null,"Please create a \"ip.txt\" file with a valid ip" , "Error", JOptionPane.INFORMATION_MESSAGE);
+			System.exit(0);
+		}
+		client = new BLibClient(host, 5555, this);
 		AuthenticationController aFrame = new AuthenticationController(); // create StudentFrame
 		aFrame.start(primaryStage);
 	}
 	
-	public void display(String message) {
-		System.out.println("> " + message);
-	}
 }

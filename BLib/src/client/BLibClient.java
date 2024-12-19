@@ -32,7 +32,6 @@ public class BLibClient extends AbstractClient {
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
-		System.out.println("--> handleMessageFromServer");
 		awaitResponse = false;
 		this.msg = (Message) msg;
 	}
@@ -58,7 +57,7 @@ public class BLibClient extends AbstractClient {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			clientUI.display("Could not send message to server: Terminating client." + e);
+			System.out.println("Could not send message to server: Terminating client." + e);
 			quit();
 		}
 	}

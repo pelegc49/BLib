@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -16,6 +17,8 @@ import logic.Subscriber;
 public class AuthenticationController {
 	private ClientGUIController sfc;
 	public static Subscriber subscriber;
+	@FXML
+	private Label lblError;
 	@FXML
 	private TextField txtId;
 	@FXML
@@ -35,16 +38,19 @@ public class AuthenticationController {
 			digit_id = Integer.parseInt(id);
 		}
 		catch(Exception e) {
-			System.out.println("bad username - only digits");
+			display("bad username - only digits");
 		}
 		if (id.trim().isEmpty()) {
-			System.out.println("You must enter an id number");			
+			display("You must enter an id number");
+		}
+		else if (txtPassword.getText().isEmpty()) {
+			display("You must enter a password");
 		}
 		else {
 			if (!ClientGUI.client.login(digit_id, password)) {
-				System.out.println("Subscriber ID Not Found");
+				display("ID or password are incorrect");
 			} else {
-				System.out.println("Subscriber ID Found");
+				System.out.println("Subscriber Found Successfuly");
 				((Node) event.getSource()).getScene().getWindow().hide(); // hiding primary window
 				Stage primaryStage = new Stage();
 				Pane root = loader.load(getClass().getResource("ClientGUI.fxml").openStream());
@@ -66,7 +72,7 @@ public class AuthenticationController {
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("AuthenticationFrame.css").toExternalForm());
-		primaryStage.setTitle("Authentication Managment Tool");
+		primaryStage.setTitle("Authentication");
 		primaryStage.setScene(scene);
 
 		primaryStage.show();
@@ -82,7 +88,7 @@ public class AuthenticationController {
 	}
 
 	public void display(String message) {
-		System.out.println("message");
+		lblError.setText(message);
 	}
 
 }

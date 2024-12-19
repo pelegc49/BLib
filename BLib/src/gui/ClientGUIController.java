@@ -1,21 +1,20 @@
 package gui;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import client.ClientGUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import logic.Subscriber;
 
 public class ClientGUIController {
 
 	private Subscriber s;
 
+	@FXML
+	private Label lblError;
 	@FXML
 	private Label lblId;
 	@FXML
@@ -56,29 +55,38 @@ public class ClientGUIController {
 		int digit_id;
 		try {
 			digit_id = Integer.parseInt(txtId.getText());
-		}
-		catch (Exception e) {
-			System.out.println("ID must have only digits.");
+		} catch (Exception e) {
+			display("ID must have only digits", Color.RED);
 			return;
 		}
 		if (s.getId() != digit_id) {
-			System.out.println("Don't change the ID.");
+			display("Don't change the ID", Color.RED);
 			return;
 		}
-		if (!s.getName().equals(txtName.getText())) {
-			System.out.println("Don't change the name.");
+		else if(!s.getName().equals(txtName.getText())) {
+			display("Don't change the name", Color.RED);
+			return;
+		}
+		try {
+			Integer.parseInt(txtPhone.getText());
+		}
+		catch(Exception e) {
+			display("Phone must have only digits", Color.RED);
 			return;
 		}
 		this.s.setEmail(txtEmail.getText());
 		this.s.setPhone(txtPhone.getText());
-		
+
 		if (ClientGUI.client.updateSubscriber(s)) {
-			System.out.println("saved Succesfully");
+			display("saved Succesfully!", Color.GREEN);
 			return;
 		}
-		System.out.println("could not save");		
+		display("could not save", Color.RED);
 	}
 
-	
+	public void display(String message, Color color) {
+		lblError.setTextFill(color);
+		lblError.setText(message);
+	}
 
 }

@@ -4,8 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="349.0" prefWidth="312.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ClientGUIController">
+<AnchorPane prefHeight="349.0" prefWidth="312.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ClientGUIController">
    <children>
       <Label id="lblId" layoutX="38.0" layoutY="57.0" text="ID:" />
       <TextField id="txtId" fx:id="txtId" layoutX="104" layoutY="53" />
@@ -17,5 +18,10 @@
       <Button id="btnSave" fx:id="btnSave" layoutX="99.0" layoutY="300.0" mnemonicParsing="false" onAction="#getbtnSave" text="Save" />
       <Label id="lblEmail" layoutX="34.0" layoutY="220.0" text="Email: " />
       <TextField id="txtEmail" fx:id="txtEmail" layoutX="104.0" layoutY="216.0" />
+      <Label fx:id="lblError" layoutX="31.0" layoutY="265.0" textFill="#3ad302">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
