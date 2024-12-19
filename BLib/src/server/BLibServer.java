@@ -51,6 +51,7 @@ public class BLibServer extends AbstractServer {
 				switch (((Message) msg).getCommand()) {
 				case "login":
 					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1));
+					System.out.println("good");
 					if (ret != null) {
 						client.sendToClient(new Message("loginSuccess", (String) ret));
 					} else {

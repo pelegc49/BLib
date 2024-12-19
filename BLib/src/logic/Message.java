@@ -2,7 +2,7 @@ package logic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,6 +36,11 @@ public class Message implements Serializable {
 
 	public List<Object> getArguments() {
 		return arguments;
+	}
+	
+	@Override
+	public String toString() {
+		return command + Arrays.deepToString(arguments.toArray());
 	}
 	
 	

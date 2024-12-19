@@ -1,14 +1,18 @@
 package gui;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import client.ClientGUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import logic.Subscriber;
 
-public class ClientGUIController {
+public class ClientGUIController implements Initializable{
 
 	private Subscriber s;
 
@@ -55,6 +59,12 @@ public class ClientGUIController {
 		
 		ClientGUI.client.updateSubscriber(s);
 		System.out.println("saved Succesfully");
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		loadSubscriber(s);
+		
 	}
 
 }

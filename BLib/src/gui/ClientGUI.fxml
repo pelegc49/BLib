@@ -8,14 +8,14 @@
 <AnchorPane prefHeight="349.0" prefWidth="312.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ClientGUIController">
    <children>
       <Label id="lblId" layoutX="38.0" layoutY="57.0" text="ID:" />
-      <TextField id="txtId" fx:id="txtIdfx" layoutX="104" layoutY="53" />
+      <TextField id="txtId" fx:id="txtId" layoutX="104" layoutY="53" />
       <Label id="lblName" layoutX="34.0" layoutY="107.0" text="Name:" />
       <Label id="lblPhone" layoutX="33.0" layoutY="166.0" text="Phone:" />
-      <TextField id="txtName" fx:id="txtNamefx" layoutX="104.0" layoutY="102.0" />
-      <TextField id="txtPhone" fx:id="txtPhonefx" layoutX="104.0" layoutY="162.0" />
-      <Button id="btnClose" fx:id="btnClosefx" layoutX="200.0" layoutY="300.0" mnemonicParsing="false" onAction="#getbtnClose" text="Close" />
-      <Button id="btnSave" fx:id="btnSavefx" layoutX="99.0" layoutY="300.0" mnemonicParsing="false" onAction="#getbtnSave" text="Save" />
+      <TextField id="txtName" fx:id="txtName" layoutX="104.0" layoutY="102.0" />
+      <TextField id="txtPhone" fx:id="txtPhone" layoutX="104.0" layoutY="162.0" />
+      <Button id="btnClose" fx:id="btnClose" layoutX="200.0" layoutY="300.0" mnemonicParsing="false" onAction="#getbtnClose" text="Close" />
+      <Button id="btnSave" fx:id="btnSave" layoutX="99.0" layoutY="300.0" mnemonicParsing="false" onAction="#getbtnSave" text="Save" />
       <Label id="lblEmail" layoutX="34.0" layoutY="220.0" text="Email: " />
-      <TextField id="txtEmail" fx:id="txtEmailfx" layoutX="104.0" layoutY="216.0" />
+      <TextField id="txtEmail" fx:id="txtEmail" layoutX="104.0" layoutY="216.0" />
    </children>
 </AnchorPane>

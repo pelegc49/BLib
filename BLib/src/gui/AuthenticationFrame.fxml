@@ -7,9 +7,11 @@
 
 <AnchorPane prefHeight="207.0" prefWidth="246.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AuthenticationController">
    <children>
-      <Button id="btnExit" fx:id="btnExitfx" layoutX="190.0" layoutY="164.0" mnemonicParsing="false" onAction="#getExitBtn" text="Exit" />
-      <Button id="btnSend" fx:id="btnSendfx" layoutX="129.0" layoutY="164.0" mnemonicParsing="false" onAction="#Send" text="Send" />
+      <Button id="btnExit" fx:id="btnExit" layoutX="190.0" layoutY="164.0" mnemonicParsing="false" onAction="#getExitBtn" text="Exit" />
+      <Button id="btnSend" fx:id="btnSend" layoutX="129.0" layoutY="164.0" mnemonicParsing="false" onAction="#Send" text="Send" />
       <Label layoutX="11.0" layoutY="53.0" text="Subscriber ID:" />
-      <TextField id="txtId" fx:id="txtIdfx" layoutX="76.0" layoutY="50.0" />
+      <TextField id="txtId" fx:id="txtId" layoutX="76.0" layoutY="50.0" />
+      <TextField id="txtPassword" fx:id="txtPassword" layoutX="76.0" layoutY="97.0" />
+      <Label layoutX="11.0" layoutY="101.0" text="Password:" />
    </children>
 </AnchorPane>
