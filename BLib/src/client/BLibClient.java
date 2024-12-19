@@ -145,9 +145,10 @@ public class BLibClient extends AbstractClient {
 		 */
 		msg = new Message("updateSubscriber", updated);
 		handleMessageFromClientUI(msg);
-		if (msg.getCommand().equals("Success")) {
+		if (msg.getCommand().equals("subscriberUpdated")) {
 			return true;
 		}
+		System.out.println("notUpdated");
 		return false;
 	}
 	

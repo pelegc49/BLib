@@ -53,12 +53,30 @@ public class ClientGUIController {
 	}
 
 	public void getbtnSave(ActionEvent event) throws Exception {
-		this.s.setName(txtName.getText());
+		int digit_id;
+		try {
+			digit_id = Integer.parseInt(txtId.getText());
+		}
+		catch (Exception e) {
+			System.out.println("ID must have only digits.");
+			return;
+		}
+		if (s.getId() != digit_id) {
+			System.out.println("Don't change the ID.");
+			return;
+		}
+		if (!s.getName().equals(txtName.getText())) {
+			System.out.println("Don't change the name.");
+			return;
+		}
 		this.s.setEmail(txtEmail.getText());
 		this.s.setPhone(txtPhone.getText());
 		
-		ClientGUI.client.updateSubscriber(s);
-		System.out.println("saved Succesfully");
+		if (ClientGUI.client.updateSubscriber(s)) {
+			System.out.println("saved Succesfully");
+			return;
+		}
+		System.out.println("could not save");		
 	}
 
 	
