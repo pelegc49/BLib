@@ -63,12 +63,12 @@ public class BLibDBC {
 		Scanner scanner = null;
 		String password ="";
 		try {
-			File file = new File("SQL_PASS.txt");
+			File file = new File("C:\\SQL_PASS.txt");
 			scanner = new Scanner(file);
 			password = scanner.nextLine();
 			scanner.close();
 		}catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null,"Please create a \"SQL_PASS.txt\" file with a valid password" , "Error", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Please create a \"C:\\SQL_PASS.txt\" file with a valid password" , "Error", JOptionPane.INFORMATION_MESSAGE);
 			System.exit(0);
 		}
 		try {

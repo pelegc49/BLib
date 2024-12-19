@@ -54,12 +54,12 @@ public class ClientGUI extends Application {
 		Scanner scanner = null;
 		String host ="";
 		try {
-			File file = new File("ip.txt");
+			File file = new File("c:\\ip.txt");
 			scanner = new Scanner(file);
 			host = scanner.nextLine();
 			scanner.close();
 		}catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null,"Please create a \"ip.txt\" file with a valid ip" , "Error", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null,"Please create a \"C:\\ip.txt\" file with a valid ip" , "Error", JOptionPane.INFORMATION_MESSAGE);
 			System.exit(0);
 		}
 		client = new BLibClient(host, 5555, this);
