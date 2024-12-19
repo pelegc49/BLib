@@ -1,7 +1,5 @@
 package gui;
 
-
-
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -26,6 +24,18 @@ public class ServerController implements Initializable {
 	private Button exitBtn;
 	@FXML
 	private Button refreshBtn;
+	
+	private class Refresher extends Thread{
+
+		@Override
+		public void run() {
+			try{
+				sleep(2000);
+			}catch (InterruptedException e) {}
+			
+		}
+		
+	}
 
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(getClass().getResource("test.fxml"));
@@ -34,13 +44,24 @@ public class ServerController implements Initializable {
 		primaryStage.setTitle("BLib Server");
 		primaryStage.setScene(scene);
 		primaryStage.show();
-
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
 			refresh(null);
+			Thread refresher = new Thread(() -> {
+				while(true) {
+					try {
+						Thread.sleep(2000);
+						refresh(null);
+					} catch (Exception e) {
+						System.out.println("failed to rerfesh");
+					}
+				}
+			});
+			refresher.setDaemon(true);
+			refresher.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

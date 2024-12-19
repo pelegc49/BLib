@@ -47,7 +47,7 @@ public class BLibServer extends AbstractServer {
 			List<Object> args = ((Message) msg).getArguments();
 			try {
 				Object ret;
-				switch (((Message) msg).getCommand().toLowerCase()) {
+				switch (((Message) msg).getCommand()) {
 				case "login":
 					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1));
 					if (ret != null) {
@@ -56,7 +56,7 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("loginFail"));
 					}
 					break;
-				case "getsubscriber":
+				case "getSubscriber":
 					ret = BLibDBC.getSubscriberByID((Integer) args.get(0));
 					if (ret != null) {
 						client.sendToClient(new Message("subscriberFound", (Subscriber) ret));
@@ -65,7 +65,7 @@ public class BLibServer extends AbstractServer {
 					}
 					break;
 
-				case "updatesubscriber":
+				case "updateSubscriber":
 					ret = BLibDBC.updateSubscriber((Subscriber)args.get(0));
 					if (ret != null) {
 						client.sendToClient(new Message("subscriberUpdated"));
