@@ -1,6 +1,11 @@
 package server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 import logic.Subscriber;
 
@@ -55,9 +60,19 @@ public class BLibDBC {
 			System.out.println("Driver definition failed");
 			return false;
 		}
-		
+		Scanner scanner = null;
+		String password ="";
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?serverTimezone=IST", "root","12341234");
+			File file = new File("SQL_PASS.txt");
+			scanner = new Scanner(file);
+			password = scanner.nextLine();
+			scanner.close();
+		}catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null,"Please create a \"SQL_PASS.txt\" file with a valid password" , "Error", JOptionPane.INFORMATION_MESSAGE);
+			System.exit(0);
+		}
+		try {
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?serverTimezone=IST", "root",password);
 			stmt = conn.createStatement();
 			System.out.println("SQL connection succeed");
 			return true;
