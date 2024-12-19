@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import logic.Subscriber;
 
-public class ClientGUIController implements Initializable{
+public class ClientGUIController {
 
 	private Subscriber s;
 
@@ -52,7 +52,7 @@ public class ClientGUIController implements Initializable{
 		System.exit(0);
 	}
 
-	public void getBtnSave(ActionEvent event) throws Exception {
+	public void getbtnSave(ActionEvent event) throws Exception {
 		this.s.setName(txtName.getText());
 		this.s.setEmail(txtEmail.getText());
 		this.s.setPhone(txtPhone.getText());
@@ -61,10 +61,6 @@ public class ClientGUIController implements Initializable{
 		System.out.println("saved Succesfully");
 	}
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		loadSubscriber(s);
-		
-	}
+	
 
 }

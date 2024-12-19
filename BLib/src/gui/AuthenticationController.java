@@ -15,7 +15,7 @@ import logic.Subscriber;
 
 public class AuthenticationController {
 	private ClientGUIController sfc;
-
+	public static Subscriber subscriber;
 	@FXML
 	private TextField txtId;
 	@FXML
@@ -28,14 +28,20 @@ public class AuthenticationController {
 	public void Send(ActionEvent event) throws Exception {
 		String id;
 		FXMLLoader loader = new FXMLLoader();
-		
+		int digit_id = 0;
 		id = txtId.getText();
 		String password = txtPassword.getText();
+		try {
+			digit_id = Integer.parseInt(id);
+		}
+		catch(Exception e) {
+			System.out.println("bad username - only digits");
+		}
 		if (id.trim().isEmpty()) {
 			System.out.println("You must enter an id number");			
 		}
 		else {
-			if (!ClientGUI.client.login(id, password)) {
+			if (!ClientGUI.client.login(digit_id, password)) {
 				System.out.println("Subscriber ID Not Found");
 			} else {
 				System.out.println("Subscriber ID Found");
@@ -43,7 +49,7 @@ public class AuthenticationController {
 				Stage primaryStage = new Stage();
 				Pane root = loader.load(getClass().getResource("ClientGUI.fxml").openStream());
 				ClientGUIController clientGUIController = loader.getController();
-				clientGUIController.loadSubscriber(ClientGUI.client.getSubscriber(Integer.valueOf(id)));
+				clientGUIController.loadSubscriber(ClientGUI.client.getSubscriber(digit_id));
 
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("ClientGUI.css").toExternalForm());
@@ -68,7 +74,7 @@ public class AuthenticationController {
 
 	public void getExitBtn(ActionEvent event) throws Exception {
 		System.out.println("Exit Successfully");
-		System.exit(1);
+		System.exit(0);
 	}
 
 	public void loadSubscriber(Subscriber s1) {

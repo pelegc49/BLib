@@ -35,27 +35,6 @@ public class BLibClient extends AbstractClient {
 		System.out.println("--> handleMessageFromServer");
 		awaitResponse = false;
 		this.msg = (Message) msg;
-		
-		
-		System.out.println("receive message");
-//		if (msg instanceof Message) {
-//			List<Object> args = ((Message) msg).getArguments();
-//			try {
-//				Object ret;
-//				switch (((Message) msg).getCommand()) {
-//				case "loginSuccess":
-//					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1));
-//					if (ret != null) {
-//						clientUI.sendToClient(new Message("loginSuccess", (String) ret));
-//					} else {
-//						client.sendToClient(new Message("loginFail"));
-//					}
-//					break;
-//				}
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 	}
 
 	/**
@@ -66,13 +45,12 @@ public class BLibClient extends AbstractClient {
 
 	public void handleMessageFromClientUI(Object message) {
 		try {
-			openConnection();// in order to send more than one message
+			//openConnection();// in order to send more than one message
 			awaitResponse = true;
 			sendToServer(message);
 			// wait for response
 			while (awaitResponse) {
 				try {
-					System.out.println("asd");
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -107,7 +85,7 @@ public class BLibClient extends AbstractClient {
 		System.out.println(msg);
 	}
 	
-	public boolean login(String userName, String password) {
+	public boolean login(int userName, String password) {
 		msg = new Message("login", userName, password);
 		handleMessageFromClientUI(msg);
 		System.out.println(msg);
@@ -173,14 +151,13 @@ public class BLibClient extends AbstractClient {
 		return false;
 	}
 	
-
-	
 	public Subscriber getSubscriber(int id) {
 		// I want to get the subscriber by his id.
 		msg = new Message("getSubscriber", id);
 		handleMessageFromClientUI(msg);
 		if(msg.getCommand().equals("subscriberFound"))
 			return (Subscriber)msg.getArguments().get(0);
+		System.out.println("subscriberNotFound");
 		return null;
 	}
 }
