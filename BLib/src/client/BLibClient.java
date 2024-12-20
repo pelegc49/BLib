@@ -6,34 +6,30 @@ import java.util.Date;
 import java.util.List;
 
 import common.Activity;
+import gui.IPController;
 import logic.Borrow;
 import logic.Message;
 import logic.Subscriber;
 import ocsf.client.AbstractClient;
-import server.BLibDBC;
 
 public class BLibClient extends AbstractClient {
 
-	ClientGUI clientUI;
 	public static Message msg;
 	public static boolean awaitResponse = false;
 
-	public BLibClient(String host, int port, ClientGUI clientUI) throws IOException {
+	public BLibClient(String host, int port) throws Exception {
 		super(host, port);
-		this.clientUI = clientUI;
-		openConnection();
-//		try {
-//			this.clientUI = new ClientGUI(host, port);
-//		} catch (IOException exception) {
-//			System.out.println("Error: Can't setup connection!" + " Terminating client.");
-//			System.exit(1);
-//		}
+		try {
+			openConnection();
+		} catch (IOException exception) {
+			throw new Exception();
+		}
 	}
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		awaitResponse = false;
-		this.msg = (Message) msg;
+		this.msg = (Message) msg; // change to BLibClient.msg
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package gui;
 
-import client.ClientGUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -62,22 +61,20 @@ public class ClientGUIController {
 		if (s.getId() != digit_id) {
 			display("Don't change the ID", Color.RED);
 			return;
-		}
-		else if(!s.getName().equals(txtName.getText())) {
+		} else if (!s.getName().equals(txtName.getText())) {
 			display("Don't change the name", Color.RED);
 			return;
 		}
 		try {
 			Integer.parseInt(txtPhone.getText());
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			display("Phone must have only digits", Color.RED);
 			return;
 		}
 		this.s.setEmail(txtEmail.getText());
 		this.s.setPhone(txtPhone.getText());
 
-		if (ClientGUI.client.updateSubscriber(s)) {
+		if (IPController.client.updateSubscriber(s)) {
 			display("saved Succesfully!", Color.GREEN);
 			return;
 		}

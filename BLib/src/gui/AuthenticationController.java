@@ -1,11 +1,9 @@
 package gui;
 
-import client.ClientGUI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -47,7 +45,7 @@ public class AuthenticationController {
 			display("You must enter a password");
 		}
 		else {
-			if (!ClientGUI.client.login(digit_id, password)) {
+			if (!IPController.client.login(digit_id, password)) {
 				display("ID or password are incorrect");
 			} else {
 				System.out.println("Subscriber Found Successfuly");
@@ -55,7 +53,7 @@ public class AuthenticationController {
 				Stage primaryStage = new Stage();
 				Pane root = loader.load(getClass().getResource("ClientGUI.fxml").openStream());
 				ClientGUIController clientGUIController = loader.getController();
-				clientGUIController.loadSubscriber(ClientGUI.client.getSubscriber(digit_id));
+				clientGUIController.loadSubscriber(IPController.client.getSubscriber(digit_id));
 
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("ClientGUI.css").toExternalForm());
@@ -65,17 +63,6 @@ public class AuthenticationController {
 				primaryStage.show();
 			}
 		}
-	}
-
-	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("AuthenticationFrame.fxml"));
-
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("AuthenticationFrame.css").toExternalForm());
-		primaryStage.setTitle("Authentication");
-		primaryStage.setScene(scene);
-
-		primaryStage.show();
 	}
 
 	public void getExitBtn(ActionEvent event) throws Exception {
