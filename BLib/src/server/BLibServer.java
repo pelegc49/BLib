@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import logic.Message;
 import logic.Subscriber;
@@ -12,16 +11,19 @@ import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
 public class BLibServer extends AbstractServer {
-	private static Map<ConnectionToClient,String[]> connectedClients = new HashMap<>();
-	
-	public BLibServer(int port) throws IOException{
+	private static Map<ConnectionToClient, String[]> connectedClients = new HashMap<>();
+
+	public BLibServer(int port) throws IOException {
 		super(port);
 		listen();
 	}
+
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
-		connectedClients.put(client,new String[]{client.getInetAddress().getHostAddress(),client.getInetAddress().getHostName()});
+		connectedClients.put(client,
+				new String[] { client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() });
 	}
+
 	@Override
 	protected synchronized void clientException(ConnectionToClient client, Throwable exception) {
 		try {
@@ -32,9 +34,10 @@ public class BLibServer extends AbstractServer {
 		}
 	}
 
-	public Map<ConnectionToClient,String[]> getConnectedClients(){
+	public Map<ConnectionToClient, String[]> getConnectedClients() {
 		return connectedClients;
 	}
+
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("receive message");
@@ -61,7 +64,7 @@ public class BLibServer extends AbstractServer {
 					break;
 
 				case "updateSubscriber":
-					ret = BLibDBC.updateSubscriber((Subscriber)args.get(0));
+					ret = BLibDBC.updateSubscriber((Subscriber) args.get(0));
 					if (ret != null) {
 						client.sendToClient(new Message("subscriberUpdated"));
 					} else {
@@ -77,6 +80,5 @@ public class BLibServer extends AbstractServer {
 		}
 
 	}
-	
 
 }

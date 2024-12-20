@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import common.Activity;
-import gui.IPController;
 import logic.Borrow;
 import logic.Message;
 import logic.Subscriber;
@@ -29,7 +28,7 @@ public class BLibClient extends AbstractClient {
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		awaitResponse = false;
-		this.msg = (Message) msg; // change to BLibClient.msg
+		msg = (Message) msg; // change to BLibClient.msg
 	}
 
 	/**

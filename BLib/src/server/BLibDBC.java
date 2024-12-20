@@ -1,11 +1,10 @@
 package server;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.sql.*;
-import java.util.Scanner;
-
-import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import logic.Subscriber;
 

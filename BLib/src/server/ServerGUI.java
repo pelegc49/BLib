@@ -1,7 +1,6 @@
 package server;
 
 import gui.SQLPassController;
-import gui.ServerController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

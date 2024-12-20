@@ -1,7 +1,5 @@
 package gui;
 
-import java.net.PasswordAuthentication;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +57,6 @@ public class SQLPassController {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			ServerGUI.server = new BLibServer(ServerGUI.DEFAULT_PORT);
-			ServerController frame = new ServerController();
 			Stage primaryStage = new Stage();
 			Pane root = loader.load(getClass().getResource("Server.fxml").openStream());
 			Scene scene = new Scene(root);
