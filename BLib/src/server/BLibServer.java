@@ -16,7 +16,7 @@ public class BLibServer extends AbstractServer {
 	
 	public BLibServer(int port) {
 		super(port);
-		BLibDBC.connect();
+//		BLibDBC.connect();
 		try {
 			listen();
 		} catch (IOException e) {

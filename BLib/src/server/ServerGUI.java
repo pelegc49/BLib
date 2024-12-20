@@ -19,7 +19,7 @@ public class ServerGUI extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		server = new BLibServer(DEFAULT_PORT);
+//		server = new BLibServer(DEFAULT_PORT);
 		aFrame = new ServerController();
 		aFrame.start(primaryStage);
 	}

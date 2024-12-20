@@ -12,10 +12,7 @@ import logic.Subscriber;
 public class BLibDBC {
 	private static Connection conn;
 	private static Statement stmt;
-	public static void main(String[] args) {//// KEEP FOR TESTING
-		connect();
-	}
-	
+		
 	public static Subscriber getSubscriberByID(int subscriberid) {
 		try {
 			ResultSet rs = stmt.executeQuery(
@@ -52,24 +49,13 @@ public class BLibDBC {
 
 	}
 	
-	public static boolean connect() {
+	public static boolean connect(String password) {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
 			System.out.println("Driver definition succeed");
 		} catch (Exception ex) {
 			System.out.println("Driver definition failed");
 			return false;
-		}
-		Scanner scanner = null;
-		String password ="";
-		try {
-			File file = new File("C:\\SQL_PASS.txt");
-			scanner = new Scanner(file);
-			password = scanner.nextLine();
-			scanner.close();
-		}catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null,"Please create a \"C:\\SQL_PASS.txt\" file with a valid password" , "Error", JOptionPane.INFORMATION_MESSAGE);
-			System.exit(0);
 		}
 		try {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?serverTimezone=IST", "root",password);
