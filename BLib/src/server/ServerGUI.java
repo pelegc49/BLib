@@ -1,12 +1,13 @@
 package server;
 
+import gui.SQLPassController;
 import gui.ServerController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class ServerGUI extends Application{
 	
-	public static ServerController aFrame;
+	public static SQLPassController aFrame;
 	public static BLibServer server;
 	public static final int DEFAULT_PORT = 5555;
 	public ServerGUI() {
@@ -20,7 +21,7 @@ public class ServerGUI extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 //		server = new BLibServer(DEFAULT_PORT);
-		aFrame = new ServerController();
+		aFrame = new SQLPassController();
 		aFrame.start(primaryStage);
 	}
 

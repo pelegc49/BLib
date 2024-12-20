@@ -14,15 +14,9 @@ import ocsf.server.ConnectionToClient;
 public class BLibServer extends AbstractServer {
 	private static Map<ConnectionToClient,String[]> connectedClients = new HashMap<>();
 	
-	public BLibServer(int port) {
+	public BLibServer(int port) throws IOException{
 		super(port);
-//		BLibDBC.connect();
-		try {
-			listen();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		listen();
 	}
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
