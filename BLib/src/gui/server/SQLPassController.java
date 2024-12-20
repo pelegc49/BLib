@@ -29,9 +29,10 @@ public class SQLPassController {
 	private Button btnOK;
 
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("SQLPass.fxml"));
+		primaryStage.setOnCloseRequest((E)->System.exit(0));
+		Parent root = FXMLLoader.load(getClass().getResource("/gui/server/SQLPass.fxml"));
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("Server.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/server/Server.css").toExternalForm());
 		primaryStage.setTitle("Enter Password");
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -58,9 +59,10 @@ public class SQLPassController {
 			FXMLLoader loader = new FXMLLoader();
 			ServerGUI.server = new BLibServer(ServerGUI.DEFAULT_PORT);
 			Stage primaryStage = new Stage();
-			Pane root = loader.load(getClass().getResource("Server.fxml").openStream());
+			Pane root = loader.load(getClass().getResource("/gui/server/Server.fxml").openStream());
 			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("Server.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getResource("/gui/server/Server.css").toExternalForm());
+			primaryStage.setOnCloseRequest((E)->System.exit(0));
 			primaryStage.setTitle("BLib Server");
 			primaryStage.setScene(scene);
 			((Node) e.getSource()).getScene().getWindow().hide();

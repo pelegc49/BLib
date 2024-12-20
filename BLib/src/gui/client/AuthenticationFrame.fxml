@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="207.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AuthenticationController">
+<AnchorPane prefHeight="207.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.AuthenticationController">
    <children>
       <Button id="btnExit" fx:id="btnExit" layoutX="218.0" layoutY="164.0" mnemonicParsing="false" onAction="#getExitBtn" text="Exit" />
       <Button id="btnSend" fx:id="btnSend" layoutX="157.0" layoutY="164.0" mnemonicParsing="false" onAction="#Send" text="Send" />

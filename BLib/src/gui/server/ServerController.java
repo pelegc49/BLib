@@ -25,16 +25,6 @@ public class ServerController implements Initializable {
 	@FXML
 	private Button refreshBtn;
 	
-
-	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("Server.fxml"));
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("Server.css").toExternalForm());
-		primaryStage.setTitle("BLib Server");
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {

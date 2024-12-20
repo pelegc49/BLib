@@ -51,14 +51,14 @@ public class AuthenticationController {
 				System.out.println("Subscriber Found Successfuly");
 				((Node) event.getSource()).getScene().getWindow().hide(); // hiding primary window
 				Stage primaryStage = new Stage();
-				Pane root = loader.load(getClass().getResource("ClientGUI.fxml").openStream());
+				Pane root = loader.load(getClass().getResource("/gui/client/ClientGUI.fxml").openStream());
 				ClientGUIController clientGUIController = loader.getController();
 				clientGUIController.loadSubscriber(IPController.client.getSubscriber(digit_id));
 
 				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("ClientGUI.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/gui/client/ClientGUI.css").toExternalForm());
+				primaryStage.setOnCloseRequest((E)->System.exit(0));
 				primaryStage.setTitle("Subscriber Managment Tool");
-
 				primaryStage.setScene(scene);
 				primaryStage.show();
 			}

@@ -40,7 +40,7 @@ public class BLibServer extends AbstractServer {
 
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		System.out.println("receive message");
+		System.out.println("receive message:"+msg);
 		if (msg instanceof Message) {
 			List<Object> args = ((Message) msg).getArguments();
 			try {
@@ -48,6 +48,7 @@ public class BLibServer extends AbstractServer {
 				switch (((Message) msg).getCommand()) {
 				case "login":
 					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1));
+					System.out.println(ret);
 					if (ret != null) {
 						client.sendToClient(new Message("loginSuccess", (String) ret));
 					} else {

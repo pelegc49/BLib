@@ -1,6 +1,6 @@
 package client;
 
-import java.awt.print.Book;
+import logic.Book;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -27,8 +27,8 @@ public class BLibClient extends AbstractClient {
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
+		BLibClient.msg = (Message) msg; // change to BLibClient.msg
 		awaitResponse = false;
-		msg = (Message) msg; // change to BLibClient.msg
 	}
 
 	/**

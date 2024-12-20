@@ -45,9 +45,10 @@ public class IPController {
 				System.out.println("IP Entered Successfuly");
 				((Node) event.getSource()).getScene().getWindow().hide(); // hiding primary window
 				Stage primaryStage = new Stage();
-				Pane root = loader.load(getClass().getResource("AuthenticationFrame.fxml").openStream());
+				Pane root = loader.load(getClass().getResource("/gui/client/AuthenticationFrame.fxml").openStream());
 				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("AuthenticationFrame.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/gui/client/AuthenticationFrame.css").toExternalForm());
+				primaryStage.setOnCloseRequest((E)->System.exit(0));
 				primaryStage.setTitle("Authentication");
 				primaryStage.setScene(scene);
 				primaryStage.show();
@@ -60,9 +61,10 @@ public class IPController {
 	}
 
 	public void start(Stage primaryStage) throws Exception {
-		Parent root = FXMLLoader.load(getClass().getResource("IPFrame.fxml"));
+		primaryStage.setOnCloseRequest((E)->System.exit(0));
+		Parent root = FXMLLoader.load(getClass().getResource("/gui/client/IPFrame.fxml"));
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("IPFrame.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/IPFrame.css").toExternalForm());
 		primaryStage.setTitle("IP");
 		primaryStage.setScene(scene);
 		primaryStage.show();
