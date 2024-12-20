@@ -1,4 +1,4 @@
-package gui;
+package gui.server;
 
 import java.net.URL;
 import java.util.Map;

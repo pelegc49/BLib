@@ -1,4 +1,4 @@
-package gui;
+package gui.server;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

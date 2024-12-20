@@ -1,15 +1,15 @@
 package client;
 
-import gui.IPController;
+import gui.client.IPController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class ClientGUI extends Application {
 
-	public ClientGUI() {
-		// must have empty constructor so JavaFX would run
-		super();
-	}
+//	public ClientGUI() {
+//		// must have empty constructor so JavaFX would run
+//		super();
+//	}
 	
 	public static void main(String args[]) throws Exception {
 		launch(args);

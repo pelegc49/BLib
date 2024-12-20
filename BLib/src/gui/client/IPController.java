@@ -1,4 +1,4 @@
-package gui;
+package gui.client;
 
 import client.BLibClient;
 import javafx.event.ActionEvent;
