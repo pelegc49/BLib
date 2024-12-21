@@ -1,4 +1,4 @@
-package common;
+package logic;
 
 import java.util.Date;
 

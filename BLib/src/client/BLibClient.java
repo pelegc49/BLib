@@ -1,11 +1,11 @@
 package client;
 
+import logic.Activity;
 import logic.Book;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import common.Activity;
 import logic.Borrow;
 import logic.Message;
 import logic.Subscriber;
