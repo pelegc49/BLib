@@ -1,11 +1,15 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/* Style for buttons */
 .button {
-	-fx-background-color: rgba(255, 255, 255, .80);
-	-fx-text-fill: black;
-	-fx-padding: 6 6 6 6;
-	-fx-border-radius: 8;
-	-fx-font-weight : bold;
+	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.8);/* Sets the background color of the button to a semi-transparent white (80% opacity) */
+	-fx-text-fill: black;/* Sets the text color of the button to black */
+	-fx-padding: 6.0 6.0 6.0 6.0;/* Adds padding around the button (top, right, bottom, left) */
+	-fx-border-radius: 8.0;/* Rounds the corners of the button with a radius of 8 pixels */
+	-fx-font-weight : bold; /* Makes the text in the button bold */
 }
+
+/* Style for the root container (such as the main window or pane) */
 .root {
+	 /* Sets the background color of the root container to a light brown (#deb887) */
 	-fx-background-color: #deb887;
 }

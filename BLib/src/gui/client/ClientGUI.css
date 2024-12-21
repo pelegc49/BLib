@@ -1,12 +1,16 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+/* Button style */
 .button {
-	-fx-font-size: 14px ;
-	-fx-background-color: rgba(255, 255, 255, .80);
-	-fx-text-fill: black;
-	-fx-padding: 6 6 6 6;
-	-fx-border-radius: 8;
-	-fx-font-weight : bold;
+	-fx-font-size: 14.0px ; /* Sets the font size of the button text */
+	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.8); /* Sets a semi-transparent white background color for the button */
+	-fx-text-fill: black; /* Sets the color of the button text to black */
+	-fx-padding: 6.0 6.0 6.0 6.0; /* Adds padding inside the button: top, right, bottom, left */
+	-fx-border-radius: 8.0; /* Gives the button rounded corners with an 8px radius */
+	-fx-font-weight : bold; /* Sets the font weight of the button text to bold */
 }
+
+/* Root container style */
 .root {
-	-fx-background-color: #deb887;
+	-fx-background-color: #deb887; /* Sets the background color of the root container to a light brown color (Hex #deb887) */
 }

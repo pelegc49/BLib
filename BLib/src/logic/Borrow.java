@@ -3,39 +3,48 @@ package logic;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Borrow implements Serializable{
+public class Borrow implements Serializable {
 
-	private Date dateOfBorrow;
-	private Date dueDate;
-	private Date dateOfReturn;
-	
-	public Borrow(Date dateOfBorrow,Date dueDate,Date dateOfReturn) {
-		this.dateOfBorrow=dateOfBorrow;
-		this.dueDate=dueDate;
-		this.dateOfReturn=dateOfReturn;
+	// Private member variables for storing borrowing details
+	private Date dateOfBorrow; // The date when the book was borrowed
+	private Date dueDate; // The due date for returning the book
+	private Date dateOfReturn; // The actual date when the book was returned
+
+	// Constructor to initialize the borrowing details (date of borrow, due date,
+	// and return date)
+	public Borrow(Date dateOfBorrow, Date dueDate, Date dateOfReturn) {
+		this.dateOfBorrow = dateOfBorrow; // Set the date of borrow
+		this.dueDate = dueDate; // Set the due date
+		this.dateOfReturn = dateOfReturn; // Set the return date
 	}
-	
-    public Date getDateOfBorrow() {
-        return dateOfBorrow;
-    }
 
-    public Date getDueDate() {
-        return dueDate;
-    }
+	// Getter method for the date of borrow
+	public Date getDateOfBorrow() {
+		return dateOfBorrow; // Return the date of borrow
+	}
 
-    public Date getDateOfReturn() {
-        return dateOfReturn;
-    }
+	// Getter method for the due date
+	public Date getDueDate() {
+		return dueDate; // Return the due date
+	}
 
-    public void setDateOfBorrow(Date dateOfBorrow) {
-        this.dateOfBorrow = dateOfBorrow;
-    }
+	// Getter method for the date of return
+	public Date getDateOfReturn() {
+		return dateOfReturn; // Return the date of return
+	}
 
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
+	// Setter method for the date of borrow
+	public void setDateOfBorrow(Date dateOfBorrow) {
+		this.dateOfBorrow = dateOfBorrow; // Set the date of borrow
+	}
 
-    public void setDateOfReturn(Date dateOfReturn) {
-        this.dateOfReturn = dateOfReturn;
-    }
+	// Setter method for the due date
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate; // Set the due date
+	}
+
+	// Setter method for the date of return
+	public void setDateOfReturn(Date dateOfReturn) {
+		this.dateOfReturn = dateOfReturn; // Set the date of return
+	}
 }

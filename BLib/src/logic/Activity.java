@@ -4,47 +4,57 @@ import java.util.Date;
 
 public class Activity {
 
-	private int id;
-	private String type;
-	private String description;
-	private Date date;
-	
+	// Private member variables to store the activity details
+	private int id; // ID of the activity
+	private String type; // Type of the activity (e.g., "Meeting", "Task", etc.)
+	private String description; // A description of the activity
+	private Date date; // The date and time the activity took place
+
+	// Constructor to initialize the activity with all fields
 	public Activity(int id, String type, String description, Date date) {
-		this.id=id;
-		this.type=type;
-		this.description=description;
-		this.date=date;
+		this.id = id; // Set the activity ID
+		this.type = type; // Set the activity type
+		this.description = description; // Set the activity description
+		this.date = date; // Set the activity date
 	}
-	
-    public int getId() {
-        return id;
-    }
 
-    public String getType() {
-        return type;
-    }
+	// Getter method for activity ID
+	public int getId() {
+		return id; // Return the activity ID
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	// Getter method for activity type
+	public String getType() {
+		return type; // Return the activity type
+	}
 
-    public Date getDate() {
-        return date;
-    }
+	// Getter method for activity description
+	public String getDescription() {
+		return description; // Return the activity description
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	// Getter method for activity date
+	public Date getDate() {
+		return date; // Return the activity date
+	}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+	// Setter method for activity ID
+	public void setId(int id) {
+		this.id = id; // Set the activity ID
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	// Setter method for activity type
+	public void setType(String type) {
+		this.type = type; // Set the activity type
+	}
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+	// Setter method for activity description
+	public void setDescription(String description) {
+		this.description = description; // Set the activity description
+	}
+
+	// Setter method for activity date
+	public void setDate(Date date) {
+		this.date = date; // Set the activity date
+	}
 }
