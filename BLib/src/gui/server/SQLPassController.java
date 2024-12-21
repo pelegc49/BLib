@@ -68,7 +68,7 @@ public class SQLPassController {
 			((Node) e.getSource()).getScene().getWindow().hide();
 			primaryStage.show();
 		}catch (Exception ex) {
-			display("Can't setup server. make sure port "+ServerGUI.DEFAULT_PORT+" isn't used");
+			display("make sure port "+ServerGUI.DEFAULT_PORT+" isn't used");
 			return;
 		}
 	}
