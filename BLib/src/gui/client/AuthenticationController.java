@@ -34,17 +34,14 @@ public class AuthenticationController {
 		String password = txtPassword.getText();
 		try {
 			digit_id = Integer.parseInt(id);
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			display("bad username - only digits");
 		}
 		if (id.trim().isEmpty()) {
 			display("You must enter an id number");
-		}
-		else if (txtPassword.getText().isEmpty()) {
+		} else if (txtPassword.getText().isEmpty()) {
 			display("You must enter a password");
-		}
-		else {
+		} else {
 			if (!IPController.client.login(digit_id, password)) {
 				display("ID or password are incorrect");
 			} else {
@@ -57,7 +54,7 @@ public class AuthenticationController {
 
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("/gui/client/ClientGUI.css").toExternalForm());
-				primaryStage.setOnCloseRequest((E)->System.exit(0));
+				primaryStage.setOnCloseRequest((E) -> System.exit(0));
 				primaryStage.setTitle("Subscriber Managment Tool");
 				primaryStage.setScene(scene);
 				primaryStage.show();
