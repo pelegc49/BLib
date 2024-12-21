@@ -11,13 +11,22 @@ import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
 public class BLibServer extends AbstractServer {
+	
+	public static BLibServer instance = null;
 	private static Map<ConnectionToClient, String[]> connectedClients = new HashMap<>();
 
-	public BLibServer(int port) throws IOException {
+	private BLibServer(int port) throws IOException {
 		super(port);
 		listen();
 	}
-
+	
+	public static BLibServer getInstance(int port) throws IOException{
+		if (instance instanceof BLibServer) {
+			return instance;
+		}
+		return new BLibServer(port);
+	}
+	
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
 		connectedClients.put(client,

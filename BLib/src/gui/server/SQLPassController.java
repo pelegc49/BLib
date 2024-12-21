@@ -57,7 +57,7 @@ public class SQLPassController {
 		// Connected successfully. setup next window
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			ServerGUI.server = new BLibServer(ServerGUI.DEFAULT_PORT);
+			ServerGUI.server = BLibServer.getInstance(ServerGUI.DEFAULT_PORT);
 			Stage primaryStage = new Stage();
 			Pane root = loader.load(getClass().getResource("/gui/server/Server.fxml").openStream());
 			Scene scene = new Scene(root);
