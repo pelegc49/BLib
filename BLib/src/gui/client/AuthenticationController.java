@@ -65,32 +65,48 @@ public class AuthenticationController {
 		} 
 		// If both fields are valid, attempt to log in.
 		else {
-			if (!IPController.client.login(digit_id, password)) {
-				// Display an error if login fails.
-				display("ID or password are incorrect");
-			} else {
-				// Login is successful.
-				System.out.println("Subscriber Found Successfully");
-				
-				// Hide the current window.
-				((Node) event.getSource()).getScene().getWindow().hide();
-
-				// Load the main application interface.
-				Stage primaryStage = new Stage();
-				Pane root = loader.load(getClass().getResource("/gui/client/ClientGUI.fxml").openStream());
-				ClientGUIController clientGUIController = loader.getController();
-
-				// Load the authenticated subscriber's data.
-				clientGUIController.loadSubscriber(IPController.client.getSubscriber(digit_id));
-
-				// Set up and display the new scene.
-				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("/gui/client/ClientGUI.css").toExternalForm());
-				primaryStage.setOnCloseRequest((E) -> System.exit(0));
-				primaryStage.setTitle("Subscriber Management Tool");
-				primaryStage.setScene(scene);
-				primaryStage.show();
+			switch(IPController.client.login(digit_id, password)) {
+				case "Subscriber":
+					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+					break;
+				case "Librarian":
+					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+					break;
+				case "fail":
+					display("ID or password are incorrect");
+					break;
+				// For debugging purposes. delete me later \/
+				default:
+					System.out.println("Developers! Something went wrong at login...");
 			}
+//	----------------- This is the old version without verifying Subscriber of Librarian -----------------
+//			if (IPController.client.login(digit_id, password).equals("fail")) {
+//				// Display an error if login fails.
+//				display("ID or password are incorrect");
+//			} else {
+//				// Login is successful.
+//				System.out.println("Subscriber Found Successfully");
+//				
+//				// Hide the current window.
+//				((Node) event.getSource()).getScene().getWindow().hide();
+//
+//				// Load the main application interface.
+//				Stage primaryStage = new Stage();
+//				Pane root = loader.load(getClass().getResource("/gui/client/ClientGUI.fxml").openStream());
+//				ClientGUIController clientGUIController = loader.getController();
+//
+//				// Load the authenticated subscriber's data.
+//				clientGUIController.loadSubscriber(IPController.client.getSubscriber(digit_id));
+//
+//				// Set up and display the new scene.
+//				Scene scene = new Scene(root);
+//				scene.getStylesheets().add(getClass().getResource("/gui/client/ClientGUI.css").toExternalForm());
+//				primaryStage.setOnCloseRequest((E) -> System.exit(0));
+//				primaryStage.setTitle("Subscriber Management Tool");
+//				primaryStage.setScene(scene);
+//				primaryStage.show();
+//			}
+//	-------------------------------------------------------------------------------------------------------
 		}
 	}
 
@@ -121,5 +137,25 @@ public class AuthenticationController {
 	 */
 	public void display(String message) {
 		lblError.setText(message);
+	}
+	
+	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
+		// FXMLLoader for loading the main GUI.
+		FXMLLoader loader = new FXMLLoader(); 
+		
+		// Hide the current window.
+		((Node) event.getSource()).getScene().getWindow().hide();
+
+		// Load the main application interface.
+		Stage primaryStage = new Stage();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
+
+		// Set up and display the new scene.
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle(title);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 }

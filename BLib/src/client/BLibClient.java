@@ -87,15 +87,13 @@ public class BLibClient extends AbstractClient {
 	 * @param password The user's password.
 	 * @return True if login is successful, false otherwise.
 	 */
-	public boolean login(int userName, String password) {
+	public String login(int userName, String password) {
 		msg = new Message("login", userName, password); // Create login message
 		handleMessageFromClientUI(msg); // Send to server
-		System.out.println(msg); // Print the message
 		if (msg.getCommand().equals("loginSuccess")) { // Check for success
-			System.out.println(msg.getArguments());
-			return true;
+			return (String)msg.getArguments().get(0);
 		}
-		return false; // Login failed
+		return "fail"; // Login failed
 	}
 
 	// Searches for a book using a keyword
