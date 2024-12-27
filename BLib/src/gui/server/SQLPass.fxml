@@ -6,16 +6,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="296.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.server.SQLPassController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="167.0" prefWidth="395.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.server.SQLPassController">
    <children>
-      <Label fx:id="lblEnterPass" layoutX="13.0" layoutY="30.0" text="Enter SQL password:" />
-      <Label fx:id="lblMSG" layoutX="12.0" layoutY="55.0" prefHeight="17.0" prefWidth="271.0" textFill="RED">
+      <TextField fx:id="txtPass" layoutX="133.0" layoutY="27.0" prefHeight="25.0" prefWidth="255.0" onKeyPressed="#handleKey"/>
+      <TextField fx:id="txtPort" layoutX="133.0" layoutY="63.0" prefHeight="25.0" prefWidth="255.0" onKeyPressed="#handleKey" text="5555"/>
+      <Label layoutX="13.0" layoutY="30.0" text="Enter SQL password:" />
+      <Label fx:id="lblMSG" layoutX="12.0" layoutY="93.0" prefHeight="25.0" prefWidth="377.0" textFill="RED">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtPass" layoutX="133.0" layoutY="26.0" />
-      <Button fx:id="btnOK" layoutX="122.0" layoutY="95.0" mnemonicParsing="false" onAction="#actionOnOK" text="Confirm" />
-      <Button fx:id="btnClose" layoutX="230.0" layoutY="95.0" mnemonicParsing="false" onAction="#actionOnClose" text="Cancel" />
+      <Button fx:id="btnOK" layoutX="261.0" layoutY="130.0" mnemonicParsing="false" onAction="#actionOnOK" text="Confirm" focusTraversable="false"/>
+      <Button fx:id="btnClose" layoutX="329.0" layoutY="130.0" mnemonicParsing="false" onAction="#actionOnClose" text="Cancel" focusTraversable="false"/>
+      <Label layoutX="13.0" layoutY="69.0" text="Enter desired port:" />
    </children>
 </AnchorPane>

@@ -12,9 +12,6 @@ public class ServerGUI extends Application {
 	// Static reference to the BLibServer for managing the server
 	public static BLibServer server;
 
-	// Default port number for the server
-	public static final int DEFAULT_PORT = 5555;
-
 	/**
 	 * Constructor for ServerGUI. Inherited from Application class.
 	 */
