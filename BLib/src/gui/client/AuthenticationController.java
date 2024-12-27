@@ -66,10 +66,10 @@ public class AuthenticationController {
 		// If both fields are valid, attempt to log in.
 		else {
 			switch(IPController.client.login(digit_id, password)) {
-				case "Subscriber":
+				case "subscriber":
 					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
 					break;
-				case "Librarian":
+				case "librarian":
 					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
 					break;
 				case "fail":
