@@ -1,11 +1,13 @@
 package client;
 
-import logic.Activity;
-import logic.BookCopy;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import logic.Activity;
+import logic.BookCopy;
+import logic.BookTitle;
 import logic.Borrow;
 import logic.Message;
 import logic.Subscriber;
@@ -97,9 +99,14 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Searches for a book using a keyword
-	public void searchBook(String keyWord) {
-		msg = new Message("searchBook", keyWord); // Create search message
+	public Set<BookTitle> getTitlesByKeyword(String keyword) {
+		msg = new Message("getTitlesByKeyword", keyword); // Create search message
 		handleMessageFromClientUI(msg); // Send to server
+		if(msg.getCommand().equals("searchResult")){
+			return (Set<BookTitle>) msg.getArguments().get(0);
+		}
+		return null;
+		
 	}
 
 	// Borrow a book for a subscriber

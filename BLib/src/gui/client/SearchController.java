@@ -1,5 +1,9 @@
 package gui.client;
 
+import java.util.Set;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -11,10 +15,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage; 
+import javafx.stage.Stage;
+import logic.BookTitle; 
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -32,19 +38,29 @@ public class SearchController {
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private TableView bookTable;
+	private TableView<BookTitle> bookTable;
 	@FXML
-	private TableColumn authorColumn;
+	private TableColumn<BookTitle, String> authorColumn;
 	@FXML
-	private TableColumn titleColumn;
+	private TableColumn<BookTitle, String> titleColumn;
 	
 	
 	public void searchBtn(Event event) {
-		
-		IPController.client.searchBook(txtSearch.getText());
-		
-		
-		
+		ObservableList<BookTitle> data;
+		String keyWord = txtSearch.getText().trim();
+		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyWord);
+		if(bookTitle == null) {
+			display("No result found");
+		}
+		else {
+			data = FXCollections.observableArrayList();
+			for(BookTitle bt : bookTitle) {
+				data.add(bt);
+			}
+			authorColumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
+			titleColumn.setCellValueFactory(new PropertyValueFactory<>("Title"));
+			bookTable.setItems(data);
+		}
 		
 		
 //		String id; // String to store the entered ID.
@@ -96,7 +112,17 @@ public class SearchController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	    String currentTitle = currentStage.getTitle();
+	    if(currentTitle.equals("Subscriber - Search")) {
+	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+	    }
+	    else if(currentTitle.equals("Librarian - Search")) {
+	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+	    }
+	    else {
+	    	nextPage(event, "AuthenticationFrame", "Authentication");
+	    }
 	}
 
 	/**

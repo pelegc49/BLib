@@ -15,7 +15,7 @@ import logic.Subscriber;
  * It manages the login process, including ID and password validation, 
  * and transitions the user to the main application interface upon successful login.
  */
-public class SubscriberClientGUIController {
+public class LibrarianClientGUIController {
 	private UpdateDetailsController udc; // Reference to the main GUI controller.
 
 	@FXML

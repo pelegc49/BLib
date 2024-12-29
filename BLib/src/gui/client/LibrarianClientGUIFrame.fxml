@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="317.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberClientGUIController">
+	<children>
+		<Button id="btnBack" fx:id="btnBack" layoutX="210.0" layoutY="277.0" mnemonicParsing="false" onAction="#backBtn" text="Log Out" />
+	    <Button id="signupSub" fx:id="btnOrder" layoutX="14.0" layoutY="56.0" mnemonicParsing="false" onAction="#orderBtn" text="Sign Up Subscriber" />
+	    <Button id="btnBookActions" fx:id="btnExtendTime" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" onAction="#extendTimeBtn" text="Book Actions" />
+	    <Button id="btnUpdateDetails" fx:id="btnUpdateDetails" layoutX="171.0" layoutY="56.0" mnemonicParsing="false" onAction="#updateDetailsBtn" text="Update Details" />
+	    <Button id="btnViewHistory" fx:id="btnViewHistory" layoutX="169.0" layoutY="152.0" mnemonicParsing="false" onAction="#viewHistoryBtn" text="View History" />
+	    <Button id="btnSearch" fx:id="btnSearch" layoutX="14.0" layoutY="152.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
+      <Button id="btnExtendBook" layoutX="171.0" layoutY="101.0" mnemonicParsing="false" text="Extend Borrow" />
+      <Button id="btnSubReprt" layoutX="14.0" layoutY="206.0" mnemonicParsing="false" text="Subscriber Report" />
+      <Button id="btnBorrowRep" layoutX="171.0" layoutY="206.0" mnemonicParsing="false" text="Borrow Report" />
+	</children>
+</AnchorPane>
