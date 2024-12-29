@@ -47,8 +47,10 @@ public class SearchController {
 	
 	public void searchBtn(Event event) {
 		ObservableList<BookTitle> data;
-		String keyWord = txtSearch.getText().trim();
-		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyWord);
+		String keyword = txtSearch.getText();
+		System.out.println("keyword = "+keyword);
+		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyword);
+		System.out.println(bookTitle);
 		if(bookTitle == null) {
 			display("No result found");
 		}

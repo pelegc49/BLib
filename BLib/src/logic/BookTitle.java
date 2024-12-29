@@ -34,7 +34,6 @@ public class BookTitle implements Serializable{
 		return authorName;
 	}
 
-
 	public String getDescription() {
 		return description;
 	}
@@ -45,6 +44,11 @@ public class BookTitle implements Serializable{
 	
 	public int getNumOfCopies() {
 		return numOfCopies;
+	}
+	
+	@Override
+	public String toString() {
+		return authorName +" : "+ titleName;
 	}
 		
 }
