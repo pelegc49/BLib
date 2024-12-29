@@ -11,7 +11,7 @@
       <Button id="btnExit" fx:id="btnExit" layoutX="218.0" layoutY="164.0" mnemonicParsing="false" onAction="#getExitBtn" text="Exit" />
       <Button id="btnSend" fx:id="btnSend" layoutX="157.0" layoutY="164.0" mnemonicParsing="false" onAction="#Send" text="Send" />
       <Label layoutX="11.0" layoutY="53.0" text="IP Address:" />
-      <TextField id="txtIp" fx:id="txtIp" layoutX="104.0" layoutY="50.0" />
+      <TextField id="txtIp" fx:id="txtIp" layoutX="104.0" layoutY="50.0" text="localhost" />
       <Label fx:id="lblError" layoutX="11.0" layoutY="138.0" prefHeight="17.0" prefWidth="262.0" textFill="RED">
          <font>
             <Font name="System Bold" size="12.0" />
