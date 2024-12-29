@@ -165,7 +165,7 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("searchFailed")); 
 					}
 					break;
-				case "getCopiesByTitleID":
+				case "getCopiesByTitle":
 					ret = BLibDBC.getInstance().getCopiesByTitle((BookTitle) args.get(0));
 					if (ret != null) {
 						client.sendToClient(new Message("searchResult",(Set<BookCopy>)ret)); // Send success message
