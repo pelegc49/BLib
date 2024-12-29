@@ -3,7 +3,7 @@ package logic;
 import java.io.Serializable;
 
 public class BookTitle implements Serializable{
-	private int id;
+	private int titleID;
 	private String titleName;
 	private String authorName;
 	private String description;
@@ -11,8 +11,8 @@ public class BookTitle implements Serializable{
 	private int numOfCopies;
 	
 	
-	public BookTitle(int id, String titleName, String authorName, String description, int numOfOrders, int numOfCopies) {
-		this.id = id;
+	public BookTitle(int titleID, String titleName, String authorName, String description, int numOfOrders, int numOfCopies) {
+		this.titleID = titleID;
 		this.titleName = titleName;
 		this.authorName = authorName;
 		this.description = description;
@@ -21,8 +21,8 @@ public class BookTitle implements Serializable{
 	}
 
 
-	public int getId() {
-		return id;
+	public int getTitleID() {
+		return titleID;
 	}
 
 	public String getTitleName() {

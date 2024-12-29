@@ -30,18 +30,18 @@ public class BLibDBC {
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234")) return;
-		Set<BookTitle> set = db.getTitlesByKeyword("");
+		Set<BookTitle> set = db.getTitlesByKeyword("stone");
 		int i =1;
 		for (BookTitle b : set) {
-			System.out.println(""+i+b);
-			i++;
+			Set<BookCopy> s = db.getCopiesByTitle(b);
+			for(BookCopy c: s) {
+				System.out.println(""+i+" "+c.getTitle().getTitleName());
+				i++;
+			}
 		}
 		db.disconnect();
 	}
 	
-	
-	
-
 	public static BLibDBC getInstance() {
 		if(!(instance instanceof BLibDBC)) {
 			instance = new BLibDBC();
@@ -51,8 +51,24 @@ public class BLibDBC {
 	//in order to make singleton work
 	private BLibDBC() {}
 	
-	
-	
+	public Set<BookCopy> getCopiesByTitle(BookTitle title){
+		try {
+			// Execute SQL query
+			pstmt = conn.prepareStatement("SELECT * FROM copies WHERE title_id = ?;");
+			if (pstmt.isClosed()) return null;
+			pstmt.setInt(1, title.getTitleID());
+			ResultSet rs = pstmt.executeQuery();
+			Set<BookCopy> bookSet = new HashSet<>();
+			while(rs.next()) {
+				BookCopy copy = new BookCopy(title, rs.getInt(2), rs.getString(3), rs.getBoolean(4));
+				bookSet.add(copy);
+			}
+			return bookSet;
+		} catch (SQLException e) {
+			// If an error occurs, return false
+			return null;
+		}
+	}
 	
 	public Set<BookTitle> getTitlesByKeyword(String keyword){
 		try {

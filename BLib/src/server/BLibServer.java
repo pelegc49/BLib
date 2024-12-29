@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import logic.BookCopy;
+import logic.BookTitle;
 import logic.Message;
 import logic.Subscriber;
 import ocsf.server.AbstractServer;
@@ -106,6 +109,7 @@ public class BLibServer extends AbstractServer {
 	 * @param msg    the message sent by the client
 	 * @param client the connection object for the client who sent the message
 	 */
+	@SuppressWarnings("unchecked") // the return type is guaranteed for each method
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("receive message:" + msg); // Log the received message
@@ -151,6 +155,22 @@ public class BLibServer extends AbstractServer {
 					} else {
 						client.sendToClient(new Message("subscriberFailedUpdated")); // Send failure message if update
 																						// fails
+					}
+					break;
+				case "getTitlesByKeyword":
+					ret = BLibDBC.getInstance().getTitlesByKeyword((String) args.get(0));
+					if (ret != null) { 
+						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send success message
+					} else {
+						client.sendToClient(new Message("searchFailed")); 
+					}
+					break;
+				case "getCopiesByTitleID":
+					ret = BLibDBC.getInstance().getCopiesByTitle((BookTitle) args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("searchResult",(Set<BookCopy>)ret)); // Send success message
+					} else {
+						client.sendToClient(new Message("searchFailed")); 
 					}
 					break;
 				}
