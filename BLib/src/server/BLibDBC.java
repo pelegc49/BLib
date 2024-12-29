@@ -30,15 +30,7 @@ public class BLibDBC {
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234")) return;
-		Set<BookTitle> set = db.getTitlesByKeyword("stone");
-		int i =1;
-		for (BookTitle b : set) {
-			Set<BookCopy> s = db.getCopiesByTitle(b);
-			for(BookCopy c: s) {
-				System.out.println(""+i+" "+c.getTitle().getTitleName());
-				i++;
-			}
-		}
+		db.registerSubscriber(new Subscriber(321, "Galmo Linda", "32165498", "Galmo@Linda.com"));
 		db.disconnect();
 	}
 	
@@ -146,7 +138,7 @@ public class BLibDBC {
 					+ newSubscriber.getId());
 		} catch (SQLException e) {
 			// If an error occurs, return false
-			return null;
+			return false;
 		}
 	}
 
@@ -161,8 +153,8 @@ public class BLibDBC {
 			return pstmt.execute();
 
 		} catch (SQLException e) {
-			// If an error occurs, return null
-			return null;
+			// If an error occurs, return false
+			return false;
 		}
 	}
 	/**

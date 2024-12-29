@@ -150,7 +150,7 @@ public class BLibServer extends AbstractServer {
 				case "updateSubscriber":
 					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0)); // Update subscriber details in the
 																				// database
-					if (ret != null) { // If update is successful
+					if ((Boolean)ret == true) { // If update is successful
 						client.sendToClient(new Message("subscriberUpdated")); // Send success message
 					} else {
 						client.sendToClient(new Message("subscriberFailedUpdated")); // Send failure message if update
@@ -175,10 +175,10 @@ public class BLibServer extends AbstractServer {
 					break;
 				case "registerSubscriber":
 					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0));
-					if (ret != null) {
-						client.sendToClient(new Message("searchResult",(Set<BookCopy>)ret)); // Send success message
+					if ((Boolean)ret == true) {
+						client.sendToClient(new Message("success")); // Send success message
 					} else {
-						client.sendToClient(new Message("searchFailed")); 
+						client.sendToClient(new Message("failed")); 
 					}
 					break;
 					
