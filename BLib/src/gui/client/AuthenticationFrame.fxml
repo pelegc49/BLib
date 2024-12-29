@@ -19,6 +19,6 @@
 				<Font name="System Bold" size="12.0" />
 			</font>
 		</Label>
-      <Button id="loginGuest" layoutX="16.0" layoutY="164.0" mnemonicParsing="false" text="Log in as guest" />
+      <Button id="loginGuest" layoutX="16.0" layoutY="164.0" mnemonicParsing="false" text="Log in as guest" onAction="#loginGuest" />
 	</children>
 </AnchorPane>
