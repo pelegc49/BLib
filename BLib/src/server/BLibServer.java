@@ -181,6 +181,13 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("failed")); 
 					}
 					break;
+				case "createBorrow":
+					ret = BLibDBC.getInstance().createBorrow((Integer) args.get(0),(Integer) args.get(1));
+					if ((Boolean)ret == true) {
+						client.sendToClient(new Message("success")); // Send success message
+					} else {
+						client.sendToClient(new Message("failed")); 
+					}
 					
 				
 //				case "getTitleByID":
