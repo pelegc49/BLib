@@ -23,52 +23,57 @@ public class LibrarianClientGUIController {
 	@FXML
 	private Button btnOrder = null; // Button for submitting the login form.
 	@FXML
-	private Button btnExtendTime = null; // Button for submitting the login form.
+	private Button btnExtendBook = null; // Button for submitting the login form.
 	@FXML
 	private Button btnUpdateDetails = null; // Button for submitting the login form.
 	@FXML
 	private Button btnViewHistory = null; // Button for submitting the login form.
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
+	@FXML
+	private Button signupSub = null;
+	@FXML
+	private Button btnBookActions = null;
+	@FXML
+	private Button btnSubReprt = null;
+	@FXML
+	private Button btnBorrowRep = null;
+	
 
 	public void backBtn(ActionEvent event) throws Exception {
 		nextPage(event, "AuthenticationFrame", "Authentication");
 	}
 	
-	public void orderBtn(ActionEvent event) throws Exception {
-		//nextPage(event, loader, "OrderBookFrame", "Order Book");
+	public void signUpBtn(ActionEvent event) throws Exception {
+		//nextPage(event, "SignUpFrame", "Sign Up Subscriber");
 	}
 	
 	public void extendTimeBtn(ActionEvent event) throws Exception {
-		//nextPage(event, loader, "ExtendTimeFrame", "Extend Time");
+		nextPage(event, "SubscriberFindFrame", "Extend Time");
 	}
 	
 	public void updateDetailsBtn(ActionEvent event) throws Exception {
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "UpdateDetailsFrame" +".fxml").openStream());
-		UpdateDetailsController updateDetailsController = loader.getController();
-		updateDetailsController.loadSubscriber(AuthenticationController.subscriber);
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "UpdateDetailsFrame" +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle("Update Details");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		nextPage(event, "SubscriberFindFrame", "Update Details");
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {
-		//nextPage(event, loader, "ViewHistoryFrame", "View History");
+		nextPage(event, "SubscriberFindFrame", "View History");
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SearchFrame", "Subscriber - Search");
+		nextPage(event, "SearchFrame", "Librarian - Search");
+	}
+	
+	public void bookActionsBtn(ActionEvent event) throws Exception {
+		//nextPage(event, "BookActionsFrame", "Book Actions");
+	}
+	
+	public void subReport(ActionEvent event) throws Exception {
+		//nextPage(event, "SubscriberReportFrame", "Subscribers Report");
+	}
+	
+	public void borrowReport(ActionEvent event) throws Exception {
+		//nextPage(event, "BorrowReportFrame", "Borrow Report");
 	}
 	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
