@@ -2,14 +2,18 @@ package gui.client;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import logic.Subscriber;
 
-public class ClientGUIController {
-
+public class UpdateDetailsController {
 	private Subscriber s; // Holds the Subscriber instance associated with this controller.
 
 	// Labels to display error messages and subscriber details.
@@ -36,7 +40,7 @@ public class ClientGUIController {
 
 	// Buttons for closing the application and saving subscriber details.
 	@FXML
-	private Button btnClose = null;
+	private Button btnBack = null;
 	@FXML
 	private Button btnSave = null;
 
@@ -53,16 +57,6 @@ public class ClientGUIController {
 		this.txtEmail.setText(s.getEmail()); // Sets the subscriber's email.
 	}
 
-	/**
-	 * Closes the application when the Close button is clicked.
-	 * 
-	 * @param event The ActionEvent triggered by clicking the Close button.
-	 * @throws Exception If an error occurs during the operation.
-	 */
-	public void getbtnClose(ActionEvent event) throws Exception {
-		System.out.println("Closing"); // Logs a message indicating the application is closing.
-		System.exit(0); // Exits the application.
-	}
 
 	/**
 	 * Validates and saves the updated subscriber details.
@@ -70,7 +64,7 @@ public class ClientGUIController {
 	 * @param event The ActionEvent triggered by clicking the Save button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void getbtnSave(ActionEvent event) throws Exception {
+	public void saveBtn(ActionEvent event) throws Exception {
 		int digit_id;
 		try {
 			digit_id = Integer.parseInt(txtId.getText()); // Validates that the ID contains only digits.
@@ -108,6 +102,16 @@ public class ClientGUIController {
 	}
 
 	/**
+	 * Closes the application when the Close button is clicked.
+	 * 
+	 * @param event The ActionEvent triggered by clicking the Close button.
+	 * @throws Exception If an error occurs during the operation.
+	 */
+	public void backBtn(ActionEvent event) throws Exception {
+		nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+	}
+	
+	/**
 	 * Displays a message with a specified color.
 	 * 
 	 * @param message The message to display.
@@ -116,6 +120,26 @@ public class ClientGUIController {
 	public void display(String message, Color color) {
 		lblError.setTextFill(color); // Sets the color of the error label.
 		lblError.setText(message); // Sets the text of the error label.
+	}
+	
+	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
+		// FXMLLoader for loading the main GUI.
+		FXMLLoader loader = new FXMLLoader(); 
+		
+		// Hide the current window.
+		((Node) event.getSource()).getScene().getWindow().hide();
+
+		// Load the main application interface.
+		Stage primaryStage = new Stage();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
+
+		// Set up and display the new scene.
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle(title);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 
 }
