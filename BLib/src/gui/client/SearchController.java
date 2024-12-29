@@ -1,6 +1,7 @@
 package gui.client;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -38,7 +39,7 @@ public class SearchController {
 	private TableColumn titleColumn;
 	
 	
-	public void searchBtn(ActionEvent event) throws Exception {
+	public void searchBtn(Event event) {
 		
 		IPController.client.searchBook(txtSearch.getText());
 		
