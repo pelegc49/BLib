@@ -108,7 +108,14 @@ public class UpdateDetailsController {
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	    String currentTitle = currentStage.getTitle();
+	    if(currentTitle.equals("Librarian Update Details")) {
+	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+	    }
+	    else{
+	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+	    }
 	}
 	
 	/**
