@@ -48,6 +48,23 @@ public class BLibDBC {
 		}
 		return instance;
 	}
+
+	
+	
+//	public BookTitle getTitleByID(int titleID) {
+//		try {
+//			pstmt = conn.prepareStatement("");
+//			ResultSet rs = pstmt.executeQuery();
+//			if (rs.next()) {
+//				return new 
+//			}
+//			return null;
+//		} catch (SQLException e) {
+//			return null;
+//		}
+//	
+//	}
+	
 	//in order to make singleton work
 	private BLibDBC() {}
 	
@@ -100,12 +117,12 @@ public class BLibDBC {
 	 * @return a Subscriber object if found, otherwise null
 	 */
 	public Subscriber getSubscriberByID(int subscriberid) {
-		try {;
+		try {
 			// Execute SQL query to fetch the subscriber by their ID
 			ResultSet rs = stmt.executeQuery("SELECT * FROM subscribers WHERE subscriber_id = " + subscriberid);
 			// If a result is found, create and return a Subscriber object
 			if (rs.next()) {
-				return new Subscriber(subscriberid, rs.getString(2), rs.getString(4), rs.getString(5), rs.getString(6));
+				return new Subscriber(subscriberid, rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
 			}
 			// If no result is found, return null
 			return null;
@@ -133,6 +150,21 @@ public class BLibDBC {
 		}
 	}
 
+	public Boolean registerSubscriber(Subscriber subscriber) {
+		try {
+			pstmt = conn.prepareStatement("INSERT INTO subscribers VALUE(?,?,?,?,?)");
+			pstmt.setInt(1, subscriber.getId());
+			pstmt.setString(2, subscriber.getName());
+			pstmt.setString(3, subscriber.getPhone());
+			pstmt.setString(4, subscriber.getEmail());
+			pstmt.setString(5, subscriber.getStatus());
+			return pstmt.execute();
+
+		} catch (SQLException e) {
+			// If an error occurs, return null
+			return null;
+		}
+	}
 	/**
 	 * Attempts to log in a user by matching the user ID and password.
 	 * 
@@ -210,4 +242,6 @@ public class BLibDBC {
 			return false;
 		}
 	}
+
+
 }

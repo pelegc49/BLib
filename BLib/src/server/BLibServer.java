@@ -173,6 +173,24 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("searchFailed")); 
 					}
 					break;
+				case "registerSubscriber":
+					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("searchResult",(Set<BookCopy>)ret)); // Send success message
+					} else {
+						client.sendToClient(new Message("searchFailed")); 
+					}
+					break;
+					
+				
+//				case "getTitleByID":
+//					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
+//					if (ret != null) { 
+//						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send success message
+//					} else {
+//						client.sendToClient(new Message("searchFailed")); 
+//					}
+//					break;
 				}
 			} catch (IOException e) {
 				e.printStackTrace(); // Log any exceptions that occur during message handling
