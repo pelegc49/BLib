@@ -41,7 +41,6 @@ public class SubscriberFindController {
 		FXMLLoader loader = new FXMLLoader(); // FXMLLoader for loading the main GUI.
 		int digit_id = 0; // Variable to hold the numeric value of the ID.
 		id = txtId.getText(); // Retrieve the text entered in the ID field.
-		String password = "test"; // Retrieve the text entered in the password field.
 
 		try {
 			// Attempt to parse the ID to an integer.
@@ -54,26 +53,22 @@ public class SubscriberFindController {
 		// Validate that the ID field is not empty.
 		if (id.trim().isEmpty()) {
 			display("You must enter an id number");
-		} 
-		// If both fields are valid, attempt to log in.
+		}
 		else {
-			switch(IPController.client.login(digit_id,password)) {
-				case "subscriber":
-					subscriber = IPController.client.getSubscriber(digit_id);
-					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
-					break;
-				case "librarian":
-					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
-					break;
-				case "fail":
-					display("ID or password are incorrect");
-					break;
-				// For debugging purposes. delete me later \/
-				default:
-					System.out.println("Developers! Something went wrong at login...");
+			Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		    String currentTitle = currentStage.getTitle();
+			subscriber = IPController.client.getSubscriber(digit_id);
+			if(currentTitle.equals("Extend Time")) {
+		    	//nextPage(event, "ExtendTimeFrame", "Librarian Extend Time");
+		    }
+		    else if(currentTitle.equals("Update Details")) {
+		    	nextPage(event, "UpdateDetailsFrame", "Librarian Main Menu");
+		    }
+		    else {
+		    	//nextPage(event, "ViewHistoryFrame", "Librarian View History");
+		    }
 			}
 		}
-	}
 
 	/**
 	 * Handles the "Exit" button action. Terminates the application.
