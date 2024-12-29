@@ -68,7 +68,7 @@ public class SubscriberClientGUIController {
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SearchFrame", "Search");
+		nextPage(event, "SearchFrame", "Subscriber - Search");
 	}
 	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
