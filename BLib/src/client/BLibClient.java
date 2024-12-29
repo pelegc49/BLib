@@ -1,7 +1,7 @@
 package client;
 
 import logic.Activity;
-import logic.Book;
+import logic.BookCopy;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -103,7 +103,7 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Borrow a book for a subscriber
-	public void borrowBook(Book book, Subscriber sub) {
+	public void borrowBook(BookCopy book, Subscriber sub) {
 		msg = new Message("borrowBook", book, sub); // Create borrow message
 		handleMessageFromClientUI(msg); // Send to server
 	}
@@ -115,13 +115,13 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Order a book for a subscriber
-	public void orderBook(Book book, Subscriber sub) {
+	public void orderBook(BookCopy book, Subscriber sub) {
 		msg = new Message("orderBook", book, sub); // Create order message
 		handleMessageFromClientUI(msg); // Send to server
 	}
 
 	// Return a borrowed book
-	public void returnBook(Book book) {
+	public void returnBook(BookCopy book) {
 		msg = new Message("returnBook", book); // Create return message
 		handleMessageFromClientUI(msg); // Send to server
 	}

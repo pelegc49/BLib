@@ -2,10 +2,14 @@ package server;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
+import logic.BookCopy;
 import logic.Subscriber;
 
 /**
@@ -14,17 +18,67 @@ import logic.Subscriber;
  * information, user login, and handling SQL connection/disconnection.
  */
 public class BLibDBC {
+	private static BLibDBC instance;
+	
 	private static Connection conn; // Connection object to interact with the database
 	private static Statement stmt; // Statement object for executing SQL queries
+	private static PreparedStatement pstmt; // Statement object for executing SQL queries
+	
+	
+	//TODO: main for testing ONLY!!! delete before production!!!
+	public static void main(String[] args) {
+		BLibDBC db = getInstance();
+		if (!db.connect("12341234")) return;
+		Set<BookCopy> set = db.getBooksByKeyword("the");
+		for (BookCopy b : set) {
+			System.out.println(b);
+		}
+		db.disconnect();
+	}
+	
+	
+	
 
+	public static BLibDBC getInstance() {
+		if(!(instance instanceof BLibDBC)) {
+			instance = new BLibDBC();
+		}
+		return instance;
+	}
+	//in order to make singleton work
+	private BLibDBC() {}
+	
+	public Set<BookCopy> getBooksByKeyword(String keyword){
+		try {
+			keyword ="%"+keyword+"%";
+			// Execute SQL query
+			pstmt = conn.prepareStatement("SELECT * FROM books WHERE book_name LIKE ? OR author_name LIKE ? OR book_description LIKE ?;");
+			if (pstmt.isClosed()) return null;
+			pstmt.setString(1, keyword);
+			pstmt.setString(2, keyword);
+			pstmt.setString(3, keyword);
+			ResultSet rs = pstmt.executeQuery();
+			Set<BookCopy> bookSet = new HashSet<>();
+			while(rs.next()) {
+				BookCopy book = new BookCopy(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getBoolean(5), rs.getString(6));
+				bookSet.add(book);
+			}
+			return bookSet;
+		} catch (SQLException e) {
+			// If an error occurs, return false
+			return null;
+		}
+	}
+	
+	
 	/**
 	 * Retrieves a subscriber's details from the database using their subscriber ID.
 	 * 
 	 * @param subscriberid the ID of the subscriber to be fetched from the database
 	 * @return a Subscriber object if found, otherwise null
 	 */
-	public static Subscriber getSubscriberByID(int subscriberid) {
-		try {
+	public Subscriber getSubscriberByID(int subscriberid) {
+		try {;
 			// Execute SQL query to fetch the subscriber by their ID
 			ResultSet rs = stmt.executeQuery("SELECT * FROM subscribers WHERE subscriber_id = " + subscriberid);
 			// If a result is found, create and return a Subscriber object
@@ -45,7 +99,7 @@ public class BLibDBC {
 	 * @param newSubscriber the Subscriber object containing updated information
 	 * @return true if the update was successful, false if it failed
 	 */
-	public static Boolean updateSubscriber(Subscriber newSubscriber) {
+	public Boolean updateSubscriber(Subscriber newSubscriber) {
 		try {
 			// Execute SQL update to modify subscriber details
 			return stmt.execute("UPDATE subscribers SET subscriber_email = '" + newSubscriber.getEmail()
@@ -64,7 +118,7 @@ public class BLibDBC {
 	 * @param password the password of the user
 	 * @return the user's role if the login is successful, otherwise null
 	 */
-	public static String login(int userid, String password) {
+	public String login(int userid, String password) {
 		try {
 			// Execute SQL query to check if the user ID and password match
 			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE user_id = " + userid);
@@ -87,7 +141,7 @@ public class BLibDBC {
 	 * @param password the password for the database connection
 	 * @return true if the connection is successful, false if it fails
 	 */
-	public static boolean connect(String password) {
+	public boolean connect(String password) {
 		try {
 			// Try loading the MySQL JDBC driver
 			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
@@ -99,7 +153,7 @@ public class BLibDBC {
 		}
 		try {
 			// Try connecting to the database
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?serverTimezone=IST", "root", password);
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=IST", "root", password);
 			stmt = conn.createStatement(); // Create a Statement object for executing queries
 			System.out.println("SQL connection succeed");
 			return true; // Return true if connection is successful
@@ -115,14 +169,22 @@ public class BLibDBC {
 	 * 
 	 * @return true if the disconnection is successful, false if it fails
 	 */
-	public static boolean disconnect() {
+	public boolean disconnect() {
 		try {
+			if(conn == null) {
+				System.out.println("SQL disconnection failed (connection is null)");
+				return false;
+			}
+			if(conn.isClosed()) {
+				System.out.println("SQL disconnection failed (connection is closed)");
+				return false;
+			}
 			// Try closing the connection
 			conn.close();
 			return true; // Return true if disconnection is successful
 		} catch (SQLException e) {
 			// If disconnection fails, print error message and return false
-			System.out.println("SQL disconnection failed");
+			System.out.println("SQL disconnection failed (exception thrown)");
 			return false;
 		}
 	}

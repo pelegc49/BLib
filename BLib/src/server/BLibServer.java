@@ -50,9 +50,15 @@ public class BLibServer extends AbstractServer {
 			return instance; // Return existing instance if it exists
 		}
 		// Create and return a new instance if one does not exist
-		return new BLibServer(port);
+		instance = new BLibServer(port);
+		return instance;
 	}
-
+	
+	public static boolean connect(String password) {
+		return BLibDBC.getInstance().connect(password);
+	}
+	
+	
 	/**
 	 * Called when a new client connects to the server. Adds the client's connection
 	 * details (IP and host name) to the `connectedClients` map.
@@ -113,7 +119,7 @@ public class BLibServer extends AbstractServer {
 
 				// Handle login request
 				case "login":
-					ret = BLibDBC.login((Integer) args.get(0), (String) args.get(1)); // Perform login check in database
+					ret = BLibDBC.getInstance().login((Integer) args.get(0), (String) args.get(1)); // Perform login check in database
 					System.out.println(ret); // Log the result
 					if (ret != null) { // If login is successful
 						client.sendToClient(new Message("loginSuccess", (String) ret)); // Send success message with
@@ -125,7 +131,7 @@ public class BLibServer extends AbstractServer {
 
 				// Handle getSubscriber request
 				case "getSubscriber":
-					ret = BLibDBC.getSubscriberByID((Integer) args.get(0)); // Fetch subscriber details from the
+					ret = BLibDBC.getInstance().getSubscriberByID((Integer) args.get(0)); // Fetch subscriber details from the
 																			// database
 					if (ret != null) { // If subscriber found
 						client.sendToClient(new Message("subscriberFound", (Subscriber) ret)); // Send subscriber
@@ -138,7 +144,7 @@ public class BLibServer extends AbstractServer {
 
 				// Handle updateSubscriber request
 				case "updateSubscriber":
-					ret = BLibDBC.updateSubscriber((Subscriber) args.get(0)); // Update subscriber details in the
+					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0)); // Update subscriber details in the
 																				// database
 					if (ret != null) { // If update is successful
 						client.sendToClient(new Message("subscriberUpdated")); // Send success message
@@ -153,6 +159,6 @@ public class BLibServer extends AbstractServer {
 			}
 
 		}
-
+		
 	}
 }

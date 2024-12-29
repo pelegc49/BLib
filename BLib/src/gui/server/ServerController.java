@@ -15,6 +15,7 @@ import javafx.scene.control.TextArea;
 
 import javafx.stage.Stage;
 import ocsf.server.ConnectionToClient;
+import server.BLibDBC;
 import server.ServerGUI;
 
 public class ServerController implements Initializable {
@@ -85,6 +86,9 @@ public class ServerController implements Initializable {
 
 	// Method to handle the Exit button action
 	public void exit(ActionEvent e) throws Exception {
+		if(BLibDBC.getInstance() != null) {
+			BLibDBC.getInstance().disconnect();
+		}
 		System.out.println("exiting..."); // Print message for debugging
 		System.exit(0); // Exit the application
 	}

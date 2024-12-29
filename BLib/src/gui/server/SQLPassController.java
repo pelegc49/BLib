@@ -60,6 +60,9 @@ public class SQLPassController {
 
 	// Method to handle the "Close" button click (exits the application)
 	public void actionOnClose(ActionEvent e) {
+		if(BLibDBC.getInstance() != null) {
+			BLibDBC.getInstance().disconnect();
+		}
 		System.out.println("exiting..."); // Log message to indicate exit
 		System.exit(0); // Exit the application
 	}
@@ -87,7 +90,7 @@ public class SQLPassController {
 		}
 
 		// Try to establish a connection to the database using the entered password
-		if (!BLibDBC.connect(password)) {
+		if (!BLibServer.connect(password)) {
 			// If the connection fails, display an error message
 			display("Can't establish connection with DB");
 			return; // Exit the method
@@ -138,7 +141,7 @@ public class SQLPassController {
 
 			// Set the scene for the new window and show it
 			primaryStage.setScene(scene);
-			((Node) e.getSource()).getScene().getWindow().hide(); // Hide the current window (password prompt)
+			((Node) e.getSource()).getScene().getWindow().hide(); // Hide the current window
 			primaryStage.show(); // Show the server interface window
 
 		} catch (Exception ex) {
