@@ -22,7 +22,7 @@ public class BookCopy implements Serializable {
 	
 	
 	// Constructor to initialize a new Book object with all the necessary details
-	public BookCopy(int id, int shelf, String bookName, String authorName, boolean isBorrowed,String bookDescription) {
+	public BookCopy(int id, int shelf, boolean isBorrowed) {
 		this.id = id; // Set the book ID
 		this.shelf = shelf; // Set the shelf number
 		this.isBorrowed = isBorrowed; // Set whether the book is borrowed

@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import logic.BookCopy;
+import logic.BookTitle;
 import logic.Subscriber;
 
 /**
@@ -29,9 +30,11 @@ public class BLibDBC {
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234")) return;
-		Set<BookCopy> set = db.getBooksByKeyword("the");
-		for (BookCopy b : set) {
-			System.out.println(b);
+		Set<BookTitle> set = db.getTitlesByKeyword("");
+		int i =1;
+		for (BookTitle b : set) {
+			System.out.println(""+i+b);
+			i++;
 		}
 		db.disconnect();
 	}
@@ -48,20 +51,23 @@ public class BLibDBC {
 	//in order to make singleton work
 	private BLibDBC() {}
 	
-	public Set<BookCopy> getBooksByKeyword(String keyword){
+	
+	
+	
+	public Set<BookTitle> getTitlesByKeyword(String keyword){
 		try {
 			keyword ="%"+keyword+"%";
 			// Execute SQL query
-			pstmt = conn.prepareStatement("SELECT * FROM books WHERE book_name LIKE ? OR author_name LIKE ? OR book_description LIKE ?;");
+			pstmt = conn.prepareStatement("SELECT * FROM titles WHERE title_name LIKE ? OR author_name LIKE ? OR title_description LIKE ?;");
 			if (pstmt.isClosed()) return null;
 			pstmt.setString(1, keyword);
 			pstmt.setString(2, keyword);
 			pstmt.setString(3, keyword);
 			ResultSet rs = pstmt.executeQuery();
-			Set<BookCopy> bookSet = new HashSet<>();
+			Set<BookTitle> bookSet = new HashSet<>();
 			while(rs.next()) {
-				BookCopy book = new BookCopy(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getBoolean(5), rs.getString(6));
-				bookSet.add(book);
+				BookTitle title = new BookTitle(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6));
+				bookSet.add(title);
 			}
 			return bookSet;
 		} catch (SQLException e) {
