@@ -2,6 +2,7 @@ package gui.client;
 
 import client.BLibClient;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -10,7 +11,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class IPController {
@@ -24,7 +28,7 @@ public class IPController {
 	@FXML
 	private TextField txtIp; // Text field to input the server IP address.
 	@FXML
-	private TextField txtPassword; // Text field for password (not used in this code).
+	private TextField txtPort; // Text field for port.
 	@FXML
 	private Button btnExit = null; // Button to exit the application.
 	@FXML
@@ -44,15 +48,28 @@ public class IPController {
 	 * @param event The ActionEvent triggered by clicking the Send button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void Send(ActionEvent event) throws Exception {
+	public void sendBtn(Event event) {
 		String ip; // Holds the entered IP address.
+		String port; // Holds the entered Port.
+		int digit_port;
 		FXMLLoader loader = new FXMLLoader(); // Used to load the next scene.
 		ip = txtIp.getText(); // Retrieves the entered IP address.
+		port = txtPort.getText(); // Retrieves the entered Port.
 
 		// Validates the IP address input.
 		if (ip.trim().isEmpty()) {
 			display("You must enter an IP Address"); // Displays an error message if the input is empty.
-		} else {
+		}
+		else if (port.trim().isEmpty()) {
+			display("You must enter Port"); // Displays an error message if the input is empty.
+		}
+		else {
+			try {
+				digit_port = Integer.parseInt(txtPort.getText()); // Validates that the ID contains only digits.
+			} catch (Exception e) {
+				display("Port must have only digits"); // Displays an error message for invalid ID.
+				return;
+			}
 			try {
 				// Attempts to create a client instance and connect to the server.
 				client = new BLibClient(ip, 5555);
@@ -103,9 +120,16 @@ public class IPController {
 	 * @param event The ActionEvent triggered by clicking the Exit button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void getExitBtn(ActionEvent event) throws Exception {
+	public void exitBtn(ActionEvent event) throws Exception {
 		System.out.println("Exit Successfully"); // Logs the exit event.
 		System.exit(0); // Exits the application.
+	}
+	
+	// Enables the enter key to activate the OK button
+	public void handleKey(KeyEvent event) {
+		if(event.getCode().equals(KeyCode.ENTER)) {
+			sendBtn(event);
+		}
 	}
 
 	/**
