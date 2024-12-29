@@ -125,6 +125,6 @@ public class AuthenticationController {
 	}
 	
 	public void loginGuest(ActionEvent event) throws Exception {
-		nextPage(event, "SearchFrame", "Guest Search");
-		}
+		nextPage(event, "SearchFrame", "Guest - Search");
+	}
 }

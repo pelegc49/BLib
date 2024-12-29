@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.util.Set;
+
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -14,7 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage; 
+import javafx.stage.Stage;
+import logic.BookTitle; 
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -40,9 +43,11 @@ public class SearchController {
 	
 	
 	public void searchBtn(Event event) {
-		
-		IPController.client.searchBook(txtSearch.getText());
-		
+		String keyWord = txtSearch.getText().trim();
+		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyWord);
+		if(bookTitle == null) {
+			display("No result found");
+		}
 		
 		
 		
@@ -96,7 +101,17 @@ public class SearchController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	    String currentTitle = currentStage.getTitle();
+	    if(currentTitle.equals("Subscriber - Search")) {
+	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+	    }
+	    else if(currentTitle.equals("Librarian - Search")) {
+	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+	    }
+	    else {
+	    	nextPage(event, "AuthenticationFrame", "Authentication");
+	    }
 	}
 
 	/**
