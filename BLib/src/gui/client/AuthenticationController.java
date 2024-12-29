@@ -30,6 +30,8 @@ public class AuthenticationController {
 	private Button btnExit = null; // Button for exiting the application.
 	@FXML
 	private Button btnSend = null; // Button for submitting the login form.
+	@FXML
+	private Button loginGuest = null; // Button for searching a book as a guest.
 
 	/**
 	 * Handles the login process when the user clicks the "Send" button.
@@ -121,4 +123,8 @@ public class AuthenticationController {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+	
+	public void loginGuest(ActionEvent event) throws Exception {
+		nextPage(event, "SearchFrame", "Search");
+		}
 }
