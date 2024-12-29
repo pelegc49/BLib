@@ -18,7 +18,6 @@ import logic.Subscriber;
  * and transitions the user to the main application interface upon successful login.
  */
 public class AuthenticationController {
-	private ClientGUIController sfc; // Reference to the main GUI controller.
 	public static Subscriber subscriber; // Static reference to the currently authenticated subscriber.
 
 	@FXML
@@ -67,6 +66,7 @@ public class AuthenticationController {
 		else {
 			switch(IPController.client.login(digit_id, password)) {
 				case "subscriber":
+					subscriber = IPController.client.getSubscriber(digit_id);
 					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
 					break;
 				case "librarian":
@@ -79,34 +79,6 @@ public class AuthenticationController {
 				default:
 					System.out.println("Developers! Something went wrong at login...");
 			}
-//	----------------- This is the old version without verifying Subscriber of Librarian -----------------
-//			if (IPController.client.login(digit_id, password).equals("fail")) {
-//				// Display an error if login fails.
-//				display("ID or password are incorrect");
-//			} else {
-//				// Login is successful.
-//				System.out.println("Subscriber Found Successfully");
-//				
-//				// Hide the current window.
-//				((Node) event.getSource()).getScene().getWindow().hide();
-//
-//				// Load the main application interface.
-//				Stage primaryStage = new Stage();
-//				Pane root = loader.load(getClass().getResource("/gui/client/ClientGUI.fxml").openStream());
-//				ClientGUIController clientGUIController = loader.getController();
-//
-//				// Load the authenticated subscriber's data.
-//				clientGUIController.loadSubscriber(IPController.client.getSubscriber(digit_id));
-//
-//				// Set up and display the new scene.
-//				Scene scene = new Scene(root);
-//				scene.getStylesheets().add(getClass().getResource("/gui/client/ClientGUI.css").toExternalForm());
-//				primaryStage.setOnCloseRequest((E) -> System.exit(0));
-//				primaryStage.setTitle("Subscriber Management Tool");
-//				primaryStage.setScene(scene);
-//				primaryStage.show();
-//			}
-//	-------------------------------------------------------------------------------------------------------
 		}
 	}
 
@@ -119,15 +91,6 @@ public class AuthenticationController {
 	public void getExitBtn(ActionEvent event) throws Exception {
 		System.out.println("Exit Successfully");
 		System.exit(0);
-	}
-
-	/**
-	 * Loads the subscriber's data into the main GUI controller.
-	 * 
-	 * @param s1 The authenticated subscriber.
-	 */
-	public void loadSubscriber(Subscriber s1) {
-		this.sfc.loadSubscriber(s1);
 	}
 
 	/**
