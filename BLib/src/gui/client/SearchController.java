@@ -2,6 +2,8 @@ package gui.client;
 
 import java.util.Set;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -35,21 +38,29 @@ public class SearchController {
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private TableView bookTable;
+	private TableView<BookTitle> bookTable;
 	@FXML
-	private TableColumn authorColumn;
+	private TableColumn<BookTitle, String> authorColumn;
 	@FXML
-	private TableColumn titleColumn;
+	private TableColumn<BookTitle, String> titleColumn;
 	
 	
 	public void searchBtn(Event event) {
+		ObservableList<BookTitle> data;
 		String keyWord = txtSearch.getText().trim();
 		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyWord);
 		if(bookTitle == null) {
 			display("No result found");
 		}
-		
-		
+		else {
+			data = FXCollections.observableArrayList();
+			for(BookTitle bt : bookTitle) {
+				data.add(bt);
+			}
+			authorColumn.setCellValueFactory(new PropertyValueFactory<>("Author"));
+			titleColumn.setCellValueFactory(new PropertyValueFactory<>("Title"));
+			bookTable.setItems(data);
+		}
 		
 		
 //		String id; // String to store the entered ID.
