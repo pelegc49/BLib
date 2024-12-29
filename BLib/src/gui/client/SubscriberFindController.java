@@ -62,7 +62,7 @@ public class SubscriberFindController {
 		    	//nextPage(event, "ExtendTimeFrame", "Librarian Extend Time");
 		    }
 		    else if(currentTitle.equals("Update Details")) {
-		    	nextPage(event, "UpdateDetailsFrame", "Librarian Main Menu");
+		    	nextPage(event, "UpdateDetailsFrame", "Librarian Update Details");
 		    }
 		    else {
 		    	//nextPage(event, "ViewHistoryFrame", "Librarian View History");
