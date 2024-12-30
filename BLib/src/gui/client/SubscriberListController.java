@@ -61,7 +61,7 @@ public class SubscriberListController implements Initializable{
 	public void searchBtn(Event event) {
 		ObservableList<Subscriber> data;
 		Integer subID = Integer.valueOf(txtSearch.getText());
-		Set<Subscriber> bookTitle = IPController.client.getSubscriber(subID);
+		Subscriber searched = IPController.client.getSubscriber(subID);
 		System.out.println("subID = "+subID);
 		System.out.println(subID);
 		if(subID == null) {
@@ -69,21 +69,20 @@ public class SubscriberListController implements Initializable{
 		}
 		else {
 			data = FXCollections.observableArrayList();
-			for(BookTitle bt : bookTitle) {
-				data.add(bt);
+			data.add(searched);
 			}
-			authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
-			titleColumn.setCellValueFactory(new PropertyValueFactory<>("titleName"));
-			bookTable.setItems(data);
-			bookTable.getSortOrder().add(authorColumn);
+			nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+			phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+			emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+			statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 		}
 		
 		// allows to click on row
-		bookTable.setRowFactory(tv -> {
-		    TableRow<BookTitle> rowa = new TableRow<>();
+		subTable.setRowFactory(tv -> {
+		    TableRow<Subscriber> rowa = new TableRow<>();
 		    rowa.setOnMouseClicked(eventa -> {
 		        if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
-		        	BookTitle rowData = rowa.getItem();
+		        	Subscriber rowData = rowa.getItem();
 		            System.out.println(rowData);
 		        }
 		    });
