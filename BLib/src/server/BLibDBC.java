@@ -32,13 +32,8 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234"))
 			return;
-		BookCopy c = db.getCopyByID(3);
-		Borrow b = db.getCopyActiveBorrow(c);
-		System.out.println(c);
-		System.out.println(b.getSubscriber());
-		System.out.println(db.extendDuration(b,3));
-		
-
+		LocalDate today = LocalDate.now();
+		System.out.println(db.getTitleNumOfAllowedExtend(db.getTitleByID(1)));
 		db.disconnect();
 	}
 
@@ -405,10 +400,10 @@ public class BLibDBC {
 		
 	}
 	
-	public Boolean extendDuration(Borrow borrow, int days) {
+	public Boolean extendDuration(Borrow borrow, int days, String userType) {
 		try {
 			LocalDate newDueDate =borrow.getDueDate().plusDays(days);
-			pstmt = conn.prepareStatement("UPDATE borroows SET due_date = ? WHERE "
+			pstmt = conn.prepareStatement("UPDATE borrows SET due_date = ? WHERE "
 					+ "subscriber_id = ? AND copy_id = ? AND date_of_borrow = ?");
 			pstmt.setDate(1, Date.valueOf(newDueDate));
 			pstmt.setInt(2, borrow.getSubscriber().getId());
@@ -421,9 +416,15 @@ public class BLibDBC {
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, borrow.getSubscriber().getId());
-			pstmt.setString(2, "extension");
-			pstmt.setString(3,
-					"\"%s\" extended borrow by %s on %s, the new due date is %s".formatted(borrow.getBook().getTitle(), borrow.getSubscriber().getName(), today,newDueDate));
+			if(userType.equals("subscriber")) {
+				pstmt.setString(2, "extension");
+				pstmt.setString(3,
+						"\"%s\" extended borrow by %s on %s, the new due date is %s".formatted(borrow.getBook().getTitle(), borrow.getSubscriber().getName(), today,newDueDate));
+			} else {
+				pstmt.setString(2, "manual extension");
+				pstmt.setString(3,
+						"\"%s\" manually extended borrow of %s by %s on %s, the new due date is %s".formatted(borrow.getBook().getTitle(), borrow.getSubscriber().getName(), userType, today,newDueDate));
+			}
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
 			// Commit the transaction
@@ -435,12 +436,45 @@ public class BLibDBC {
 		}
 	}
 	
+	public Integer getTitleNumOfAllowedExtend(BookTitle title) {
+		// num of copies - num of borrows - num of orders + 1
+		int sum = 0;
+		ResultSet rs;
+		try {
+			pstmt = conn.prepareStatement("SELECT num_of_copies FROM titles WHERE title_id = ?;");
+			pstmt.setInt(1, title.getTitleID());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				sum += rs.getInt(1); // + num of copies
+			}else {
+				return null;
+			}
+			
+			pstmt = conn.prepareStatement("SELECT sum(is_borrowed) FROM copies WHERE title_id = ? GROUP BY title_id;");
+			pstmt.setInt(1, title.getTitleID());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				sum -= rs.getInt(1); // - num of borrows
+			}else {
+				return null;
+			}
+			
+			pstmt = conn.prepareStatement("SELECT num_of_orders FROM titles WHERE title_id = ?;");
+			pstmt.setInt(1, title.getTitleID());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				sum -= rs.getInt(1); // - num of orders
+			}else {
+				return null;
+			}
+			return sum+1;
+		}catch (SQLException e) {
+			return null;
+		}
+		 
+	}
 	
-	
-	
-	
-	
-	
+
 	
 	
 	

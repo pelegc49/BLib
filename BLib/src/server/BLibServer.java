@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,6 +211,15 @@ public class BLibServer extends AbstractServer {
 					}
 					break;
 					
+				// TODO: complete
+				case "extend":
+					ret = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("borrowFound",(Borrow)ret)); // Send success message
+					} else {
+						client.sendToClient(new Message("borrowNotFound")); // Send failure message if borrow creation fails
+					}
+					break;
 //				case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
@@ -226,4 +236,21 @@ public class BLibServer extends AbstractServer {
 		}
 		
 	}
+	
+	private boolean canExtend(Borrow borrow) {
+		if(borrow.getSubscriber().getStatus().equals("frozen")) {
+			return false;
+		}
+		if(borrow.getDateOfBorrow().plusWeeks(1).compareTo(LocalDate.now())>=0) {
+			return false;
+		}
+		if(BLibDBC.getInstance().getTitleNumOfAllowedExtend(borrow.getBook().getTitle())<=0) {
+			return false;
+		}
+		// TODO: add message logic
+		return true;
+	}
+	
+	
+	
 }

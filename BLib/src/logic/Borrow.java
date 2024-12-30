@@ -13,9 +13,10 @@ public class Borrow implements Serializable {
 	private LocalDate dateOfReturn; // The actual date when the book was returned
 
 
-	// Constructor to initialize the borrowing details (date of borrow, due date,
-	// and return date)
+	// Constructor to initialize the borrowing details
 	public Borrow(Subscriber subscriber,BookCopy book,LocalDate dateOfBorrow, LocalDate dueDate, LocalDate dateOfReturn) {
+		this.subscriber = subscriber;
+		this.book = book;
 		this.dateOfBorrow = dateOfBorrow; // Set the date of borrow
 		this.dueDate = dueDate; // Set the due date
 		this.dateOfReturn = dateOfReturn; // Set the return date
