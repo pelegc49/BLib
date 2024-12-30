@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="281.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
+	<children>
+		<Button id="btnExit" fx:id="btnExit" layoutX="218.0" layoutY="229.0" mnemonicParsing="false" onAction="#getExitBtn" text="Back" />
+		<Button id="btnBorrow" fx:id="btnBorrow" layoutX="53.0" layoutY="163.0" mnemonicParsing="false" onAction="#Borrow" text="Borrow" />
+		<Label layoutX="16.0" layoutY="87.0" text="Subscriber ID:" />
+		<TextField id="txtId" fx:id="txtId" layoutX="109.0" layoutY="83.0" />
+      <Label id="bookIdLbl" layoutX="16.0" layoutY="44.0" text="Book ID:" />
+      <TextField id="bookIDTXT" fx:id="bookIDTXT" layoutX="110.0" layoutY="40.0" />
+      <Button id="btnReturn" fx:id="btnReturn" layoutX="172.0" layoutY="163.0" mnemonicParsing="false" onAction="#Return" text="Return" />
+	</children>
+</AnchorPane>

@@ -65,7 +65,7 @@ public class LibrarianClientGUIController {
 	}
 	
 	public void bookActionsBtn(ActionEvent event) throws Exception {
-		//nextPage(event, "BookActionsFrame", "Book Actions");
+		nextPage(event, "BookActionsFrame", "Book Actions");
 	}
 	
 	public void subReport(ActionEvent event) throws Exception {
