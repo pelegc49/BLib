@@ -108,7 +108,17 @@ public class BLibClient extends AbstractClient {
 		return null;
 		
 	}
-
+	
+	public Set<BookCopy> getCopiesByTitle(BookTitle bt) {
+		msg = new Message("getCopiesByTitle", bt); // Create search message
+		handleMessageFromClientUI(msg); // Send to server
+		if(msg.getCommand().equals("searchResult")){
+			return (Set<BookCopy>) msg.getArguments().get(0);
+		}
+		return null;
+		
+	}
+	
 	// Borrow a book for a subscriber
 	public void borrowBook(BookCopy book, Subscriber sub) {
 		msg = new Message("borrowBook", book, sub); // Create borrow message

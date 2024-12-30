@@ -49,7 +49,7 @@ public class BookCopy implements Serializable {
 	
 	
 	// Getter method to check if the book is borrowed
-	public boolean isBorrowed() {
+	public Boolean getIsBorrowed() {
 		return isBorrowed; // Return whether the book is borrowed
 	}
 	

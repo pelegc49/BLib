@@ -36,7 +36,7 @@
                 <TableColumn id="columnBookId" fx:id="columnBookId" prefWidth="105.0" text="book id" />
                 <TableColumn id="columnStatus" fx:id="columnStatus" prefWidth="123.0" text="status" />
                 <TableColumn id="columnShelf" fx:id="columnShelf" prefWidth="103.0" text="shelf" />
-                <TableColumn id="columnDateOfReturn" fx:id="columnDateOfReturn" prefWidth="133.0" text="date of return" />
+                <TableColumn id="columnDueDate" fx:id="columnDueDate" prefWidth="133.0" text="date of return" />
               </columns>
             </TableView>
          </children>

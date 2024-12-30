@@ -1,5 +1,11 @@
 package gui.client;
 
+import java.time.LocalDate;
+import java.util.Set;
+
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,8 +13,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -41,11 +49,11 @@ public class BookTitleController {
 	@FXML
 	private TableColumn<BookCopy, Integer> columnBookId; // Button to exit the application.
 	@FXML
-	private TableColumn<BookCopy, Boolean> columnStatus; // Button to exit the application.
+	private TableColumn<BookCopy, String> columnStatus; // Button to exit the application.
 	@FXML
 	private TableColumn<BookCopy, String>  columnShelf; // Button to exit the application.
 	@FXML
-	private TableColumn columnDateOfReturn; // Button to exit the application.
+	private TableColumn<BookCopy, LocalDate> columnDueDate; // Button to exit the application.
 	
 
 	/**
@@ -73,12 +81,25 @@ public class BookTitleController {
 	public void orderBtn(ActionEvent event) throws Exception {
 	}
 	
-	public void loadBookTitle(BookTitle tb1) {
-		this.tb = tb1; // Assigns the subscriber to the controller.
+	public void loadBookTitle(BookTitle bt1) {
+		ObservableList<BookCopy> data;
+		Set<BookCopy> bookCopy = IPController.client.getCopiesByTitle(bt1);
+		data = FXCollections.observableArrayList();
+		for(BookCopy bc : bookCopy) {
+			data.add(bc);
+		}
+		columnBookId.setCellValueFactory(new PropertyValueFactory<>("copyID"));
+		columnStatus.setCellValueFactory(new PropertyValueFactory<>("isBorrowed"));
+		// TODO: change so it will print "available"
+		columnShelf.setCellValueFactory(new PropertyValueFactory<>("shelf"));
+		//columnDueDate.setCellValueFactory(new PropertyValueFactory<>("titleName"));
+		bookTable.setItems(data);
+		bookTable.getSortOrder().add(columnBookId);
+		
+		this.tb = bt1; // Assigns the subscriber to the controller.
 		this.txtTitle.setText(String.valueOf(tb.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(tb.getAuthorName()); // Sets the subscriber's name.
 		this.txtDescription.setText(tb.getDescription()); // Sets the subscriber's phone.
-		
 	}
 	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
