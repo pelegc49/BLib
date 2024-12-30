@@ -89,8 +89,7 @@ public class BookTitleController {
 			data.add(bc);
 		}
 		columnBookId.setCellValueFactory(new PropertyValueFactory<>("copyID"));
-		columnStatus.setCellValueFactory(new PropertyValueFactory<>("isBorrowed"));
-		// TODO: change so it will print "available"
+		columnStatus.setCellValueFactory(new PropertyValueFactory<>("available"));
 		columnShelf.setCellValueFactory(new PropertyValueFactory<>("shelf"));
 		//columnDueDate.setCellValueFactory(new PropertyValueFactory<>("titleName"));
 		bookTable.setItems(data);

@@ -49,7 +49,7 @@ public class BookCopy implements Serializable {
 	
 	
 	// Getter method to check if the book is borrowed
-	public Boolean getIsBorrowed() {
+	public Boolean isBorrowed() {
 		return isBorrowed; // Return whether the book is borrowed
 	}
 	
@@ -57,6 +57,11 @@ public class BookCopy implements Serializable {
 	public void setBorrowed(boolean isBorrowed) {
 		this.isBorrowed = isBorrowed; // Set the borrowed status of the book
 	}
+	
+	public String isAvailable() {
+		return isBorrowed ? "Not available" : "Available";
+	}
+	
 //	// Getter method for the book name
 //	public String getBookName() {
 //		return bookName; // Return the book name

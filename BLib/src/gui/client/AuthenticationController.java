@@ -71,15 +71,13 @@ public class AuthenticationController {
 					subscriber = IPController.client.getSubscriber(digit_id);
 					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
 					break;
-				case "librarian":
-					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
-					break;
 				case "fail":
 					display("ID or password are incorrect");
 					break;
-				// For debugging purposes. delete me later \/
+				// case for the librarian with her name
 				default:
-					System.out.println("Developers! Something went wrong at login...");
+					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+					break;
 			}
 		}
 	}
