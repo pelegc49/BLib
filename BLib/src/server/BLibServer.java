@@ -16,8 +16,7 @@ import ocsf.server.ConnectionToClient;
 /**
  * This class represents the server of the BLib application. It extends the
  * AbstractServer from the ocsf library and manages client connections and
- * messages from clients. It handles operations like login, retrieving and
- * updating subscriber information.
+ * messages from clients. 
  */
 public class BLibServer extends AbstractServer {
 
@@ -57,8 +56,14 @@ public class BLibServer extends AbstractServer {
 		return instance;
 	}
 	
+	/**
+	 * Connects to the database using the provided password.
+	 * 
+	 * @param password the password for the database connection
+	 * @return true if the connection is successful, false if it fails
+	 */
 	public static boolean connect(String password) {
-		return BLibDBC.getInstance().connect(password);
+		return BLibDBC.getInstance().connect(password); // Call the connect method from the BLibDBC class
 	}
 	
 	
@@ -103,8 +108,6 @@ public class BLibServer extends AbstractServer {
 
 	/**
 	 * Handles messages sent by clients. It processes different types of messages
-	 * (such as login, retrieving subscriber details, and updating subscriber
-	 * information).
 	 * 
 	 * @param msg    the message sent by the client
 	 * @param client the connection object for the client who sent the message
@@ -157,36 +160,43 @@ public class BLibServer extends AbstractServer {
 																						// fails
 					}
 					break;
+				// Handle search for book titles by keyword
 				case "getTitlesByKeyword":
 					ret = BLibDBC.getInstance().getTitlesByKeyword((String) args.get(0));
-					if (ret != null) { 
-						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send success message
+					if (ret != null) { // If search is successful
+						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send search results
 					} else {
-						client.sendToClient(new Message("searchFailed")); 
+						client.sendToClient(new Message("searchFailed"));  // Send failure message if no titles found
 					}
 					break;
+					
+				// Handle search for book copies by title
 				case "getCopiesByTitle":
 					ret = BLibDBC.getInstance().getCopiesByTitle((BookTitle) args.get(0));
-					if (ret != null) {
-						client.sendToClient(new Message("searchResult",(Set<BookCopy>)ret)); // Send success message
+					if (ret != null) { // If search is successful
+						client.sendToClient(new Message("searchResult",(Set<BookCopy>)ret)); // Send search results
 					} else {
-						client.sendToClient(new Message("searchFailed")); 
+						client.sendToClient(new Message("searchFailed")); // Send failure message if no copies found
 					}
 					break;
+					
+				// Handle registerSubscriber request
 				case "registerSubscriber":
 					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0));
 					if ((Boolean)ret == true) {
-						client.sendToClient(new Message("success")); // Send success message
+						client.sendToClient(new Message("success")); // Send success message if registration is successful
 					} else {
-						client.sendToClient(new Message("failed")); 
+						client.sendToClient(new Message("failed")); // Send failure message if registration fails
 					}
 					break;
+					
+				// Handle creating a new borrow request	
 				case "createBorrow":
 					ret = BLibDBC.getInstance().createBorrow((Integer) args.get(0),(Integer) args.get(1));
 					if ((Boolean)ret == true) {
 						client.sendToClient(new Message("success")); // Send success message
 					} else {
-						client.sendToClient(new Message("failed")); 
+						client.sendToClient(new Message("failed")); // Send failure message if borrow creation fails
 					}
 					
 				
