@@ -6,13 +6,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 import logic.BookCopy;
 import logic.BookTitle;
+import logic.Borrow;
 import logic.Subscriber;
 
 /**
@@ -32,10 +32,12 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234"))
 			return;
-
-		System.out.println(db.createBorrow(1234, 3));
-		System.out.println(db.createBorrow(1234, 5));
-		System.out.println(db.createBorrow(321, 9));
+		BookCopy c = db.getCopyByID(3);
+		Borrow b = db.getCopyActiveBorrow(c);
+		System.out.println(c);
+		System.out.println(b.getSubscriber());
+		System.out.println(db.extendDuration(b,3));
+		
 
 		db.disconnect();
 	}
@@ -179,12 +181,11 @@ public class BLibDBC {
 			LocalDate dueDate = today.plusWeeks(2);
 
 			// Insert new borrow record into the database
-			pstmt = conn.prepareStatement("INSERT INTO borrows VALUE(?,?,?,?,?)");
+			pstmt = conn.prepareStatement("INSERT INTO borrows(subscriber_id,copy_id,date_of_borrow,due_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subscriberID);
 			pstmt.setInt(2, copyID);
 			pstmt.setDate(3, Date.valueOf(today));
 			pstmt.setDate(4, Date.valueOf(dueDate));
-			pstmt.setDate(5, null); // Set return date as null for now
 			pstmt.execute();
 
 			// Update the book copy's status to borrowed
@@ -347,7 +348,7 @@ public class BLibDBC {
 		}
 		try {
 			// Try connecting to the database
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=IST", "root",
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=Asia/Jerusalem", "root",
 					password);
 			conn.setAutoCommit(false); // Disable auto-commit to handle transactions manually
 			System.out.println("SQL connection succeed");
@@ -384,4 +385,65 @@ public class BLibDBC {
 		}
 	}
 
+	public Borrow getCopyActiveBorrow(BookCopy copy) {
+		try {
+		pstmt = conn.prepareStatement("SELECT * FROM borrows WHERE copy_id = ? AND date_of_return IS NULL");
+		pstmt.setInt(1, copy.getCopyID());
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()) {
+			Subscriber sub = getSubscriberByID(rs.getInt(2));
+			if(sub == null) {
+				return null;
+			}
+			return new Borrow(sub, copy,rs.getDate(4).toLocalDate(), rs.getDate(5).toLocalDate(), null);
+		}
+		return null;
+		}catch (SQLException e) {
+			// If an error occurs, return null
+			return null;
+		}
+		
+	}
+	
+	public Boolean extendDuration(Borrow borrow, int days) {
+		try {
+			LocalDate newDueDate =borrow.getDueDate().plusDays(days);
+			pstmt = conn.prepareStatement("UPDATE borroows SET due_date = ? WHERE "
+					+ "subscriber_id = ? AND copy_id = ? AND date_of_borrow = ?");
+			pstmt.setDate(1, Date.valueOf(newDueDate));
+			pstmt.setInt(2, borrow.getSubscriber().getId());
+			pstmt.setInt(3, borrow.getBook().getCopyID());
+			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()));
+			pstmt.execute();
+
+			LocalDate today = LocalDate.now();
+			// Log the extension activity in the history table
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, borrow.getSubscriber().getId());
+			pstmt.setString(2, "extension");
+			pstmt.setString(3,
+					"\"%s\" extended borrow by %s on %s, the new due date is %s".formatted(borrow.getBook().getTitle(), borrow.getSubscriber().getName(), today,newDueDate));
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			// Commit the transaction
+			conn.commit();
+			return true; // Return true if the extension is successful
+		} catch (SQLException e) {
+			rollback(); // Rollback transaction if any error occurs
+			return false; // Return false if an error occurs
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

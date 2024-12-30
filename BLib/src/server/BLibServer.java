@@ -8,6 +8,7 @@ import java.util.Set;
 
 import logic.BookCopy;
 import logic.BookTitle;
+import logic.Borrow;
 import logic.Message;
 import logic.Subscriber;
 import ocsf.server.AbstractServer;
@@ -198,8 +199,17 @@ public class BLibServer extends AbstractServer {
 					} else {
 						client.sendToClient(new Message("failed")); // Send failure message if borrow creation fails
 					}
+					break;
 					
-				
+				case "getCopyActiveBorrow":
+					ret = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("borrowFound",(Borrow)ret)); // Send success message
+					} else {
+						client.sendToClient(new Message("borrowNotFound")); // Send failure message if borrow creation fails
+					}
+					break;
+					
 //				case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
