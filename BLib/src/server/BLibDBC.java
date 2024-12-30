@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import javafx.beans.binding.StringBinding;
 import logic.BookCopy;
 import logic.BookTitle;
 import logic.Borrow;
@@ -32,9 +33,9 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
-		LocalDate today = LocalDate.now();
-		LocalDate day = LocalDate.of(2024, 12, 1);
-		System.out.println(day.compareTo(today)>0);
+		Subscriber sub = new Subscriber(999, "Avi Ron", "99999", "avi@ron.com");
+		
+		System.out.println(db.registerSubscriber(sub));
 		db.disconnect();
 	}
 
@@ -244,6 +245,10 @@ public class BLibDBC {
 	 */
 	public Boolean updateSubscriber(Subscriber newSubscriber) {
 		try {
+			LocalDate today = LocalDate.now();
+			Subscriber oldSubscriber = getSubscriberByID(newSubscriber.getId());
+			StringBuilder str = new StringBuilder(newSubscriber.getName() + " updated their details: ");
+			
 			// Execute SQL update to modify subscriber details
 			pstmt = conn.prepareStatement(
 					"UPDATE subscribers SET subscriber_email = ?, subscriber_phone_number = ?  WHERE subscriber_id = ?");
@@ -251,11 +256,32 @@ public class BLibDBC {
 			pstmt.setString(2, newSubscriber.getPhone());
 			pstmt.setInt(3, newSubscriber.getId());
 			pstmt.execute();
-
-			// Commit the transaction to make the changes persistent
+			
+			
+			if(!newSubscriber.getEmail().equals(oldSubscriber.getEmail())){
+				str.append("changed email from %s to %s ".formatted(oldSubscriber.getEmail(), newSubscriber.getEmail()));
+			}
+			if(!newSubscriber.getPhone().equals(oldSubscriber.getPhone())) {
+				str.append("changed phone from %s to %s ".formatted(oldSubscriber.getPhone(), newSubscriber.getPhone()));
+			}
+			str.append("on %s".formatted(today));
+				
+			// Log the borrow activity in the history table
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, newSubscriber.getId());
+			pstmt.setString(2, "update subscriber");
+			pstmt.setString(3,str.toString());				
+				
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			
+			
+			// Commit the transaction
 			conn.commit();
-			return true; // Return true if the update is successful
+			return true;
 		} catch (SQLException e) {
+			e.printStackTrace();
 			rollback(); // Rollback transaction if any error occurs
 			return false; // Return false if an error occurs
 		}
@@ -283,6 +309,7 @@ public class BLibDBC {
 	 */
 	public Boolean registerSubscriber(Subscriber subscriber) {
 		try {
+			LocalDate today = LocalDate.now();
 			// Insert a new subscriber record into the database
 			pstmt = conn.prepareStatement("INSERT INTO subscribers VALUE(?,?,?,?,?)");
 			pstmt.setInt(1, subscriber.getId());
@@ -291,6 +318,18 @@ public class BLibDBC {
 			pstmt.setString(4, subscriber.getEmail());
 			pstmt.setString(5, subscriber.getStatus());
 			pstmt.execute();
+			
+			// Log the borrow activity in the history table
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, subscriber.getId());
+			pstmt.setString(2, "new subscriber");
+			pstmt.setString(3,"%s is now a subscriber since %s".formatted(subscriber.getName(), today));				
+				
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+						
+			
 
 			// Commit the transaction
 			conn.commit();

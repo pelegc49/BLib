@@ -157,7 +157,7 @@ public class BLibServer extends AbstractServer {
 					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0)); // Update subscriber details
 																							// in the
 					// database
-					if ((Boolean) ret == true) { // If update is successful
+					if (((Boolean) ret) == true) { // If update is successful
 						client.sendToClient(new Message("subscriberUpdated")); // Send success message
 					} else {
 						client.sendToClient(new Message("subscriberFailedUpdated")); // Send failure message if update
