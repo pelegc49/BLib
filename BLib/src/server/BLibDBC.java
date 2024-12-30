@@ -30,13 +30,16 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("12341234"))
+		if (!db.connect("1234"))
 			return;
 		LocalDate today = LocalDate.now();
-		System.out.println(db.getTitleNumOfAllowedExtend(db.getTitleByID(1)));
+		LocalDate day = LocalDate.of(2024, 12, 1);
+		System.out.println(day.compareTo(today)>0);
 		db.disconnect();
 	}
 
+	
+	
 	// Singleton pattern to ensure only one instance of BLibDBC exists
 	public static BLibDBC getInstance() {
 		if (!(instance instanceof BLibDBC)) {
@@ -470,12 +473,122 @@ public class BLibDBC {
 			return sum+1;
 		}catch (SQLException e) {
 			return null;
-		}
-		 
+		}	 
 	}
 	
-
 	
+	public Boolean returnBook(BookCopy book,boolean isLateReturn) {
+		try {
+			Borrow borrow = getCopyActiveBorrow(book);
+			if(borrow == null)
+				return false;
+			
+			LocalDate today = LocalDate.now();
+			pstmt = conn.prepareStatement("update borrows set date_of_return = ? where subscriber_id = ? and copy_id =? and date_of_borrow = ?;");
+			pstmt.setDate(1, Date.valueOf(today));
+			pstmt.setInt(2, borrow.getSubscriber().getId());
+			pstmt.setInt(3, book.getCopyID());
+			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()));
+			pstmt.execute();
+			
+			pstmt = conn.prepareStatement("update copies set is_borrowed = ? where copy_id = ?;");
+			pstmt.setBoolean(1, false);
+			pstmt.setInt(2, book.getCopyID());
+			pstmt.execute();
+			
+			// Log the borrow activity in the history table
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, borrow.getSubscriber().getId());
+			if(!isLateReturn) {
+				pstmt.setString(2, "return");
+				pstmt.setString(3,
+						"\"%s\" return by %s on %s".formatted(book.getTitle(), borrow.getSubscriber().getName(), today));				
+			}
+			else {
+				int late = today.compareTo(borrow.getDueDate());
+				pstmt.setString(2, "late return");
+				pstmt.setString(3,
+						"\"%s\" late return by %s on %s late by %d days".formatted(book.getTitle(), borrow.getSubscriber().getName(), today, Math.abs(late)));				
+			}
+				
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+
+			// Commit the transaction
+			conn.commit();
+			return true;
+			
+		} catch (SQLException e) {
+			rollback(); // Rollback transaction if any error occurs
+			return false; // Return false if an error occurs
+		}
+	}
+
+	public Boolean freezeSubscriber(int subID) {
+		try {
+			LocalDate today = LocalDate.now();
+			Subscriber sub = getSubscriberByID(subID);
+			if(sub == null)
+				return null;
+			pstmt = conn.prepareStatement("update subscribers set subscriber_status = ? where subscriber_id = ? ;");
+			pstmt.setString(1,"frozen");
+			pstmt.setInt(2,subID);
+			pstmt.execute();
+			
+			
+			
+			// Log the borrow activity in the history table
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, subID);
+			pstmt.setString(2, "freeze");
+			pstmt.setString(3,"%s got frozen on %s until %s".formatted(sub.getName(),  today , today.plusMonths(1)));				
+				
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			// Commit the transaction
+			conn.commit();
+			return true;
+			
+		} catch (SQLException e) {
+			rollback(); // Rollback transaction if any error occurs
+			return false; // Return false if an error occurs
+		}	
+	}
+	
+	
+	public Boolean unfreezeSubscriber(int subID) {
+		try {
+			LocalDate today = LocalDate.now();
+			Subscriber sub = getSubscriberByID(subID);
+			if(sub == null)
+				return null;
+			pstmt = conn.prepareStatement("update subscribers set subscriber_status = ? where subscriber_id = ? ;");
+			pstmt.setString(1,"active");
+			pstmt.setInt(2,subID);
+			pstmt.execute();
+			
+			
+			
+			// Log the borrow activity in the history table
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, subID);
+			pstmt.setString(2, "unfreeze");
+			pstmt.setString(3,"%s got unfrozen on %s ".formatted(sub.getName(),  today));				
+				
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			// Commit the transaction
+			conn.commit();
+			return true;
+			
+		} catch (SQLException e) {
+			rollback(); // Rollback transaction if any error occurs
+			return false; // Return false if an error occurs
+		}	
+	}
 	
 	
 	
