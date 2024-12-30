@@ -1,17 +1,17 @@
 package logic;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Activity {
 
 	// Private member variables to store the activity details
-	private int id; // ID of the activity
+	private int id; // ID of the subscriber
 	private String type; // Type of the activity (e.g., "Meeting", "Task", etc.)
 	private String description; // A description of the activity
-	private Date date; // The date and time the activity took place
+	private LocalDate date; // The date and time the activity took place
 
 	// Constructor to initialize the activity with all fields
-	public Activity(int id, String type, String description, Date date) {
+	public Activity(int id, String type, String description, LocalDate date) {
 		this.id = id; // Set the activity ID
 		this.type = type; // Set the activity type
 		this.description = description; // Set the activity description
@@ -34,7 +34,7 @@ public class Activity {
 	}
 
 	// Getter method for activity date
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date; // Return the activity date
 	}
 
@@ -54,7 +54,7 @@ public class Activity {
 	}
 
 	// Setter method for activity date
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date; // Set the activity date
 	}
 }

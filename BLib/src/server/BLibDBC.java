@@ -1,11 +1,13 @@
 package server;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,10 +21,10 @@ import logic.Subscriber;
  * information, user login, and handling SQL connection/disconnection.
  */
 public class BLibDBC {
+	private String pass;
 	private static BLibDBC instance;
 	
 	private static Connection conn; // Connection object to interact with the database
-	private static Statement stmt; // Statement object for executing SQL queries
 	private static PreparedStatement pstmt; // Statement object for executing SQL queries
 	
 	
@@ -30,7 +32,11 @@ public class BLibDBC {
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234")) return;
-		db.registerSubscriber(new Subscriber(321, "Galmo Linda", "32165498", "Galmo@Linda.com"));
+		
+		System.out.println(db.createBorrow(1234, 3));
+		System.out.println(db.createBorrow(1234, 5));
+		System.out.println(db.createBorrow(321, 9));
+		
 		db.disconnect();
 	}
 	
@@ -40,22 +46,24 @@ public class BLibDBC {
 		}
 		return instance;
 	}
-
 	
 	
-//	public BookTitle getTitleByID(int titleID) {
-//		try {
-//			pstmt = conn.prepareStatement("");
-//			ResultSet rs = pstmt.executeQuery();
-//			if (rs.next()) {
-//				return new 
-//			}
-//			return null;
-//		} catch (SQLException e) {
-//			return null;
-//		}
-//	
-//	}
+	
+	
+	public BookTitle getTitleByID(int titleID) {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM titles WHERE title_id = ?");
+			pstmt.setInt(1,titleID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return new BookTitle(titleID, rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6));
+			}
+			return null;
+		} catch (SQLException e) {
+			return null;
+		}
+	
+	}
 	
 	//in order to make singleton work
 	private BLibDBC() {}
@@ -111,7 +119,9 @@ public class BLibDBC {
 	public Subscriber getSubscriberByID(int subscriberid) {
 		try {
 			// Execute SQL query to fetch the subscriber by their ID
-			ResultSet rs = stmt.executeQuery("SELECT * FROM subscribers WHERE subscriber_id = " + subscriberid);
+			pstmt = conn.prepareStatement("SELECT * FROM subscribers WHERE subscriber_id = ?");
+			pstmt.setInt(1, subscriberid);
+			ResultSet rs = pstmt.executeQuery();
 			// If a result is found, create and return a Subscriber object
 			if (rs.next()) {
 				return new Subscriber(subscriberid, rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
@@ -120,6 +130,64 @@ public class BLibDBC {
 			return null;
 		} catch (SQLException e) {
 			// If an error occurs, return null
+			return null;
+		}
+	}
+	
+	public Boolean createBorrow(int subscriberID,int copyID) {
+		try {
+			Subscriber sub = getSubscriberByID(subscriberID);
+			if(sub == null) {
+				return false;
+			}
+			BookCopy copy = getCopyByID(copyID);
+			if(copy == null){
+				return false;
+			}
+			LocalDate today = LocalDate.now();
+			LocalDate dueDate = today.plusWeeks(2);
+			
+			pstmt = conn.prepareStatement("INSERT INTO borrows VALUE(?,?,?,?,?)");
+			pstmt.setInt(1, subscriberID);
+			pstmt.setInt(2, copyID);
+			pstmt.setDate(3, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(dueDate));
+			pstmt.setDate(5, null);
+			pstmt.execute();
+			pstmt = conn.prepareStatement("UPDATE copies SET is_borrowed = ? WHERE copy_id = ?");
+			pstmt.setBoolean(1, true);
+			pstmt.setInt(2, copyID);
+			pstmt.execute();
+			pstmt = conn.prepareStatement("INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, subscriberID);
+			pstmt.setString(2, "borrow");
+			pstmt.setString(3, "\"%s\" borrowed by %s on %s".formatted(copy.getTitle(),sub.getName(),today.toString()));
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			conn.commit();
+			return true;
+		} catch (SQLException e) {
+			// If an error occurs, return false
+			rollback();
+			return false;
+		}
+	}
+	
+
+	public BookCopy getCopyByID(int copyID) {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM copies WHERE copy_id = ?");
+			pstmt.setInt(1,copyID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				BookTitle title = getTitleByID(rs.getInt(1));
+				if(title == null) {
+					return null;
+				}
+				return new BookCopy(title, copyID, rs.getString(3), rs.getBoolean(4));
+			}
+			return null;
+		} catch (SQLException e) {
 			return null;
 		}
 	}
@@ -133,12 +201,26 @@ public class BLibDBC {
 	public Boolean updateSubscriber(Subscriber newSubscriber) {
 		try {
 			// Execute SQL update to modify subscriber details
-			return stmt.execute("UPDATE subscribers SET subscriber_email = '" + newSubscriber.getEmail()
-					+ "', subscriber_phone_number = '" + newSubscriber.getPhone() + "' WHERE subscriber_id = "
-					+ newSubscriber.getId());
+			pstmt = conn.prepareStatement("UPDATE subscribers SET subscriber_email = ?, subscriber_phone_number = ?  WHERE subscriber_id = ?");
+			pstmt.setString(1,newSubscriber.getEmail());	
+			pstmt.setString(2,newSubscriber.getPhone());	
+			pstmt.setInt(3,newSubscriber.getId());	
+			pstmt.execute();
+			conn.commit();
+			return true;
 		} catch (SQLException e) {
 			// If an error occurs, return false
+			rollback();
 			return false;
+		}
+	}
+
+	private void rollback() {
+		try {
+			conn.rollback();
+		} catch (SQLException e) {
+			disconnect();
+			connect(pass);
 		}
 	}
 
@@ -150,10 +232,12 @@ public class BLibDBC {
 			pstmt.setString(3, subscriber.getPhone());
 			pstmt.setString(4, subscriber.getEmail());
 			pstmt.setString(5, subscriber.getStatus());
-			return pstmt.execute();
-
+			pstmt.execute();
+			conn.commit();
+			return true;
 		} catch (SQLException e) {
 			// If an error occurs, return false
+			rollback();
 			return false;
 		}
 	}
@@ -167,7 +251,9 @@ public class BLibDBC {
 	public String login(int userid, String password) {
 		try {
 			// Execute SQL query to check if the user ID and password match
-			ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE user_id = " + userid);
+			pstmt = conn.prepareStatement("SELECT * FROM users WHERE user_id = ?");
+			pstmt.setInt(1, userid);
+			ResultSet rs = pstmt.executeQuery();
 			// If a result is found and the credentials match, return the user's role
 			if (rs.next()) {
 				if (userid == rs.getInt(1) && password.equals(rs.getString(2)))
@@ -188,6 +274,7 @@ public class BLibDBC {
 	 * @return true if the connection is successful, false if it fails
 	 */
 	public boolean connect(String password) {
+		pass = password;
 		try {
 			// Try loading the MySQL JDBC driver
 			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
@@ -200,7 +287,7 @@ public class BLibDBC {
 		try {
 			// Try connecting to the database
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=IST", "root", password);
-			stmt = conn.createStatement(); // Create a Statement object for executing queries
+			conn.setAutoCommit(false);
 			System.out.println("SQL connection succeed");
 			return true; // Return true if connection is successful
 		} catch (Exception e) {
