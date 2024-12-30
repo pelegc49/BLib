@@ -43,7 +43,7 @@ public class BookTitleController {
 	@FXML
 	private TableColumn<BookCopy, Boolean> columnStatus; // Button to exit the application.
 	@FXML
-	private TableColumn columnShelf; // Button to exit the application.
+	private TableColumn<BookCopy, String>  columnShelf; // Button to exit the application.
 	@FXML
 	private TableColumn columnDateOfReturn; // Button to exit the application.
 	
