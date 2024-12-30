@@ -37,6 +37,8 @@ public class BookCopy implements Serializable {
 	
 	
 	public String getShelf() {
+		if (isBorrowed)
+			return "-";
 		return shelf;
 	}
 	

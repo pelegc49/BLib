@@ -1,7 +1,6 @@
 package gui.client;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import logic.BookCopy;
 import logic.BookTitle;
 
 public class BookTitleController {
@@ -37,11 +37,11 @@ public class BookTitleController {
 	@FXML
 	private Button btnSend = null; // Button to initiate the connection to the server.
 	@FXML
-	private TableView bookTable; // Button to exit the application.
+	private TableView<BookCopy> bookTable; // Button to exit the application.
 	@FXML
-	private TableColumn columnBookId; // Button to exit the application.
+	private TableColumn<BookCopy, Integer> columnBookId; // Button to exit the application.
 	@FXML
-	private TableColumn columnStatus; // Button to exit the application.
+	private TableColumn<BookCopy, Boolean> columnStatus; // Button to exit the application.
 	@FXML
 	private TableColumn columnShelf; // Button to exit the application.
 	@FXML
