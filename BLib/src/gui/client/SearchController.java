@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -34,6 +35,7 @@ import logic.BookTitle;
  * and transitions the user to the main application interface upon successful login.
  */
 public class SearchController implements Initializable{
+	private BookTitleController btc;
 	
 	@FXML
 	private TextField txtSearch;
@@ -77,7 +79,31 @@ public class SearchController implements Initializable{
 		    rowa.setOnMouseClicked(eventa -> {
 		        if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
 		        	BookTitle rowData = rowa.getItem();
-		            System.out.println(rowData);
+		            System.out.println(rowData); // delete me
+		    		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		    	    String currentTitle = currentStage.getTitle();
+		    	    String[] title = currentTitle.split(" ");
+		    	    
+		    		// FXMLLoader for loading the main GUI.
+		    		FXMLLoader loader = new FXMLLoader(); 
+		    		// Hide the current window.
+		    		((Node) event.getSource()).getScene().getWindow().hide();
+
+		    		// Load the main application interface.
+		    		Stage primaryStage = new Stage();
+		    		Pane root = null;
+					try {
+						root = loader.load(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".fxml").openStream());
+					} catch (IOException e) {}
+		    		BookTitleController bookTitleController = loader.getController();
+		    		bookTitleController.loadBookTitle(rowData);
+		    		// Set up and display the new scene.
+		    		Scene scene = new Scene(root);
+		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".css").toExternalForm());
+		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		    		primaryStage.setTitle(title[0] +" - "+ rowData.getTitleName());
+		    		primaryStage.setScene(scene);
+		    		primaryStage.show();
 		        }
 		    });
 	    return rowa ;
@@ -120,7 +146,7 @@ public class SearchController implements Initializable{
 		}
 	}
 	
-	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
+	public void nextPage(Event event, String fileName, String title) throws Exception{
 		// FXMLLoader for loading the main GUI.
 		FXMLLoader loader = new FXMLLoader(); 
 		

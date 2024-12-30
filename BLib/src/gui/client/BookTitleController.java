@@ -13,9 +13,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import logic.BookTitle;
 
 public class BookTitleController {
-
+	private BookTitle tb;
 	// UI elements defined in the FXML file.
 	@FXML
 	private Label lblTitle; // Label to display error messages.
@@ -46,61 +47,6 @@ public class BookTitleController {
 	@FXML
 	private TableColumn columnDateOfReturn; // Button to exit the application.
 	
-	/**
-	 * Handles the Send button click event. Attempts to connect to the server using
-	 * the provided IP address.
-	 * 
-	 * @param event The ActionEvent triggered by clicking the Send button.
-	 * @throws Exception If an error occurs during the operation.
-	 */
-	public void sendBtn(Event event) {
-		
-		
-		
-		
-		
-//		String ip; // Holds the entered IP address.
-//		String port; // Holds the entered Port.
-//		int digit_port;
-//		FXMLLoader loader = new FXMLLoader(); // Used to load the next scene.
-//		ip = txtIp.getText(); // Retrieves the entered IP address.
-//		port = txtPort.getText(); // Retrieves the entered Port.
-//
-//		// Validates the IP address input.
-//		if (ip.trim().isEmpty()) {
-//		}
-//		else if (port.trim().isEmpty()) {
-//		}
-//		else {
-//			try {
-//				digit_port = Integer.parseInt(txtPort.getText()); // Validates that the ID contains only digits.
-//			} catch (Exception e) {
-//				return;
-//			}
-//			try {
-//				// Attempts to create a client instance and connect to the server.
-//				//client = new BLibClient(ip, 5555);
-//				System.out.println("IP Entered Successfully");
-//
-//				// Hides the current window.
-//				((Node) event.getSource()).getScene().getWindow().hide();
-//
-//				// Sets up and displays the AuthenticationFrame.
-//				Stage primaryStage = new Stage();
-//				Pane root = loader.load(getClass().getResource("/gui/client/AuthenticationFrame.fxml").openStream());
-//				Scene scene = new Scene(root);
-//				scene.getStylesheets()
-//						.add(getClass().getResource("/gui/client/AuthenticationFrame.css").toExternalForm());
-//				primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
-//				primaryStage.setTitle("Authentication");
-//				primaryStage.setScene(scene);
-//				primaryStage.show();
-//			} catch (Exception e) {
-//				// Handles connection errors.
-//				System.out.println("Error: Can't setup connection!" + " Terminating client.");
-//			}
-//		}
-	}
 
 	/**
 	 * Handles the Exit button click event. Closes the application.
@@ -121,9 +67,20 @@ public class BookTitleController {
 	    else {
 	    	title = "Guest - Search";
 	    }
-	    nextPage(event, "SearchController", title);
+	    nextPage(event, "SearchFrame", title);
 	}
 
+	public void orderBtn(ActionEvent event) throws Exception {
+	}
+	
+	public void loadBookTitle(BookTitle tb1) {
+		this.tb = tb1; // Assigns the subscriber to the controller.
+		this.txtTitle.setText(String.valueOf(tb.getTitleName())); // Sets the subscriber's ID.
+		this.txtAuthorName.setText(tb.getAuthorName()); // Sets the subscriber's name.
+		this.txtDescription.setText(tb.getDescription()); // Sets the subscriber's phone.
+		
+	}
+	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
 		// FXMLLoader for loading the main GUI.
 		FXMLLoader loader = new FXMLLoader(); 
