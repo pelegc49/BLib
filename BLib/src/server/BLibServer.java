@@ -155,7 +155,7 @@ public class BLibServer extends AbstractServer {
 				// Handle updateSubscriber request
 				case "updateSubscriber":
 					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0)); // Update subscriber details
-																							// in the
+																							// in the database
 					// database
 					if (((Boolean) ret) == true) { // If update is successful
 						client.sendToClient(new Message("subscriberUpdated")); // Send success message
@@ -166,7 +166,8 @@ public class BLibServer extends AbstractServer {
 					break;
 				// Handle search for book titles by keyword
 				case "getTitlesByKeyword":
-					ret = BLibDBC.getInstance().getTitlesByKeyword((String) args.get(0));
+					ret = BLibDBC.getInstance().getTitlesByKeyword((String) args.get(0));// Search for book titles by
+																							// keyword
 					if (ret != null) { // If search is successful
 						client.sendToClient(new Message("searchResult", (Set<BookTitle>) ret)); // Send search results
 					} else {
@@ -176,7 +177,8 @@ public class BLibServer extends AbstractServer {
 
 				// Handle search for book copies by title
 				case "getCopiesByTitle":
-					ret = BLibDBC.getInstance().getCopiesByTitle((BookTitle) args.get(0));
+					ret = BLibDBC.getInstance().getCopiesByTitle((BookTitle) args.get(0)); // Search for book copies by
+																							// title
 					if (ret != null) { // If search is successful
 						client.sendToClient(new Message("searchResult", (Set<BookCopy>) ret)); // Send search results
 					} else {
@@ -186,7 +188,8 @@ public class BLibServer extends AbstractServer {
 
 				// Handle registerSubscriber request
 				case "registerSubscriber":
-					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0));
+					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0)); // Register a new
+																								// subscriber
 					if ((Boolean) ret == true) {
 						client.sendToClient(new Message("success")); // Send success message if registration is
 																		// successful
@@ -197,7 +200,8 @@ public class BLibServer extends AbstractServer {
 
 				// Handle creating a new borrow request
 				case "createBorrow":
-					ret = BLibDBC.getInstance().createBorrow((Integer) args.get(0), (Integer) args.get(1));
+					ret = BLibDBC.getInstance().createBorrow((Integer) args.get(0), (Integer) args.get(1)); // Create a
+																											// borrow
 					if ((Boolean) ret == true) {
 						client.sendToClient(new Message("success")); // Send success message
 					} else {
@@ -205,8 +209,10 @@ public class BLibServer extends AbstractServer {
 					}
 					break;
 
+				// Handle fetching active borrow for a book copy
 				case "getCopyActiveBorrow":
-					ret = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0));
+					ret = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve active borrow
+																								// for a book copy
 					if (ret != null) {
 						client.sendToClient(new Message("borrowFound", (Borrow) ret)); // Send success message
 					} else {
@@ -215,52 +221,54 @@ public class BLibServer extends AbstractServer {
 					}
 					break;
 
-				
+				// Handle extend borrow duration request
 				case "extend":
 					if (BLibDBC.getInstance()
 							.getTitleNumOfAllowedExtend(((Borrow) args.get(0)).getBook().getTitle()) <= 0) {
-						client.sendToClient(new Message("failed"));
+						client.sendToClient(new Message("failed")); // If no extension allowed, send failure message
 						break;
 					}
 
 					if (args.get(2).equals("subscriber")) {
-						if (!canExtend((Borrow) args.get(0))) {
+						if (!canExtend((Borrow) args.get(0))) { // Check if the borrow can be extended
 							client.sendToClient(new Message("failed"));
 							break;
 						}
 					}
 					ret = BLibDBC.getInstance().extendDuration((Borrow) args.get(0), (Integer) args.get(1),
-							(String) args.get(2));
+							(String) args.get(2)); // Extend the borrow duration
 					if ((Boolean) ret == true) {
 						client.sendToClient(new Message("success")); // Send success message
 					} else {
-						client.sendToClient(new Message("failed")); // Send failure message if borrow creation fails
+						client.sendToClient(new Message("failed")); // Send failure message
 					}
 					// TODO: add message logic
 
 					break;
-					
+
+				// Handle return book request
 				case "return":
-					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy)args.get(0));
-					if(borrow == null) {
+					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve
+																										// active borrow
+																										// for book copy
+					if (borrow == null) {
 						client.sendToClient(new Message("failed")); // Send failure message if borrow creation fails
 						break;
 					}
-						
-					if(borrow.getDueDate().compareTo(today)<0) {
-						BLibDBC.getInstance().returnBook((BookCopy)args.get(0), true);
-						if(borrow.getDueDate().plusWeeks(1).compareTo(today)<=0) {
+					// If the due date is passed, process as late return and potentially freeze the
+					// subscriber
+					if (borrow.getDueDate().compareTo(today) < 0) {
+						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), true);
+						if (borrow.getDueDate().plusWeeks(1).compareTo(today) <= 0) {
 							BLibDBC.getInstance().freezeSubscriber(borrow.getSubscriber().getId());
-							client.sendToClient(new Message("successFreeze")); // Send success message
+							client.sendToClient(new Message("successFreeze")); // Send freeze success message
+						} else {
+							client.sendToClient(new Message("successLate")); // Send late return success message
 						}
-						else {
-							client.sendToClient(new Message("successLate")); // Send success message
-						}
+					} else {
+						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), false);
+						client.sendToClient(new Message("success")); // Send success message for regular return
 					}
-					else {
-						BLibDBC.getInstance().returnBook((BookCopy)args.get(0), false);
-						client.sendToClient(new Message("success")); // Send success message
-					}	
 					break;
 
 //				case "getTitleByID":
@@ -280,13 +288,27 @@ public class BLibServer extends AbstractServer {
 
 	}
 
+	/**
+	 * Checks if a borrow can be extended based on the borrower's status and the
+	 * borrow date.
+	 * 
+	 * @param borrow the borrow object to check
+	 * @return true if the borrow can be extended, false otherwise
+	 */
 	private boolean canExtend(Borrow borrow) {
+		// Check if the subscriber's status is "frozen". If yes, they can't extend the
+		// borrow period.
 		if (borrow.getSubscriber().getStatus().equals("frozen")) {
 			return false;
 		}
+
+		// Check if the borrow period is less than or equal to one week. If the borrow
+		// was made within the last week,
+		// it cannot be extended.
 		if (borrow.getDateOfBorrow().plusWeeks(1).compareTo(LocalDate.now()) >= 0) {
 			return false;
 		}
+		// If none of the conditions above are met, the borrow can be extended.
 		return true;
 	}
 
