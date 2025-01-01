@@ -75,20 +75,20 @@ public class SubscriberListController implements Initializable{
 			phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
 			emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 			statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+			// allows to click on row
+			subTable.setRowFactory(tv -> {
+				TableRow<Subscriber> rowa = new TableRow<>();
+				rowa.setOnMouseClicked(eventa -> {
+					if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
+						Subscriber rowData = rowa.getItem();
+						System.out.println(rowData);
+					}
+				});
+				return rowa ;
+			});
 		}
 		
-		// allows to click on row
-		subTable.setRowFactory(tv -> {
-		    TableRow<Subscriber> rowa = new TableRow<>();
-		    rowa.setOnMouseClicked(eventa -> {
-		        if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
-		        	Subscriber rowData = rowa.getItem();
-		            System.out.println(rowData);
-		        }
-		    });
-	    return rowa ;
-		});
-	}
+	
 
 	/**
 	 * Handles the "Exit" button action. Terminates the application.
