@@ -7,10 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import javafx.beans.binding.StringBinding;
+import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
 import logic.Borrow;
@@ -33,9 +35,8 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
-		Subscriber sub = new Subscriber(999, "Avi Ron", "99999", "avi@ron.com");
+		System.out.println(db.extendDuration(null, 0, null));
 
-		System.out.println(db.registerSubscriber(sub));
 		db.disconnect();
 	}
 
@@ -242,12 +243,17 @@ public class BLibDBC {
 	 * @param newSubscriber the Subscriber object containing updated information
 	 * @return true if the update was successful, false if it failed
 	 */
-	public Boolean updateSubscriber(Subscriber newSubscriber) {
+	public Boolean updateSubscriber(Subscriber newSubscriber, String userType) {
 		try {
 			LocalDate today = LocalDate.now();
 			Subscriber oldSubscriber = getSubscriberByID(newSubscriber.getId());
-			StringBuilder str = new StringBuilder(newSubscriber.getName() + " updated their details: ");
-
+			StringBuilder str = new StringBuilder();
+			if(userType.equalsIgnoreCase("subscriber")) {
+				str.append(newSubscriber.getName() + " updated their details: ");
+			}
+			else {
+				str.append(userType + " updated " + newSubscriber.getName() + "'s details: ");
+			}
 			// Execute SQL update to modify subscriber details
 			pstmt = conn.prepareStatement(
 					"UPDATE subscribers SET subscriber_email = ?, subscriber_phone_number = ?  WHERE subscriber_id = ?");
@@ -306,7 +312,7 @@ public class BLibDBC {
 	 *                   inserted
 	 * @return true if the registration was successful, false if it failed
 	 */
-	public Boolean registerSubscriber(Subscriber subscriber) {
+	public Boolean registerSubscriber(Subscriber subscriber,String password) {
 		try {
 			LocalDate today = LocalDate.now();
 			// Insert a new subscriber record into the database
@@ -328,6 +334,14 @@ public class BLibDBC {
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
 
+			// create new user to the new subscriber
+			pstmt  = conn.prepareStatement("INSERT INTO users VALUE (?,?,?)");
+			pstmt.setInt(1, subscriber.getId());
+			pstmt.setString(2, password);
+			pstmt.setString(3, "subscriber");
+			pstmt.execute();
+			
+			
 			// Commit the transaction
 			conn.commit();
 			return true; // Return true if the registration is successful
@@ -502,7 +516,10 @@ public class BLibDBC {
 	 * @return The number of allowed extensions, or null if an error occurs.
 	 */
 	public Integer getTitleNumOfAllowedExtend(BookTitle title) {
-		// num of copies - num of borrows - num of orders + 1
+		// 0 < num  <= num of copies  : { there are between 0 to num of copies active borrows for the title}
+		// num = 0 : {all the copies are borrowed}
+		// -num of copies <= num < 0 : {there are |num| active orders for the title} 
+		// num = num of copies - num of borrows - num of orders 
 		int sum = 0;
 		ResultSet rs;
 		try {
@@ -532,7 +549,7 @@ public class BLibDBC {
 			} else {
 				return null;
 			}
-			return sum + 1;
+			return sum ;
 		} catch (SQLException e) {
 			return null;
 		}
@@ -553,14 +570,14 @@ public class BLibDBC {
 
 			LocalDate today = LocalDate.now();
 			pstmt = conn.prepareStatement(
-					"update borrows set date_of_return = ? where subscriber_id = ? and copy_id =? and date_of_borrow = ?;");
+					"UPDATE borrows SET date_of_return = ? WHERE subscriber_id = ? AND copy_id =? AND date_of_borrow = ?;");
 			pstmt.setDate(1, Date.valueOf(today));
 			pstmt.setInt(2, borrow.getSubscriber().getId());
 			pstmt.setInt(3, book.getCopyID());
 			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()));
 			pstmt.execute();
 
-			pstmt = conn.prepareStatement("update copies set is_borrowed = ? where copy_id = ?;");
+			pstmt = conn.prepareStatement("UPDATE copies SET is_borrowed = ? WHERE copy_id = ?;");
 			pstmt.setBoolean(1, false);
 			pstmt.setInt(2, book.getCopyID());
 			pstmt.execute();
@@ -606,7 +623,7 @@ public class BLibDBC {
 			Subscriber sub = getSubscriberByID(subID);
 			if (sub == null)
 				return null;
-			pstmt = conn.prepareStatement("update subscribers set subscriber_status = ? where subscriber_id = ? ;");
+			pstmt = conn.prepareStatement("UPDATE subscribers SET subscriber_status = ? WHERE subscriber_id = ? ;");
 			pstmt.setString(1, "frozen");
 			pstmt.setInt(2, subID);
 			pstmt.execute();
@@ -643,7 +660,7 @@ public class BLibDBC {
 			Subscriber sub = getSubscriberByID(subID);
 			if (sub == null)
 				return null;
-			pstmt = conn.prepareStatement("update subscribers set subscriber_status = ? where subscriber_id = ? ;");
+			pstmt = conn.prepareStatement("UPDATE subscribers SET subscriber_status = ? WHERE subscriber_id = ? ;");
 			pstmt.setString(1, "active");
 			pstmt.setInt(2, subID);
 			pstmt.execute();
@@ -667,4 +684,54 @@ public class BLibDBC {
 		}
 	}
 
+	public List<Activity> getSubscriberHistory(int subID){
+		try {
+		Subscriber sub = getSubscriberByID(subID);
+		if (sub == null)
+			return null;
+		pstmt = conn.prepareStatement("SELECT * FROM history WHERE subscriber_id = ? ORDER BY activity_date;");
+		pstmt.setInt(1, subID);
+		ResultSet rs = pstmt.executeQuery();
+		List<Activity> ret = new ArrayList<>();
+		while (rs.next()) {
+			Activity activity = new Activity(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4).toLocalDate());
+			ret.add(activity);
+		}
+		return ret;
+		
+		
+		
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+	
+	public Boolean orderTitle(BookTitle title, Subscriber sub) {
+		try {
+			LocalDate today = LocalDate.now();
+			pstmt = conn.prepareStatement("UPDATE titles SET num_of_orders = num_of_orders + 1 WHERE title_id = ? ;");
+			pstmt.setInt(1, title.getTitleID());
+			pstmt.execute();
+
+			
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, sub.getId());
+			pstmt.setString(2, "order");
+			pstmt.setString(3, "%s ordered %s on %s".formatted(sub.getName(),title, today));
+
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			// Commit the transaction
+			conn.commit();
+			return true;
+
+		} catch (SQLException e) {
+			rollback(); // Rollback transaction if any error occurs
+			return false; // Return false if an error occurs
+		}
+	}
 }
+
+
+

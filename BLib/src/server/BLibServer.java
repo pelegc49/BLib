@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
 import logic.Borrow;
@@ -14,13 +15,16 @@ import logic.Message;
 import logic.Subscriber;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
-
+import java.util.Random;
 /**
  * This class represents the server of the BLib application. It extends the
  * AbstractServer from the ocsf library and manages client connections and
  * messages from clients.
  */
 public class BLibServer extends AbstractServer {
+			
+		
+		
 
 	// Singleton instance of BLibServer
 	public static BLibServer instance = null;
@@ -29,6 +33,7 @@ public class BLibServer extends AbstractServer {
 	// and host name)
 	private static Map<ConnectionToClient, String[]> connectedClients = new HashMap<>();
 
+	
 	/**
 	 * Private constructor that initializes the server and begins listening on the
 	 * provided port.
@@ -154,7 +159,7 @@ public class BLibServer extends AbstractServer {
 
 				// Handle updateSubscriber request
 				case "updateSubscriber":
-					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0)); // Update subscriber details
+					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0), (String)args.get(1)); // Update subscriber details
 																							// in the database
 					// database
 					if (((Boolean) ret) == true) { // If update is successful
@@ -188,10 +193,11 @@ public class BLibServer extends AbstractServer {
 
 				// Handle registerSubscriber request
 				case "registerSubscriber":
-					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0)); // Register a new
+					String pass = generatePassword(4);
+					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0), pass); // Register a new
 																								// subscriber
 					if ((Boolean) ret == true) {
-						client.sendToClient(new Message("success")); // Send success message if registration is
+						client.sendToClient(new Message("success",pass)); // Send success message if registration is
 																		// successful
 					} else {
 						client.sendToClient(new Message("failed")); // Send failure message if registration fails
@@ -224,7 +230,7 @@ public class BLibServer extends AbstractServer {
 				// Handle extend borrow duration request
 				case "extend":
 					if (BLibDBC.getInstance()
-							.getTitleNumOfAllowedExtend(((Borrow) args.get(0)).getBook().getTitle()) <= 0) {
+							.getTitleNumOfAllowedExtend(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
 						client.sendToClient(new Message("failed")); // If no extension allowed, send failure message
 						break;
 					}
@@ -270,8 +276,24 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("success")); // Send success message for regular return
 					}
 					break;
+					
+				case "history":
+					ret = BLibDBC.getInstance().getSubscriberHistory((Integer)args.get(0));
+					if(ret != null) {
+						client.sendToClient(new Message("historyRetrieved", (List<Activity>)ret));
+					}else {
+						client.sendToClient(new Message("Failed")); // Send failure message
+					}
+					break;
 
-//				case "getTitleByID":
+				
+				
+				
+				
+				
+				
+				
+					// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
 //						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send success message
@@ -295,7 +317,7 @@ public class BLibServer extends AbstractServer {
 	 * @param borrow the borrow object to check
 	 * @return true if the borrow can be extended, false otherwise
 	 */
-	private boolean canExtend(Borrow borrow) {
+	public static boolean canExtend(Borrow borrow) {
 		// Check if the subscriber's status is "frozen". If yes, they can't extend the
 		// borrow period.
 		if (borrow.getSubscriber().getStatus().equals("frozen")) {
@@ -312,4 +334,12 @@ public class BLibServer extends AbstractServer {
 		return true;
 	}
 
+	private String generatePassword(int length) { 
+		StringBuilder str = new StringBuilder();
+		Random rand =  new Random();
+		for(int i=0;i<length;i++) {
+			str.append(rand.nextInt(10));
+		}
+		return str.toString();
+	}
 }
