@@ -1,6 +1,7 @@
 package gui.client;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -61,6 +62,16 @@ public class SubscriberListController implements Initializable{
 	public void searchBtn(Event event) {
 		ObservableList<Subscriber> data;
 		Integer subID;
+		/*
+		// Check if searchInput is empty
+	    if ((txtSearch.getText()).isEmpty()) {
+	        // Fetch all subscribers from the database
+	        List<Subscriber> allSubscribers = IPController.client.getAllSubscribers(); // Assuming such a method exists
+	        if (allSubscribers == null || allSubscribers.isEmpty()) {
+	            display("No subscribers found in the database");
+	            return;
+	    }
+	        */
 		try {
 			subID = Integer.valueOf(txtSearch.getText());
 		} 
