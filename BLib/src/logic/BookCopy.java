@@ -43,6 +43,7 @@ public class BookCopy implements Serializable {
 	}
 	
 	public String getDueDate() {
+		// ruben this is not effective
 		if (isBorrowed) {
 			return IPController.client.getCopyActiveBorrow(this).getDueDate().toString();
 		}
@@ -65,11 +66,6 @@ public class BookCopy implements Serializable {
 	
 	public String isAvailable() {
 		return isBorrowed ? "Not available" : "Available";
-	}
-	
-	@Override
-	public String toString() {
-		return "good";
 	}
 	
 //	// Getter method for the book name
