@@ -97,18 +97,8 @@ public class SubscriberListController implements Initializable{
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    String currentTitle = currentStage.getTitle();
-	    if(currentTitle.equals("Subscriber - Search")) {
-	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
-	    }
-	    else if(currentTitle.equals("Librarian - Search")) {
-	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
-	    }
-	    else {
-	    	nextPage(event, "AuthenticationFrame", "Authentication");
-	    }
-	}
+		nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+		}
 
 	/**
 	 * Displays an error or informational message to the user.
