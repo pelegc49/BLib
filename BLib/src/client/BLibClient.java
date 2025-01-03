@@ -106,7 +106,6 @@ public class BLibClient extends AbstractClient {
 			return (Set<BookTitle>) msg.getArguments().get(0);
 		}
 		return null;
-		
 	}
 	
 	public Set<BookCopy> getCopiesByTitle(BookTitle bt) {
@@ -116,7 +115,15 @@ public class BLibClient extends AbstractClient {
 			return (Set<BookCopy>) msg.getArguments().get(0);
 		}
 		return null;
-		
+	}
+	
+	public Borrow getCopyActiveBorrow(BookCopy bc) {
+		msg = new Message("getCopyActiveBorrow", bc); // Create search message
+		handleMessageFromClientUI(msg); // Send to server
+		if(msg.getCommand().equals("borrowFound")){
+			return (Borrow) msg.getArguments().get(0);
+		}
+		return null;
 	}
 	
 	// Borrow a book for a subscriber

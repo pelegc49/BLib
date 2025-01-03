@@ -1,6 +1,9 @@
 package logic;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+
+import gui.client.IPController;
 
 public class BookCopy implements Serializable {
 
@@ -29,12 +32,9 @@ public class BookCopy implements Serializable {
 		this.isBorrowed = isBorrowed; // Set whether the book is borrowed
 	}
 
-	
-	
 	public int getCopyID() {
 		return copyID;
 	}
-	
 	
 	public String getShelf() {
 		if (isBorrowed)
@@ -42,11 +42,16 @@ public class BookCopy implements Serializable {
 		return shelf;
 	}
 	
+	public String getDueDate() {
+		if (isBorrowed) {
+			return IPController.client.getCopyActiveBorrow(this).getDueDate().toString();
+		}
+		return "-";
+	}
 	
 	public BookTitle getTitle() {
 		return title;
 	}
-	
 	
 	// Getter method to check if the book is borrowed
 	public Boolean isBorrowed() {
@@ -60,6 +65,11 @@ public class BookCopy implements Serializable {
 	
 	public String isAvailable() {
 		return isBorrowed ? "Not available" : "Available";
+	}
+	
+	@Override
+	public String toString() {
+		return "good";
 	}
 	
 //	// Getter method for the book name

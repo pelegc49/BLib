@@ -97,6 +97,7 @@ public class SearchController implements Initializable{
 					} catch (IOException e) {}
 		    		BookTitleController bookTitleController = loader.getController();
 		    		bookTitleController.loadBookTitle(rowData);
+		    		bookTitleController.loadOrderButton(title[0]);
 		    		// Set up and display the new scene.
 		    		Scene scene = new Scene(root);
 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".css").toExternalForm());

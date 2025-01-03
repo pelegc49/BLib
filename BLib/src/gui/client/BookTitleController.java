@@ -3,7 +3,6 @@ package gui.client;
 import java.time.LocalDate;
 import java.util.Set;
 
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.BookCopy;
 import logic.BookTitle;
+import logic.Borrow;
 
 public class BookTitleController {
 	private BookTitle tb;
@@ -41,9 +40,9 @@ public class BookTitleController {
 	@FXML
 	private Text txtDescription; // Text field to input the server IP address.
 	@FXML
-	private Button btnExit = null; // Button to exit the application.
+	private Button btnBack = null; // Button to exit the application.
 	@FXML
-	private Button btnSend = null; // Button to initiate the connection to the server.
+	private Button btnOrder = null; // Button to initiate the connection to the server.
 	@FXML
 	private TableView<BookCopy> bookTable; // Button to exit the application.
 	@FXML
@@ -53,7 +52,7 @@ public class BookTitleController {
 	@FXML
 	private TableColumn<BookCopy, String>  columnShelf; // Button to exit the application.
 	@FXML
-	private TableColumn<BookCopy, LocalDate> columnDueDate; // Button to exit the application.
+	private TableColumn<BookCopy, String> columnDueDate; // Button to exit the application.
 	
 
 	/**
@@ -66,10 +65,10 @@ public class BookTitleController {
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
 	    String title;
-	    if(currentTitle.equals("Subscriber - BookTitle")) {
+	    if(currentTitle.split(" ")[0].equals("Subscriber")) {
 	    	title = "Subscriber - Search";
 	    }
-	    else if(currentTitle.equals("Librarian - BookTitle")) {
+	    else if(currentTitle.split(" ")[0].equals("Librarian")) {
 	    	title = "Librarian - Search";
 	    }
 	    else {
@@ -79,6 +78,8 @@ public class BookTitleController {
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
+//		columnStatus.
+//		columnStatus.getCellData(0) ;
 	}
 	
 	public void loadBookTitle(BookTitle bt1) {
@@ -88,10 +89,11 @@ public class BookTitleController {
 		for(BookCopy bc : bookCopy) {
 			data.add(bc);
 		}
+		
 		columnBookId.setCellValueFactory(new PropertyValueFactory<>("copyID"));
 		columnStatus.setCellValueFactory(new PropertyValueFactory<>("available"));
 		columnShelf.setCellValueFactory(new PropertyValueFactory<>("shelf"));
-		//columnDueDate.setCellValueFactory(new PropertyValueFactory<>("titleName"));
+		columnDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 		bookTable.setItems(data);
 		bookTable.getSortOrder().add(columnBookId);
 		
@@ -99,6 +101,15 @@ public class BookTitleController {
 		this.txtTitle.setText(String.valueOf(tb.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(tb.getAuthorName()); // Sets the subscriber's name.
 		this.txtDescription.setText(tb.getDescription()); // Sets the subscriber's phone.
+	}
+	
+	public void loadOrderButton(String title) {
+		if(title.equals("Guest") || title.equals("Librarian")) {
+			btnOrder.setVisible(false);
+		}
+		else {
+			btnOrder.setVisible(true);
+		}
 	}
 	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{

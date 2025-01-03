@@ -12,7 +12,7 @@
 
 <AnchorPane prefHeight="352.0" prefWidth="501.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookTitleController">
    <children>
-      <Button id="btnExit" fx:id="btnBack" focusTraversable="false" layoutX="437.0" layoutY="302.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
+      <Button id="btnBack" fx:id="btnBack" focusTraversable="false" layoutX="437.0" layoutY="302.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
       <Button id="btnOrder" fx:id="btnOrder" focusTraversable="false" layoutX="14.0" layoutY="302.0" mnemonicParsing="false" onAction="#orderBtn" text="Order" />
       <Label id="lblTitle" fx:id="lblTitle" layoutX="38.0" layoutY="36.0" text="Title:" />
       <Label id="lblAuthorName" fx:id="lblAuthorName" layoutX="38.0" layoutY="62.0" text="Author Name:" />
