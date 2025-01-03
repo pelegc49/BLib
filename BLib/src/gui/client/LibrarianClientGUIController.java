@@ -49,15 +49,15 @@ public class LibrarianClientGUIController {
 	}
 	
 	public void extendTimeBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberFindFrame", "Extend Time");
+		nextPage(event, "SubscriberListFrame", "Extend Time");
 	}
 	
 	public void updateDetailsBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberFindFrame", "Update Details");
+		nextPage(event, "SubscriberListFrame", "Update Details");
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberFindFrame", "View History");
+		nextPage(event, "SubscriberListFrame", "View History");
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {
