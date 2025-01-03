@@ -47,7 +47,7 @@ public class SubscriberListController implements Initializable{
 	@FXML
 	private TableView<Subscriber> subTable;
 	@FXML
-	private TableColumn<Subscriber, String> idColumn;
+	private TableColumn<Subscriber, Integer> idColumn;
 	@FXML
 	private TableColumn<Subscriber, String> nameColumn;
 	@FXML
@@ -77,6 +77,7 @@ public class SubscriberListController implements Initializable{
 		phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
 		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 		statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+		subTable.setItems(data);
 		// allows to click on row
 		subTable.setRowFactory(tv -> {
 			TableRow<Subscriber> rowa = new TableRow<>();
