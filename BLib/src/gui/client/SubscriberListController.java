@@ -72,6 +72,7 @@ public class SubscriberListController implements Initializable{
 		System.out.println("subID = "+subID);
 		data = FXCollections.observableArrayList();
 		data.add(searched);
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
 		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
