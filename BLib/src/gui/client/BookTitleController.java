@@ -78,8 +78,16 @@ public class BookTitleController {
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
-//		columnStatus.
-//		columnStatus.getCellData(0) ;
+		String data;
+		int size = bookTable.getItems().size();
+		for(int cell = 0; cell < size; cell++) {
+			data = columnStatus.getCellData(cell);
+			if(data.equals("Available")) {
+				display("Can't do order because you can borrow");
+				break;
+			}
+		}
+		// ruben contniue me
 	}
 	
 	public void loadBookTitle(BookTitle bt1) {
@@ -110,6 +118,10 @@ public class BookTitleController {
 		else {
 			btnOrder.setVisible(true);
 		}
+	}
+	
+	public void display(String message) {
+		lblError.setText(message);
 	}
 	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
