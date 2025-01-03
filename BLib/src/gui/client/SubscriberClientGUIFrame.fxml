@@ -6,10 +6,9 @@
 <AnchorPane prefHeight="207.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberClientGUIController">
 	<children>
 		<Button id="btnBack" fx:id="btnBack" layoutX="218.0" layoutY="164.0" mnemonicParsing="false" onAction="#backBtn" text="Log Out" />
-	    <Button id="btnOrder" fx:id="btnOrder" layoutX="20.0" layoutY="56.0" mnemonicParsing="false" onAction="#orderBtn" text="Order" />
-	    <Button id="btnExtendTime" fx:id="btnExtendTime" layoutX="84.0" layoutY="56.0" mnemonicParsing="false" onAction="#extendTimeBtn" text="Extend Time" />
-	    <Button id="btnUpdateDetails" fx:id="btnUpdateDetails" layoutX="171.0" layoutY="56.0" mnemonicParsing="false" onAction="#updateDetailsBtn" text="Update Details" />
-	    <Button id="btnViewHistory" fx:id="btnViewHistory" layoutX="156.0" layoutY="113.0" mnemonicParsing="false" onAction="#viewHistoryBtn" text="View History" />
-	    <Button id="btnSearch" fx:id="btnSearch" layoutX="58.0" layoutY="113.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
+	    <Button id="btnExtendTime" fx:id="btnExtendTime" layoutX="34.0" layoutY="44.0" mnemonicParsing="false" onAction="#extendTimeBtn" prefHeight="25.0" prefWidth="100.0" text="Extend Time" />
+	    <Button id="btnUpdateDetails" fx:id="btnUpdateDetails" layoutX="156.0" layoutY="44.0" mnemonicParsing="false" onAction="#updateDetailsBtn" text="Update Details" />
+	    <Button id="btnViewHistory" fx:id="btnViewHistory" layoutX="162.0" layoutY="101.0" mnemonicParsing="false" onAction="#viewHistoryBtn" text="View History" />
+	    <Button id="btnSearch" fx:id="btnSearch" layoutX="52.0" layoutY="101.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
 	</children>
 </AnchorPane>

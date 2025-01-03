@@ -21,8 +21,6 @@ public class SubscriberClientGUIController {
 	@FXML
 	private Button btnBack = null; // Button for exiting the application.
 	@FXML
-	private Button btnOrder = null; // Button for submitting the login form.
-	@FXML
 	private Button btnExtendTime = null; // Button for submitting the login form.
 	@FXML
 	private Button btnUpdateDetails = null; // Button for submitting the login form.
@@ -35,12 +33,8 @@ public class SubscriberClientGUIController {
 		nextPage(event, "AuthenticationFrame", "Authentication");
 	}
 	
-	public void orderBtn(ActionEvent event) throws Exception {
-		//nextPage(event, loader, "OrderBookFrame", "Order Book");
-	}
-	
 	public void extendTimeBtn(ActionEvent event) throws Exception {
-		//nextPage(event, loader, "ExtendTimeFrame", "Extend Time");
+		//nextPage(event, "ExtendTimeFrame", "Extend Time");
 	}
 	
 	public void updateDetailsBtn(ActionEvent event) throws Exception {
@@ -64,7 +58,23 @@ public class SubscriberClientGUIController {
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {
-		//nextPage(event, loader, "ViewHistoryFrame", "View History");
+		// FXMLLoader for loading the main GUI.
+		FXMLLoader loader = new FXMLLoader();
+		// Hide the current window.
+		((Node) event.getSource()).getScene().getWindow().hide();
+
+		// Load the main application interface.
+		Stage primaryStage = new Stage();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml").openStream());
+		ViewHistoryController viewHistoryController = loader.getController();
+		viewHistoryController.loadHistory(AuthenticationController.subscriber.getId());
+		// Set up and display the new scene.
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle("Subscriber - View History");
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {

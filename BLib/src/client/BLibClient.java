@@ -151,9 +151,11 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Retrieve the subscriber's activity history
-	public List<Activity> getSubscriberHistory(Subscriber sub) {
-		msg = new Message("getSubscriberHistory", sub); // Create message
+	public List<Activity> getSubscriberHistory(int subID) {
+		msg = new Message("history", subID); // Create message
 		handleMessageFromClientUI(msg); // Send to server
+		if (msg.getCommand().equals("historyRetrieved")) // Check if found
+			return (List<Activity>) msg.getArguments().get(0); // Return subscriber
 		return null; // Placeholder return value
 	}
 
@@ -182,7 +184,6 @@ public class BLibClient extends AbstractClient {
 		if (msg.getCommand().equals("subscriberUpdated")) { // Check for success
 			return true;
 		}
-		System.out.println("notUpdated");
 		return false; // Update failed
 	}
 
@@ -197,7 +198,24 @@ public class BLibClient extends AbstractClient {
 		handleMessageFromClientUI(msg); // Send to server
 		if (msg.getCommand().equals("subscriberFound")) // Check if found
 			return (Subscriber) msg.getArguments().get(0); // Return subscriber
-		System.out.println("subscriberNotFound");
 		return null; // Subscriber not found
+	}
+	
+	public Integer getTitleNumOfAllowedExtend(BookTitle bt) {
+		// ruben change the call method later appropriate to the server
+		msg = new Message("getTitleNumOfAllowedExtend", bt); 
+		handleMessageFromClientUI(msg); 
+		if (msg.getCommand().equals("allowedExtend")) 
+			return (Integer) msg.getArguments().get(0); 
+		return null; 
+	}
+	
+	public Boolean orderTitle(BookTitle bt, Subscriber sub) {
+		// ruben change the call method later appropriate to the server
+		msg = new Message("orderTitle", bt, sub); 
+		handleMessageFromClientUI(msg); 
+		if (msg.getCommand().equals("orderSuccess")) 
+			return (Boolean) msg.getArguments().get(0); 
+		return null; 
 	}
 }

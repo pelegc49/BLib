@@ -34,7 +34,7 @@ import logic.BookTitle;
  * It manages the login process, including ID and password validation, 
  * and transitions the user to the main application interface upon successful login.
  */
-public class SearchController implements Initializable{
+public class SearchController{
 	private BookTitleController btc;
 	
 	@FXML
@@ -57,21 +57,14 @@ public class SearchController implements Initializable{
 		ObservableList<BookTitle> data;
 		String keyword = txtSearch.getText();
 		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyword);
-		System.out.println("keyword = "+keyword);
-		System.out.println(bookTitle);
-		if(bookTitle == null) {
-			display("No result found");
+		data = FXCollections.observableArrayList();
+		for(BookTitle bt : bookTitle) {
+			data.add(bt);
 		}
-		else {
-			data = FXCollections.observableArrayList();
-			for(BookTitle bt : bookTitle) {
-				data.add(bt);
-			}
-			authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
-			titleColumn.setCellValueFactory(new PropertyValueFactory<>("titleName"));
-			bookTable.setItems(data);
-			bookTable.getSortOrder().add(authorColumn);
-		}
+		authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
+		titleColumn.setCellValueFactory(new PropertyValueFactory<>("titleName"));
+		bookTable.setItems(data);
+		bookTable.getSortOrder().addAll(authorColumn,titleColumn);
 		
 		// allows to click on row
 		bookTable.setRowFactory(tv -> {
@@ -142,9 +135,7 @@ public class SearchController implements Initializable{
 	
 	// Enables the enter key to activate the OK button
 	public void handleKey(KeyEvent event) {
-		if(event.getCode().equals(KeyCode.ENTER)) {
-			searchBtn(event);
-		}
+		searchBtn(event);
 	}
 	
 	public void nextPage(Event event, String fileName, String title) throws Exception{
@@ -165,11 +156,5 @@ public class SearchController implements Initializable{
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -18,7 +18,6 @@ import logic.Subscriber;
  * and transitions the user to the main application interface upon successful login.
  */
 public class BookActionsController {
-	public static Subscriber subscriber; // Static reference to the currently authenticated subscriber.
 
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.

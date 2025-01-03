@@ -1,6 +1,5 @@
 package gui.client;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import javafx.collections.FXCollections;
@@ -20,10 +19,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.BookCopy;
 import logic.BookTitle;
-import logic.Borrow;
 
 public class BookTitleController {
-	private BookTitle tb;
+	private BookTitle bt;
 	// UI elements defined in the FXML file.
 	@FXML
 	private Label lblTitle; // Label to display error messages.
@@ -78,16 +76,51 @@ public class BookTitleController {
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
+		if(!AuthenticationController.subscriber.getStatus().equals("active")) {
+			display("Your activity was suspended.");
+			return;
+		}
 		String data;
 		int size = bookTable.getItems().size();
 		for(int cell = 0; cell < size; cell++) {
 			data = columnStatus.getCellData(cell);
 			if(data.equals("Available")) {
-				display("Can't do order because you can borrow");
-				break;
+				display("Can't do order because you can borrow an available book.");
+				return;
 			}
 		}
-		// ruben contniue me
+		Integer num = IPController.client.getTitleNumOfAllowedExtend(bt);
+		if(size + num <= 0) {
+			display("Can't do order, there are too many orders.");
+			return;
+		}
+		// for debugging purposes print true of false for this action \/
+		if(IPController.client.orderTitle(bt, AuthenticationController.subscriber)) {
+			// FXMLLoader for loading the main GUI.
+			FXMLLoader loader = new FXMLLoader(); 
+			
+			// Hide the current window.
+			((Node) event.getSource()).getScene().getWindow().hide();
+
+			// Load the main application interface.
+			Stage primaryStage = new Stage();
+			Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
+    		SearchController searchController = loader.getController();
+    		searchController.display("Order succeed.");
+			// Set up and display the new scene.
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "SearchFrame" +".css").toExternalForm());
+			primaryStage.setOnCloseRequest((E) -> System.exit(0));
+			primaryStage.setTitle("Subscriber - Search");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			System.out.println("order created");
+		}
+		else {
+			System.out.println("failed to create an order");
+		}
+		// debugging till here 										  /\
+		
 	}
 	
 	public void loadBookTitle(BookTitle bt1) {
@@ -105,10 +138,10 @@ public class BookTitleController {
 		bookTable.setItems(data);
 		bookTable.getSortOrder().add(columnBookId);
 		
-		this.tb = bt1; // Assigns the subscriber to the controller.
-		this.txtTitle.setText(String.valueOf(tb.getTitleName())); // Sets the subscriber's ID.
-		this.txtAuthorName.setText(tb.getAuthorName()); // Sets the subscriber's name.
-		this.txtDescription.setText(tb.getDescription()); // Sets the subscriber's phone.
+		this.bt = bt1; // Assigns the subscriber to the controller.
+		this.txtTitle.setText(String.valueOf(bt.getTitleName())); // Sets the subscriber's ID.
+		this.txtAuthorName.setText(bt.getAuthorName()); // Sets the subscriber's name.
+		this.txtDescription.setText(bt.getDescription()); // Sets the subscriber's phone.
 	}
 	
 	public void loadOrderButton(String title) {

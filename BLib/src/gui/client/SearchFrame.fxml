@@ -19,7 +19,7 @@
           <TableColumn id="titleColumn" fx:id="titleColumn" prefWidth="296.0" text="title" />
         </columns>
       </TableView>
-      <Label fx:id="lblError" layoutX="240.0" layoutY="22.0" prefHeight="17.0" prefWidth="174.0" textFill="RED">
+      <Label fx:id="lblError" layoutX="14.0" layoutY="376.0" prefHeight="17.0" prefWidth="174.0" textFill="#009600">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
