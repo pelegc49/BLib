@@ -97,7 +97,7 @@ public class SubscriberListController implements Initializable{
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+		nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
 		}
 
 	/**
