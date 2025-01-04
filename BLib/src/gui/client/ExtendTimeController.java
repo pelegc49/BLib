@@ -23,7 +23,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import logic.BookCopy;
-import logic.BookTitle; 
+import logic.BookTitle;
+import logic.Subscriber; 
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -41,21 +42,21 @@ public class ExtendTimeController{
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private TableView<BookTitle> bookTable;
+	private TableView<BookCopy> bookTable;
 	@FXML
-	private TableColumn<BookTitle, Boolean> checkBoxColumn;
+	private TableColumn<BookCopy, Boolean> checkBoxColumn;
 	@FXML
-	private TableColumn<BookTitle, String> authorColumn;
+	private TableColumn<BookCopy, String> authorColumn;
 	@FXML
-	private TableColumn<BookTitle, String> titleColumn;
+	private TableColumn<BookCopy, String> titleColumn;
 	@FXML
-	private TableColumn<BookTitle, Boolean> dueDateColumn;
+	private TableColumn<BookCopy, Boolean> dueDateColumn;
 	@FXML
 	private CheckBox checkBox;
 	
 	
 	public void searchBtn(Event event) {
-		ObservableList<BookTitle> data;
+		ObservableList<BookCopy> data;
 		String keyword = txtSearch.getText();
 		// ruben change me later. and tell peleg to do this
 		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyword);
@@ -123,6 +124,9 @@ public class ExtendTimeController{
 	    }
 	}
 
+	public void loadBorrows(Subscriber s1) {
+	}
+	
 	/**
 	 * Displays an error or informational message to the user.
 	 * 

@@ -179,7 +179,7 @@ public class BLibClient extends AbstractClient {
 	 * @return True if the subscriber is successfully updated, false otherwise.
 	 */
 	public boolean updateSubscriber(Subscriber updated) {
-		msg = new Message("updateSubscriber", updated); // Create update message
+		msg = new Message("updateSubscriber", updated, "subscriber"); // Create update message
 		handleMessageFromClientUI(msg); // Send to server
 		if (msg.getCommand().equals("subscriberUpdated")) { // Check for success
 			return true;

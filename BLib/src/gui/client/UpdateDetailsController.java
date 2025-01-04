@@ -1,5 +1,8 @@
 package gui.client;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -65,40 +68,64 @@ public class UpdateDetailsController {
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void saveBtn(ActionEvent event) throws Exception {
-		int digit_id;
-		try {
-			digit_id = Integer.parseInt(txtId.getText()); // Validates that the ID contains only digits.
-		} catch (Exception e) {
-			display("ID must have only digits", Color.RED); // Displays an error message for invalid ID.
+//		int digit_id;
+//		try {
+//			digit_id = Integer.parseInt(txtId.getText()); // Validates that the ID contains only digits.
+//		} catch (Exception e) {
+//			display("ID must have only digits", Color.RED); // Displays an error message for invalid ID.
+//			return;
+//		}
+//		// Checks if the ID has been modified.
+//		if (s.getId() != digit_id) {
+//			display("Don't change the ID", Color.RED); // Displays an error message if ID is changed.
+//			return;
+//		}
+//		// Checks if the name has been modified.
+//		else if (!s.getName().equals(txtName.getText())) {
+//			display("Don't change the name", Color.RED); // Displays an error message if name is changed.
+//			return;
+//		}
+		boolean changed = false;
+		if(!txtPhone.getText().equals(s.getPhone())) {
+			try {
+				Integer.parseInt(txtPhone.getText()); // Validates that the phone number contains only digits.
+			} catch (Exception e) {
+				display("Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
+				return;
+			}
+			changed = true;
+		}
+		
+		if(!txtEmail.getText().equals(s.getEmail())) {
+			String regex = "^[A-Za-z0-9]{1,30}@"
+					+"[A-Za-z0-9]{1,16}"
+					+"(?:\\.[A-Za-z0-9]{1,16}){0,4}"
+					+"\\.[A-Za-z]{1,}$";
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(txtEmail.getText());
+			
+			if(!matcher.matches()) {
+				display("Email not valid", Color.RED); // Displays an error message for invalid phone number.
+				return;
+			}
+			changed = true;
+		}
+		
+		if(changed) {
+			// Updates the subscriber's email and phone details.
+			this.s.setEmail(txtEmail.getText());
+			this.s.setPhone(txtPhone.getText());
+	
+			// Attempts to save the updated subscriber details.
+			if (IPController.client.updateSubscriber(s)) {
+				display("saved Successfully!", Color.GREEN); // Displays a success message if save is successful.
+				return;
+			}
+			// Displays an error message if save fails.
+			display("could not save", Color.RED);
 			return;
 		}
-		// Checks if the ID has been modified.
-		if (s.getId() != digit_id) {
-			display("Don't change the ID", Color.RED); // Displays an error message if ID is changed.
-			return;
-		}
-		// Checks if the name has been modified.
-		else if (!s.getName().equals(txtName.getText())) {
-			display("Don't change the name", Color.RED); // Displays an error message if name is changed.
-			return;
-		}
-		try {
-			Integer.parseInt(txtPhone.getText()); // Validates that the phone number contains only digits.
-		} catch (Exception e) {
-			display("Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
-			return;
-		}
-		// Updates the subscriber's email and phone details.
-		this.s.setEmail(txtEmail.getText());
-		this.s.setPhone(txtPhone.getText());
-
-		// Attempts to save the updated subscriber details.
-		if (IPController.client.updateSubscriber(s)) {
-			display("saved Successfully!", Color.GREEN); // Displays a success message if save is successful.
-			return;
-		}
-		// Displays an error message if save fails.
-		display("could not save", Color.RED);
+		display("You didn't change anything", Color.RED);
 	}
 
 	/**
