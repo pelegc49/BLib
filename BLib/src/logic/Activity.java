@@ -1,8 +1,9 @@
 package logic;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Activity {
+public class Activity implements Serializable{
 
 	// Private member variables to store the activity details
 	private int id; // ID of the subscriber
