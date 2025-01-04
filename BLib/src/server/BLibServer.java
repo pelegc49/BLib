@@ -241,13 +241,14 @@ public class BLibServer extends AbstractServer {
 				case "extend":
 					if (BLibDBC.getInstance()
 							.getTitleNumOfAllowedExtend(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
-						client.sendToClient(new Message("failed")); // If no extension allowed, send failure message
+						client.sendToClient(new Message("failed","this title is ordered")); // If no extension allowed, send failure message
 						break;
 					}
 
 					if (args.get(2).equals("subscriber")) {
-						if (!canExtend((Borrow) args.get(0))) { // Check if the borrow can be extended
-							client.sendToClient(new Message("failed"));
+						String err = canExtend((Borrow) args.get(0));
+						if (err != null) { // Check if the borrow can be extended
+							client.sendToClient(new Message("failed",err));
 							break;
 						}
 					}
@@ -256,7 +257,7 @@ public class BLibServer extends AbstractServer {
 					if ((Boolean) ret == true) {
 						client.sendToClient(new Message("success")); // Send success message
 					} else {
-						client.sendToClient(new Message("failed")); // Send failure message
+						client.sendToClient(new Message("failed","DB error")); // Send failure message
 					}
 					// TODO: add message logic
 
@@ -268,7 +269,7 @@ public class BLibServer extends AbstractServer {
 																										// active borrow
 																										// for book copy
 					if (borrow == null) {
-						client.sendToClient(new Message("failed")); // Send failure message if borrow creation fails
+						client.sendToClient(new Message("failed","DB error")); // Send failure message if borrow creation fails
 						break;
 					}
 					// If the due date is passed, process as late return and potentially freeze the
@@ -277,9 +278,9 @@ public class BLibServer extends AbstractServer {
 						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), true);
 						if (borrow.getDueDate().plusWeeks(1).compareTo(today) <= 0) {
 							BLibDBC.getInstance().freezeSubscriber(borrow.getSubscriber().getId());
-							client.sendToClient(new Message("successFreeze")); // Send freeze success message
+							client.sendToClient(new Message("success","Freeze")); // Send freeze success message
 						} else {
-							client.sendToClient(new Message("successLate")); // Send late return success message
+							client.sendToClient(new Message("success","Late")); // Send late return success message
 						}
 					} else {
 						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), false);
@@ -312,11 +313,13 @@ public class BLibServer extends AbstractServer {
 
 	}
 
+	
+	
 	public void execute(Message msg) {
 		List<Object> args = ((Message) msg).getArguments();
 		switch (msg.getCommand()) {
 		case "unfreeze":
-
+			
 			break;
 		case "sendEmail":
 			//TODO: create and call sendEmail()
@@ -331,21 +334,21 @@ public class BLibServer extends AbstractServer {
 	 * @param borrow the borrow object to check
 	 * @return true if the borrow can be extended, false otherwise
 	 */
-	public static boolean canExtend(Borrow borrow) {
+	public static String canExtend(Borrow borrow) {
 		// Check if the subscriber's status is "frozen". If yes, they can't extend the
 		// borrow period.
 		if (borrow.getSubscriber().getStatus().equals("frozen")) {
-			return false;
+			return "the subscriber is frozen";
 		}
 
 		// Check if the borrow period is less than or equal to one week. If the borrow
 		// was made within the last week,
 		// it cannot be extended.
 		if (borrow.getDateOfBorrow().plusWeeks(1).compareTo(LocalDate.now()) >= 0) {
-			return false;
+			return "extention not available until %s".formatted(borrow.getDateOfBorrow().plusWeeks(1));
 		}
 		// If none of the conditions above are met, the borrow can be extended.
-		return true;
+		return null;
 	}
 
 	private String generatePassword(int length) {

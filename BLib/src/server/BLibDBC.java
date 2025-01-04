@@ -37,10 +37,9 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("1234"))
+		if (!db.connect("12341234"))
 			return;
-		System.out.println(db.extendDuration(null, 0, null));
-
+		System.out.println(db.orderBook(4444, 10));
 		db.disconnect();
 	}
 
@@ -509,6 +508,7 @@ public class BLibDBC {
 				pstmt.setString(2, "extension");
 				pstmt.setString(3, "\"%s\" extended borrow by %s on %s, the new due date is %s"
 						.formatted(borrow.getBook().getTitle(), borrow.getSubscriber().getName(), today, newDueDate));
+			
 			} else {
 				pstmt.setString(2, "manual extension");
 				pstmt.setString(3,
@@ -518,6 +518,15 @@ public class BLibDBC {
 			}
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
+			
+			if(userType.equals("subscriber")) {
+				LocalDateTime now = LocalDateTime.now();
+				pstmt = conn.prepareStatement("INSERT INTO librarian_messages(message, time) VALUE(?,?);");
+				pstmt.setString(1, "the subscriber %s extended their borrow duration of %s by %d days, the new due date is %s"
+						.formatted(borrow.getSubscriber().getName(),borrow.getBook().getTitle(),days,newDueDate));
+				pstmt.setTimestamp(2, Timestamp.valueOf(now));
+				pstmt.execute();
+			}
 			// Commit the transaction
 			conn.commit();
 			return true; // Return true if the extension is successful
@@ -601,6 +610,8 @@ public class BLibDBC {
 			pstmt.setInt(2, book.getCopyID());
 			pstmt.execute();
 
+			//TODO: update orders
+			
 			// Log the return activity in the history table
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
@@ -653,9 +664,19 @@ public class BLibDBC {
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "freeze");
 			pstmt.setString(3, "%s got frozen on %s until %s".formatted(sub.getName(), today, today.plusMonths(1)));
-
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
+			
+			
+			LocalDateTime unfreezeTime = LocalDateTime.now().plusMonths(1);
+			pstmt = conn.prepareStatement(
+					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
+			pstmt.setString(1, "unfreeze");
+			pstmt.setString(2, "%d".formatted(sub.getId()));
+			pstmt.setTimestamp(3, Timestamp.valueOf(unfreezeTime));
+			pstmt.setString(4, "%d".formatted(sub.getId()));
+			pstmt.execute();
+			
 			// Commit the transaction
 			conn.commit();
 			return true;
@@ -718,9 +739,6 @@ public class BLibDBC {
 			ret.add(activity);
 		}
 		return ret;
-		
-		
-		
 		} catch (SQLException e) {
 			return null;
 		}
@@ -752,7 +770,7 @@ public class BLibDBC {
 		}
 	}
 	
-	
+	//TODO:test
 	public List<Message> getCommands(){
 		LocalDateTime now = LocalDateTime.now();
 		try {
@@ -784,7 +802,7 @@ public class BLibDBC {
 			return null; // Return false if an error occurs
 		}
 	}
-
+	//TODO:test
 	public List<Borrow> getSubscriberActiveBorrows(Subscriber sub) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM borrows WHERE subscriber_id = ? AND date_of_return IS NULL");
@@ -807,6 +825,73 @@ public class BLibDBC {
 
 	}
 
+	public List<String> getLibrarianMessages(){
+		try {
+			pstmt = conn.prepareStatement("SELECT message FROM librarian_messages ORDER BY time");
+			ResultSet rs = pstmt.executeQuery();
+			List<String> ret = new ArrayList<>();
+			while (rs.next()) {
+				ret.add(rs.getString(1));
+			}
+			return ret;
+		} catch (SQLException e) {
+			// If an error occurs, return null
+			return null;
+		}
+	}
+	public Boolean clearLibrarianMessages(){
+		try {
+			pstmt = conn.prepareStatement("DELETE FROM librarian_messages;");
+			pstmt.execute();
+			conn.commit();
+			return true;
+		} catch (SQLException e) {
+			rollback();
+			return false;
+		}
+	}
+	
+	public Boolean orderBook(int subID, int titleID){
+		try {
+			Subscriber sub = getSubscriberByID(subID);
+			if(sub==null) {
+				return false;
+			}
+			BookTitle title = getTitleByID(titleID);
+			if(title==null) {
+				return false;
+			}
+			LocalDate today = LocalDate.now();
+			
+			
+			//orders
+			pstmt = conn.prepareStatement("INSERT INTO orders(subscriber_id, title_id, order_date) VALUE (?,?,?);");
+			pstmt.setInt(1,subID);
+			pstmt.setInt(2,titleID);
+			pstmt.setDate(3,Date.valueOf(today));
+			pstmt.execute();
+			
+			//titles
+			pstmt = conn.prepareStatement("UPDATE titles SET num_of_orders = num_of_orders + 1 WHERE title_id = ?;");
+			pstmt.setInt(1,titleID);
+			pstmt.execute();
+			
+			//history
+			pstmt = conn.prepareStatement(
+					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
+			pstmt.setInt(1, subID);
+			pstmt.setString(2, "order");
+			pstmt.setString(3, "%s ordered the book \"%s\" on %s".formatted(sub.getName(), title, today));
+			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.execute();
+			conn.commit();
+			return true;
+		} catch (SQLException e) {
+			rollback();
+			return false;
+		}
+	}
+	
 }
 
 
