@@ -182,6 +182,7 @@ public class BLibDBC {
 			LocalDate today = LocalDate.now();
 			LocalDate dueDate = today.plusWeeks(2);
 
+
 			// Insert new borrow record into the database
 			pstmt = conn.prepareStatement(
 					"INSERT INTO borrows(subscriber_id,copy_id,date_of_borrow,due_date) VALUE(?,?,?,?)");
@@ -206,7 +207,19 @@ public class BLibDBC {
 					"\"%s\" borrowed by %s on %s".formatted(copy.getTitle(), sub.getName(), today.toString()));
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
-
+			
+			// time the execution of send message
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime reminderTime = now.plusWeeks(2).minusDays(1);
+			
+			pstmt = conn.prepareStatement(
+					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
+			pstmt.setString(1, "sendEmail");
+			pstmt.setString(2, "%s;dear %s,\nTomorrow (%s), your borrow of %s is due.\nPlease return it soon.\nBraude Library".formatted(sub.getEmail(),sub.getName(),dueDate,copy.getTitle()));
+			pstmt.setTimestamp(3, Timestamp.valueOf(reminderTime));
+			pstmt.setString(4, "%s;%s".formatted(sub.getId(),copy.getCopyID()));
+			pstmt.execute();
+			
 			// Commit the transaction
 			conn.commit();
 			return true; // Return true if all operations succeed
@@ -740,22 +753,31 @@ public class BLibDBC {
 	}
 	
 	
-	Set<Message> getCommands(){
+	public List<Message> getCommands(){
 		LocalDateTime now = LocalDateTime.now();
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM commands WHERE time_of_execution < ?");
 			pstmt.setTimestamp(1, Timestamp.valueOf(now));
 			ResultSet rs = pstmt.executeQuery();
-			List<Integer> commandIDs = new ArrayList<Integer>();
+			List<Integer> commandIDs = new ArrayList<>();
+			List<Message> ret = new ArrayList<>();
 			while(rs.next()) {
 				commandIDs.add(rs.getInt(1));
-				
+				Message msg = new Message(rs.getString(2));
+				for(String arg: rs.getString(3).split(";")) {
+					msg.addArgument(arg);
+				}
+				ret.add(msg);
 			}
 
-			
+			for(int i:commandIDs) {
+				pstmt = conn.prepareStatement("DELETE FROM commands WHERE id = ?");
+				pstmt.setInt(1, i);
+				pstmt.execute();
+			}
 			// Commit the transaction
 			conn.commit();
-			return null;
+			return ret;
 
 		} catch (SQLException e) {
 			rollback(); // Rollback transaction if any error occurs
