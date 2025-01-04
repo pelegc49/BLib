@@ -363,7 +363,7 @@ public class BLibServer extends AbstractServer {
 		// it cannot be extended.
 		
 		if (borrow.getDueDate().minusWeeks(1).compareTo(LocalDate.now()) >= 0) {
-			return "extention not available until %s".formatted(borrow.getDateOfBorrow().plusWeeks(1));
+			return "extention not available until %s".formatted(borrow.getDueDate().minusWeeks(1));
 		}
 		// If none of the conditions above are met, the borrow can be extended.
 		return null;
