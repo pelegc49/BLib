@@ -3,6 +3,8 @@ package logic;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import javafx.scene.control.CheckBox;
+
 public class Borrow implements Serializable {
 
 	// Private member variables for storing borrowing details
@@ -11,7 +13,7 @@ public class Borrow implements Serializable {
 	private LocalDate dateOfBorrow; // The date when the book was borrowed
 	private LocalDate dueDate; // The due date for returning the book
 	private LocalDate dateOfReturn; // The actual date when the book was returned
-
+	private CheckBox checkBox;
 
 	// Constructor to initialize the borrowing details
 	public Borrow(Subscriber subscriber,BookCopy book,LocalDate dateOfBorrow, LocalDate dueDate, LocalDate dateOfReturn) {
@@ -20,8 +22,17 @@ public class Borrow implements Serializable {
 		this.dateOfBorrow = dateOfBorrow; // Set the date of borrow
 		this.dueDate = dueDate; // Set the due date
 		this.dateOfReturn = dateOfReturn; // Set the return date
+		checkBox.setSelected(false);
 	}
 
+	public boolean isSelected() {
+		return checkBox.isSelected();
+	}
+	
+	public void setSelected(boolean bool) {
+		checkBox.setSelected(bool);
+	}
+	
 	// Getter method for the date of borrow
 	public LocalDate getDateOfBorrow() {
 		return dateOfBorrow; // Return the date of borrow
