@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.BookCopy;
 import logic.BookTitle;
+import logic.Message;
 
 public class BookTitleController {
 	private BookTitle bt;
@@ -76,13 +77,9 @@ public class BookTitleController {
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
-		/*
-		 * ruben, the orderTitle will return a message object with an error 
-		 * message to display and boolean parameter that will indicate of the
-		 * order was created
-		 */
 		// for debugging purposes print true of false for this action \/
-		if(IPController.client.orderTitle(bt, AuthenticationController.subscriber)) {
+		Message msg = IPController.client.orderTitle(AuthenticationController.subscriber, bt);
+		if(msg.getCommand().equals("success")) {
 			// FXMLLoader for loading the main GUI.
 			FXMLLoader loader = new FXMLLoader(); 
 			
@@ -104,6 +101,7 @@ public class BookTitleController {
 			System.out.println("order created");
 		}
 		else {
+			display((String)msg.getArguments().get(0));
 			System.out.println("failed to create an order");
 		}
 		// debugging till here 										  /\

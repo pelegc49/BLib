@@ -384,14 +384,14 @@ public class BLibServer extends AbstractServer {
 	
 	private String canOrder(Subscriber sub, BookTitle title) {
 		if(sub.getStatus() == "frozen")
-			return "the subscriber is frozen";
+			return "The subscriber is frozen";
 		
 		if(BLibDBC.getInstance().getTitleMagicNumber(title)>0) {
-			return "not all of the title copies are borrowed"; 
+			return "Not all of the title copies are borrowed"; 
 		}
 		
 		if(-BLibDBC.getInstance().getTitleMagicNumber(title) >= BLibDBC.getInstance().getNumOfCopies(title)) {
-			return "there are to many active orders";
+			return "There are too many active orders";
 		}
 		return null;
 			

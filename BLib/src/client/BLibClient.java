@@ -135,8 +135,7 @@ public class BLibClient extends AbstractClient {
 	// Extend the borrowing duration for a book
 	public Message extendDuration(Borrow borrow, int days) {
 		msg = new Message("extend", borrow, days); // Create message
-		//handleMessageFromClientUI(msg); // Send to server
-		msg = new Message("failed", "frozen");
+		handleMessageFromClientUI(msg); // Send to server
 		return msg; // Return subscriber
 	}
 
@@ -211,12 +210,10 @@ public class BLibClient extends AbstractClient {
 		return null; 
 	}
 	
-	public Boolean orderTitle(BookTitle bt, Subscriber sub) {
-		msg = new Message("orderTitle", bt, sub); 
+	public Message orderTitle(Subscriber sub, BookTitle bt) {
+		msg = new Message("order", sub, bt); 
 		handleMessageFromClientUI(msg); 
-		if (msg.getCommand().equals("orderSuccess")) 
-			return (Boolean) msg.getArguments().get(0); 
-		return null; 
+		return msg;
 	}
 	
 	public List<Borrow> getBorrowBySubscriberID(int subID) {

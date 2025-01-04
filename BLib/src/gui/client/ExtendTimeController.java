@@ -81,33 +81,30 @@ public class ExtendTimeController{
 	        if (borrowCheckBox.isSelected()) {
 	            Message msg = IPController.client.extendDuration(borrow, 7);
 	            if (msg.getCommand().equals("failed")) {
-	                switch ((String) msg.getArguments().get(0)) {
-	                    case "frozen":
-	                        display("Your account is suspended", Color.RED);
-	                        flag = true;
-	                        break;
-	                    case "moreThanWeek":
-	                    	borrowCheckBox.setErrorMessage("moreThanWeek");
-	                        break;
-	                    case "thereAreOrder":
-	                    	borrowCheckBox.setErrorMessage("thereAreOrder");
-	                        break;
-	                }
-	            } else {
+                    if(((String) msg.getArguments().get(0)).equals("the subscriber is frozen")) {
+                        display("Your account is suspended", Color.RED);
+                        flag = true;
+                        break;
+                    }
+                    else {
+                    	borrowCheckBox.setErrorMessage((String) msg.getArguments().get(0));
+                    }
+                }
+	            else {
 	            	borrowCheckBox.setErrorMessage("Extended succeed");
 	            }
-	            if (flag) {
-	                break;
-	            }
-	        }
-	    }
+            }
+            if (flag) {
+                break;
+            }
+        }
 	    loadBorrows(subID);
 	}
 	
 	public void loadBorrows(int subID) {
 		this.subID = subID;
 		ObservableList<Borrow> data;
-		List<Borrow> borrows = IPController.client.getBorrowBySubscriberID(subID);
+		List<Borrow> borrows = IPController.client.getBorrowBySubscriberID(subID); // TODO: this function from BLibServer
 		data = FXCollections.observableArrayList();
 		for(Borrow b : borrows) {
 			data.add(b);
