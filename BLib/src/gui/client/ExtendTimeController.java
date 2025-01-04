@@ -1,7 +1,6 @@
 package gui.client;
 
-import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,15 +14,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import logic.BookCopy;
-import logic.BookTitle;
+import logic.Borrow;
+import logic.BorrowWithCheckBox;
+import logic.Message;
 import logic.Subscriber; 
 
 /**
@@ -32,7 +31,7 @@ import logic.Subscriber;
  * and transitions the user to the main application interface upon successful login.
  */
 public class ExtendTimeController{
-	
+	private int subID;
 	@FXML
 	private TextField txtSearch;
 	@FXML
@@ -42,70 +41,21 @@ public class ExtendTimeController{
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private TableView<BookCopy> bookTable;
+	private Button btnExtend = null; // Button for submitting the login form.
 	@FXML
-	private TableColumn<BookCopy, Boolean> checkBoxColumn;
+	private TableView<Borrow> bookTable;
 	@FXML
-	private TableColumn<BookCopy, String> authorColumn;
+	private TableColumn<BorrowWithCheckBox, Boolean> checkBoxColumn;
 	@FXML
-	private TableColumn<BookCopy, String> titleColumn;
+	private TableColumn<Borrow, String> authorColumn;
 	@FXML
-	private TableColumn<BookCopy, Boolean> dueDateColumn;
+	private TableColumn<Borrow, String> titleColumn;
+	@FXML
+	private TableColumn<Borrow, Boolean> dueDateColumn;
+	@FXML
+	private TableColumn<BorrowWithCheckBox, String> errorMessageColumn;
 	@FXML
 	private CheckBox checkBox;
-	
-	
-	public void searchBtn(Event event) {
-		ObservableList<BookCopy> data;
-		String keyword = txtSearch.getText();
-		// ruben change me later. and tell peleg to do this
-		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyword);
-		data = FXCollections.observableArrayList();
-		for(BookTitle bt : bookTitle) {
-			data.add(bt);
-		}
-		authorColumn.setCellValueFactory(new PropertyValueFactory<>("authorName"));
-		titleColumn.setCellValueFactory(new PropertyValueFactory<>("titleName"));
-		bookTable.setItems(data);
-		bookTable.getSortOrder().addAll(authorColumn,titleColumn);
-		
-		// allows to click on row
-		bookTable.setRowFactory(tv -> {
-			TableRow<BookTitle> rowa = new TableRow<>();
-		    rowa.setOnMouseClicked(eventa -> {
-		        if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
-		        	BookTitle rowData = rowa.getItem();
-		            System.out.println(rowData); // delete me
-		    		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		    	    String currentTitle = currentStage.getTitle();
-		    	    String[] title = currentTitle.split(" ");
-		    	    
-		    		// FXMLLoader for loading the main GUI.
-		    		FXMLLoader loader = new FXMLLoader(); 
-		    		// Hide the current window.
-		    		((Node) event.getSource()).getScene().getWindow().hide();
-
-		    		// Load the main application interface.
-		    		Stage primaryStage = new Stage();
-		    		Pane root = null;
-					try {
-						root = loader.load(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".fxml").openStream());
-					} catch (IOException e) {}
-		    		BookTitleController bookTitleController = loader.getController();
-		    		bookTitleController.loadBookTitle(rowData);
-		    		bookTitleController.loadOrderButton(title[0]);
-		    		// Set up and display the new scene.
-		    		Scene scene = new Scene(root);
-		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".css").toExternalForm());
-		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		    		primaryStage.setTitle(title[0] +" - "+ rowData.getTitleName());
-		    		primaryStage.setScene(scene);
-		    		primaryStage.show();
-		        }
-		    });
-	    return rowa ;
-		});
-	}
 
 	/**
 	 * Handles the "Exit" button action. Terminates the application.
@@ -124,7 +74,53 @@ public class ExtendTimeController{
 	    }
 	}
 
-	public void loadBorrows(Subscriber s1) {
+	public void extendBtn(ActionEvent event) {
+	    boolean flag = false;
+	    for (Borrow borrow : bookTable.getItems()) {
+	    	BorrowWithCheckBox borrowCheckBox = ((BorrowWithCheckBox)borrow);
+	        if (borrowCheckBox.isSelected()) {
+	            Message msg = IPController.client.extendDuration(borrow, 7);
+	            if (msg.getCommand().equals("failed")) {
+	                switch ((String) msg.getArguments().get(0)) {
+	                    case "frozen":
+	                        display("Your account is suspended", Color.RED);
+	                        flag = true;
+	                        break;
+	                    case "moreThanWeek":
+	                    	borrowCheckBox.setErrorMessage("moreThanWeek");
+	                        break;
+	                    case "thereAreOrder":
+	                    	borrowCheckBox.setErrorMessage("thereAreOrder");
+	                        break;
+	                }
+	            } else {
+	            	borrowCheckBox.setErrorMessage("Extended succeed");
+	            }
+	            if (flag) {
+	                break;
+	            }
+	        }
+	    }
+	    loadBorrows(subID);
+	}
+	
+	public void loadBorrows(int subID) {
+		this.subID = subID;
+		ObservableList<Borrow> data;
+		List<Borrow> borrows = IPController.client.getBorrowBySubscriberID(subID);
+		data = FXCollections.observableArrayList();
+		for(Borrow b : borrows) {
+			data.add(b);
+		}
+		
+		checkBoxColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
+		authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
+		titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+		dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+		errorMessageColumn.setCellValueFactory(new PropertyValueFactory<>("errorMessage"));
+		
+		bookTable.setItems(data);
+		bookTable.getSortOrder().add(dueDateColumn);
 	}
 	
 	/**
@@ -132,13 +128,9 @@ public class ExtendTimeController{
 	 * 
 	 * @param message The message to display.
 	 */
-	public void display(String message) {
-		lblError.setText(message);
-	}
-	
-	// Enables the enter key to activate the OK button
-	public void handleKey(KeyEvent event) {
-		searchBtn(event);
+	public void display(String message, Color color) {
+		lblError.setTextFill(color); // Sets the color of the error label.
+		lblError.setText(message); // Sets the text of the error label.
 	}
 	
 	public void nextPage(Event event, String fileName, String title) throws Exception{

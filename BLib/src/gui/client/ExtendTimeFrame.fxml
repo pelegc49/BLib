@@ -5,28 +5,27 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="411.0" prefWidth="427.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ExtendTimeController">
 	<children>
-      <TextField id="txtSearch" fx:id="txtSearch" layoutX="14.0" layoutY="18.0" onKeyPressed="#handleKey" promptText="Search" />
  	  <Button id="btnBack" fx:id="btnBack" layoutX="371.0" layoutY="372.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
-      <Button id="btnSearch" fx:id="btnSearch" layoutX="174.0" layoutY="18.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
-      <TableView id="bookTable" fx:id="bookTable" layoutX="13.0" layoutY="51.0" prefHeight="313.0" prefWidth="401.0">
+      <Button id="btnExtend" fx:id="btnExtend" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" onAction="#extendBtn" text="Extend" />
+      <TableView id="bookTable" fx:id="bookTable" layoutX="13.0" layoutY="12.0" prefHeight="352.0" prefWidth="401.0">
         <columns>
           <TableColumn id="checkBoxColumn" fx:id="checkBoxColumn" minWidth="0.0" prefWidth="22.0">
              <graphic>
                 <CheckBox id="checkBox" fx:id="checkBox" mnemonicParsing="false" />
              </graphic>
           </TableColumn>
-          <TableColumn id="authorColumn" fx:id="authorColumn" prefWidth="109.0" text="author" />
-          <TableColumn id="titleColumn" fx:id="titleColumn" prefWidth="170.0" text="title" />
-          <TableColumn id="dueDateColumn" fx:id="dueDateColumn" prefWidth="99.0" text="due date" />
+          <TableColumn id="authorColumn" fx:id="authorColumn" prefWidth="60.0" text="author" />
+          <TableColumn id="titleColumn" fx:id="titleColumn" prefWidth="124.0" text="title" />
+          <TableColumn id="dueDateColumn" fx:id="dueDateColumn" prefWidth="94.0" text="due date" />
+            <TableColumn id="errorMessageColumn" fx:id="errorMessageColumn" prefWidth="100.0" text="message" />
         </columns>
       </TableView>
-      <Label fx:id="lblError" layoutX="14.0" layoutY="376.0" prefHeight="17.0" prefWidth="174.0" textFill="#009600">
+      <Label fx:id="lblError" layoutX="79.0" layoutY="376.0" prefHeight="17.0" prefWidth="174.0" textFill="#009600">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

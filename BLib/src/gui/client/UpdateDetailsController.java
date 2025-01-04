@@ -68,23 +68,6 @@ public class UpdateDetailsController {
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void saveBtn(ActionEvent event) throws Exception {
-//		int digit_id;
-//		try {
-//			digit_id = Integer.parseInt(txtId.getText()); // Validates that the ID contains only digits.
-//		} catch (Exception e) {
-//			display("ID must have only digits", Color.RED); // Displays an error message for invalid ID.
-//			return;
-//		}
-//		// Checks if the ID has been modified.
-//		if (s.getId() != digit_id) {
-//			display("Don't change the ID", Color.RED); // Displays an error message if ID is changed.
-//			return;
-//		}
-//		// Checks if the name has been modified.
-//		else if (!s.getName().equals(txtName.getText())) {
-//			display("Don't change the name", Color.RED); // Displays an error message if name is changed.
-//			return;
-//		}
 		boolean changed = false;
 		if(!txtPhone.getText().equals(s.getPhone())) {
 			try {

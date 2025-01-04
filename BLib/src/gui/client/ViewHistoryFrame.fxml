@@ -12,7 +12,7 @@
         <columns>
           <TableColumn id="typeColumn" fx:id="typeColumn" prefWidth="110.0" text="type" />
           <TableColumn id="descriptionColumn" fx:id="descriptionColumn" prefWidth="130.0" text="description" />
-          <TableColumn id="dateColumn" fx:id="dateColumn" prefWidth="160.0" text="date" />
+          <TableColumn id="dateColumn" fx:id="dateColumn" prefWidth="160.0" sortType="DESCENDING" text="date" />
         </columns>
       </TableView>
 	</children>

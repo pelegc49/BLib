@@ -133,9 +133,11 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Extend the borrowing duration for a book
-	public void extendDuration(Borrow borrow, int days) {
-		msg = new Message("extendDuration", borrow, days); // Create message
-		handleMessageFromClientUI(msg); // Send to server
+	public Message extendDuration(Borrow borrow, int days) {
+		msg = new Message("extend", borrow, days); // Create message
+		//handleMessageFromClientUI(msg); // Send to server
+		msg = new Message("failed", "frozen");
+		return msg; // Return subscriber
 	}
 
 	// Order a book for a subscriber
@@ -202,7 +204,6 @@ public class BLibClient extends AbstractClient {
 	}
 	
 	public Integer getTitleNumOfAllowedExtend(BookTitle bt) {
-		// ruben change the call method later appropriate to the server
 		msg = new Message("getTitleNumOfAllowedExtend", bt); 
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("allowedOrder")) 
@@ -211,11 +212,18 @@ public class BLibClient extends AbstractClient {
 	}
 	
 	public Boolean orderTitle(BookTitle bt, Subscriber sub) {
-		// ruben change the call method later appropriate to the server
 		msg = new Message("orderTitle", bt, sub); 
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("orderSuccess")) 
 			return (Boolean) msg.getArguments().get(0); 
+		return null; 
+	}
+	
+	public List<Borrow> getBorrowBySubscriberID(int subID) {
+		msg = new Message("getBorrowBySubscriberID", subID); 
+		handleMessageFromClientUI(msg); 
+		if (msg.getCommand().equals("borrowFound")) 
+			return (List<Borrow>) msg.getArguments().get(0); 
 		return null; 
 	}
 }
