@@ -1,12 +1,15 @@
 package server;
 
+import java.security.AlgorithmParametersSpi;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,7 @@ import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
 import logic.Borrow;
+import logic.Message;
 import logic.Subscriber;
 
 /**
@@ -459,6 +463,8 @@ public class BLibDBC {
 
 	}
 
+	
+	
 	/**
 	 * Extends the duration of a Borrow by a specified number of days and logs the
 	 * extension activity.
@@ -683,7 +689,8 @@ public class BLibDBC {
 			return false; // Return false if an error occurs
 		}
 	}
-
+	
+	
 	public List<Activity> getSubscriberHistory(int subID){
 		try {
 		Subscriber sub = getSubscriberByID(subID);
@@ -694,7 +701,7 @@ public class BLibDBC {
 		ResultSet rs = pstmt.executeQuery();
 		List<Activity> ret = new ArrayList<>();
 		while (rs.next()) {
-			Activity activity = new Activity(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4).toLocalDate());
+			Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
 			ret.add(activity);
 		}
 		return ret;
@@ -731,7 +738,60 @@ public class BLibDBC {
 			return false; // Return false if an error occurs
 		}
 	}
+	
+	
+	Set<Message> getCommands(){
+		LocalDateTime now = LocalDateTime.now();
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM commands WHERE time_of_execution < ?");
+			pstmt.setTimestamp(1, Timestamp.valueOf(now));
+			ResultSet rs = pstmt.executeQuery();
+			List<Integer> commandIDs = new ArrayList<Integer>();
+			while(rs.next()) {
+				commandIDs.add(rs.getInt(1));
+				
+			}
+
+			
+			// Commit the transaction
+			conn.commit();
+			return null;
+
+		} catch (SQLException e) {
+			rollback(); // Rollback transaction if any error occurs
+			return null; // Return false if an error occurs
+		}
+	}
+
+	public List<Borrow> getSubscriberActiveBorrows(Subscriber sub) {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM borrows WHERE subscriber_id = ? AND date_of_return IS NULL");
+			pstmt.setInt(1, sub.getId());
+			ResultSet rs = pstmt.executeQuery();
+			List<Borrow> ret = new ArrayList<>();
+			while (rs.next()) {
+				BookCopy copy = getCopyByID(rs.getInt(3));
+				if (copy == null) {
+					System.out.println("copy id " + rs.getInt(3) + " not found");
+					return null;
+				}
+				ret.add(new Borrow(sub, copy, rs.getDate(4).toLocalDate(), rs.getDate(5).toLocalDate(), null));
+			}
+			return ret;
+		} catch (SQLException e) {
+			// If an error occurs, return null
+			return null;
+		}
+
+	}
+
 }
+
+
+
+
+
+
 
 
 

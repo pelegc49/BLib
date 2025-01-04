@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.InstanceNotFoundException;
+
 import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
@@ -44,6 +46,7 @@ public class BLibServer extends AbstractServer {
 	private BLibServer(int port) throws IOException {
 		super(port); // Call the superclass constructor to initialize the server
 		listen(); // Start listening for client connections
+		ServerTimer.start(this);
 	}
 
 	/**
@@ -63,6 +66,14 @@ public class BLibServer extends AbstractServer {
 		return instance;
 	}
 
+	public static BLibServer getInstance() throws InstanceNotFoundException {
+		if (instance instanceof BLibServer) {
+			return instance; // Return existing instance if it exists
+		}
+		// Create and return a new instance if one does not exist
+		throw new InstanceNotFoundException();
+	}
+	
 	/**
 	 * Connects to the database using the provided password.
 	 * 
@@ -341,5 +352,10 @@ public class BLibServer extends AbstractServer {
 			str.append(rand.nextInt(10));
 		}
 		return str.toString();
+	}
+
+	public void getCommands() {
+		
+		
 	}
 }
