@@ -543,7 +543,7 @@ public class BLibDBC {
 	 *              extensions.
 	 * @return The number of allowed extensions, or null if an error occurs.
 	 */
-	public Integer getTitleNumOfAllowedExtend(BookTitle title) {
+	public Integer getTitleMagicNumber(BookTitle title) {
 		// 0 < num  <= num of copies  : { there are between 0 to num of copies active borrows for the title}
 		// num = 0 : {all the copies are borrowed}
 		// -num of copies <= num < 0 : {there are |num| active orders for the title} 
@@ -891,6 +891,26 @@ public class BLibDBC {
 			return false;
 		}
 	}
+
+	public Integer getNumOfCopies(BookTitle title) {	
+		try {
+			pstmt = conn.prepareStatement("SELECT sum(is_borrowed) FROM copies WHERE title_id = ? GROUP BY title_id;");
+			pstmt.setInt(1, title.getTitleID());
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1); 
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			return null;					
+		}
+	}
+
+	
+	
+	
+	
 	
 }
 

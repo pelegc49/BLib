@@ -131,6 +131,7 @@ public class BLibServer extends AbstractServer {
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("receive message:" + msg); // Log the received message
 		LocalDate today = LocalDate.now();
+		String err;
 		if (msg instanceof Message) { // Check if the received message is an instance of the Message class
 			List<Object> args = ((Message) msg).getArguments(); // Retrieve arguments from the message
 			try {
@@ -240,13 +241,13 @@ public class BLibServer extends AbstractServer {
 				// Handle extend borrow duration request
 				case "extend":
 					if (BLibDBC.getInstance()
-							.getTitleNumOfAllowedExtend(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
+							.getTitleMagicNumber(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
 						client.sendToClient(new Message("failed","this title is ordered")); // If no extension allowed, send failure message
 						break;
 					}
 
 					if (args.get(2).equals("subscriber")) {
-						String err = canExtend((Borrow) args.get(0));
+						err = canExtend((Borrow) args.get(0));
 						if (err != null) { // Check if the borrow can be extended
 							client.sendToClient(new Message("failed",err));
 							break;
@@ -296,6 +297,22 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("Failed")); // Send failure message
 					}
 					break;
+					
+				case "order":
+					err = canOrder((Subscriber)args.get(0), (BookTitle)args.get(1));
+					if(err != null) {
+						sendToAllClients(new Message("Failed", err));
+						break;
+					}
+	
+					ret = BLibDBC.getInstance().orderBook(((Subscriber) args.get(0)).getId(),((BookTitle)args.get(1)).getTitleID());
+					if (ret != null) {
+						client.sendToClient(new Message("success"));
+					} else {
+						client.sendToClient(new Message("Failed","DB error")); // Send failure message
+					}
+					break;
+				
 				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
@@ -334,7 +351,7 @@ public class BLibServer extends AbstractServer {
 	 * @param borrow the borrow object to check
 	 * @return true if the borrow can be extended, false otherwise
 	 */
-	public static String canExtend(Borrow borrow) {
+	private String canExtend(Borrow borrow) {
 		// Check if the subscriber's status is "frozen". If yes, they can't extend the
 		// borrow period.
 		if (borrow.getSubscriber().getStatus().equals("frozen")) {
@@ -344,7 +361,8 @@ public class BLibServer extends AbstractServer {
 		// Check if the borrow period is less than or equal to one week. If the borrow
 		// was made within the last week,
 		// it cannot be extended.
-		if (borrow.getDateOfBorrow().plusWeeks(1).compareTo(LocalDate.now()) >= 0) {
+		
+		if (borrow.getDueDate().minusWeeks(1).compareTo(LocalDate.now()) >= 0) {
 			return "extention not available until %s".formatted(borrow.getDateOfBorrow().plusWeeks(1));
 		}
 		// If none of the conditions above are met, the borrow can be extended.
@@ -363,4 +381,42 @@ public class BLibServer extends AbstractServer {
 	public List<Message> getCommands() {
 		return BLibDBC.getInstance().getCommands();
 	}
+	
+	private String canOrder(Subscriber sub, BookTitle title) {
+		if(sub.getStatus() == "frozen")
+			return "the subscriber is frozen";
+		
+		if(BLibDBC.getInstance().getTitleMagicNumber(title)>0) {
+			return "not all of the title copies are borrowed"; 
+		}
+		
+		if(-BLibDBC.getInstance().getTitleMagicNumber(title) >= BLibDBC.getInstance().getNumOfCopies(title)) {
+			return "there are to many active orders";
+		}
+		return null;
+			
+	}
+	
+	
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
