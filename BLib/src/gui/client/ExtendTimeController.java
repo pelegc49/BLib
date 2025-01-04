@@ -41,21 +41,21 @@ public class ExtendTimeController{
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private TableView<BookCopy> bookTable;
+	private TableView<BookTitle> bookTable;
 	@FXML
-	private TableColumn<BookCopy, Boolean> checkBoxColumn;
+	private TableColumn<BookTitle, Boolean> checkBoxColumn;
 	@FXML
-	private TableColumn<BookCopy, String> authorColumn;
+	private TableColumn<BookTitle, String> authorColumn;
 	@FXML
-	private TableColumn<BookCopy, String> titleColumn;
+	private TableColumn<BookTitle, String> titleColumn;
 	@FXML
-	private TableColumn<BookCopy, Boolean> dueDateColumn;
+	private TableColumn<BookTitle, Boolean> dueDateColumn;
 	@FXML
 	private CheckBox checkBox;
 	
 	
 	public void searchBtn(Event event) {
-		ObservableList<BookCopy> data;
+		ObservableList<BookTitle> data;
 		String keyword = txtSearch.getText();
 		// ruben change me later. and tell peleg to do this
 		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyword);
