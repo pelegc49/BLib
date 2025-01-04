@@ -76,24 +76,11 @@ public class BookTitleController {
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
-		if(!AuthenticationController.subscriber.getStatus().equals("active")) {
-			display("Your activity was suspended.");
-			return;
-		}
-		String data;
-		int size = bookTable.getItems().size();
-		for(int cell = 0; cell < size; cell++) {
-			data = columnStatus.getCellData(cell);
-			if(data.equals("Available")) {
-				display("Can't do order because you can borrow an available book.");
-				return;
-			}
-		}
-		Integer num = IPController.client.getTitleNumOfAllowedExtend(bt);
-		if(size + num <= 0) {
-			display("Can't do order, there are too many orders.");
-			return;
-		}
+		/*
+		 * ruben, the orderTitle will return a message object with an error 
+		 * message to display and boolean parameter that will indicate of the
+		 * order was created
+		 */
 		// for debugging purposes print true of false for this action \/
 		if(IPController.client.orderTitle(bt, AuthenticationController.subscriber)) {
 			// FXMLLoader for loading the main GUI.

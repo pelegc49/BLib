@@ -205,7 +205,7 @@ public class BLibClient extends AbstractClient {
 		// ruben change the call method later appropriate to the server
 		msg = new Message("getTitleNumOfAllowedExtend", bt); 
 		handleMessageFromClientUI(msg); 
-		if (msg.getCommand().equals("allowedExtend")) 
+		if (msg.getCommand().equals("allowedOrder")) 
 			return (Integer) msg.getArguments().get(0); 
 		return null; 
 	}

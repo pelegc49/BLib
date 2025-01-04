@@ -16,7 +16,7 @@ import logic.Subscriber;
  * and transitions the user to the main application interface upon successful login.
  */
 public class SubscriberClientGUIController {
-	private UpdateDetailsController udc; // Reference to the main GUI controller.
+	//private UpdateDetailsController udc; // Reference to the main GUI controller.
 
 	@FXML
 	private Button btnBack = null; // Button for exiting the application.
@@ -34,7 +34,23 @@ public class SubscriberClientGUIController {
 	}
 	
 	public void extendTimeBtn(ActionEvent event) throws Exception {
-		//nextPage(event, "ExtendTimeFrame", "Extend Time");
+		// FXMLLoader for loading the main GUI.
+		FXMLLoader loader = new FXMLLoader(); 
+		// Hide the current window.
+		((Node) event.getSource()).getScene().getWindow().hide();
+
+		// Load the main application interface.
+		Stage primaryStage = new Stage();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".fxml").openStream());
+		ExtendTimeController extendTimeController = loader.getController();
+		extendTimeController.loadBorrows(AuthenticationController.subscriber);
+		// Set up and display the new scene.
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle("Subscriber - Extend Time");
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 	
 	public void updateDetailsBtn(ActionEvent event) throws Exception {
@@ -105,7 +121,7 @@ public class SubscriberClientGUIController {
 	 * 
 	 * @param s1 The authenticated subscriber.
 	 */
-	public void loadSubscriber(Subscriber s1) {
-		this.udc.loadSubscriber(s1);
-	}
+//	public void loadSubscriber(Subscriber s1) {
+//		this.udc.loadSubscriber(s1);
+//	}
 }

@@ -1,32 +1,28 @@
 package gui.client;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.Set;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import logic.BookCopy;
 import logic.BookTitle; 
 
 /**
@@ -34,8 +30,7 @@ import logic.BookTitle;
  * It manages the login process, including ID and password validation, 
  * and transitions the user to the main application interface upon successful login.
  */
-public class SearchController{
-	private BookTitleController btc;
+public class ExtendTimeController{
 	
 	@FXML
 	private TextField txtSearch;
@@ -46,16 +41,23 @@ public class SearchController{
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private TableView<BookTitle> bookTable;
+	private TableView<BookCopy> bookTable;
 	@FXML
-	private TableColumn<BookTitle, String> authorColumn;
+	private TableColumn<BookCopy, Boolean> checkBoxColumn;
 	@FXML
-	private TableColumn<BookTitle, String> titleColumn;
+	private TableColumn<BookCopy, String> authorColumn;
+	@FXML
+	private TableColumn<BookCopy, String> titleColumn;
+	@FXML
+	private TableColumn<BookCopy, Boolean> dueDateColumn;
+	@FXML
+	private CheckBox checkBox;
 	
 	
 	public void searchBtn(Event event) {
-		ObservableList<BookTitle> data;
+		ObservableList<BookCopy> data;
 		String keyword = txtSearch.getText();
+		// ruben change me later. and tell peleg to do this
 		Set<BookTitle> bookTitle = IPController.client.getTitlesByKeyword(keyword);
 		data = FXCollections.observableArrayList();
 		for(BookTitle bt : bookTitle) {
@@ -68,9 +70,9 @@ public class SearchController{
 		
 		// allows to click on row
 		bookTable.setRowFactory(tv -> {
-		    TableRow<BookTitle> rowa = new TableRow<>();
+			TableRow<BookTitle> rowa = new TableRow<>();
 		    rowa.setOnMouseClicked(eventa -> {
-		        if (eventa.getClickCount() == 2 && !rowa.isEmpty()) {
+		        if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
 		        	BookTitle rowData = rowa.getItem();
 		            System.out.println(rowData); // delete me
 		    		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -113,14 +115,11 @@ public class SearchController{
 	public void backBtn(ActionEvent event) throws Exception {
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
-	    if(currentTitle.equals("Subscriber - Search")) {
+	    if(currentTitle.equals("Subscriber - Extend Time")) {
 	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
 	    }
-	    else if(currentTitle.equals("Librarian - Search")) {
-	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
-	    }
 	    else {
-	    	nextPage(event, "AuthenticationFrame", "Authentication");
+	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
 	    }
 	}
 
