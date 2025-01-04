@@ -1,5 +1,9 @@
 package server;
 
+import java.util.List;
+
+import logic.Message;
+
 public class ServerTimer implements Runnable{
 	private Thread t;
 	private BLibServer server;
@@ -19,12 +23,18 @@ public class ServerTimer implements Runnable{
 		t.start();
 	}
 	
+	
+	
 	@Override
 	public void run() {
-		server.getCommands();
 		//check relevant commands
-		//execute one by one
+		List<Message> list = server.getCommands();
 		
+		//execute one by one
+		for(Message msg: list) {
+			server.execute(msg);
+		}
+		//sleep for delayMinutes minutes
 		try {
 			Thread.sleep(delayMinutes*60*1000); // sleep 
 		} catch (InterruptedException e) {}

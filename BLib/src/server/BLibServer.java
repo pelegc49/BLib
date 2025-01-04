@@ -18,15 +18,13 @@ import logic.Subscriber;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 import java.util.Random;
+
 /**
  * This class represents the server of the BLib application. It extends the
  * AbstractServer from the ocsf library and manages client connections and
  * messages from clients.
  */
 public class BLibServer extends AbstractServer {
-			
-		
-		
 
 	// Singleton instance of BLibServer
 	public static BLibServer instance = null;
@@ -35,7 +33,6 @@ public class BLibServer extends AbstractServer {
 	// and host name)
 	private static Map<ConnectionToClient, String[]> connectedClients = new HashMap<>();
 
-	
 	/**
 	 * Private constructor that initializes the server and begins listening on the
 	 * provided port.
@@ -73,7 +70,7 @@ public class BLibServer extends AbstractServer {
 		// Create and return a new instance if one does not exist
 		throw new InstanceNotFoundException();
 	}
-	
+
 	/**
 	 * Connects to the database using the provided password.
 	 * 
@@ -170,8 +167,10 @@ public class BLibServer extends AbstractServer {
 
 				// Handle updateSubscriber request
 				case "updateSubscriber":
-					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0), (String)args.get(1)); // Update subscriber details
-																							// in the database
+					ret = BLibDBC.getInstance().updateSubscriber((Subscriber) args.get(0), (String) args.get(1)); // Update
+																													// subscriber
+																													// details
+					// in the database
 					// database
 					if (((Boolean) ret) == true) { // If update is successful
 						client.sendToClient(new Message("subscriberUpdated")); // Send success message
@@ -206,10 +205,10 @@ public class BLibServer extends AbstractServer {
 				case "registerSubscriber":
 					String pass = generatePassword(4);
 					ret = BLibDBC.getInstance().registerSubscriber((Subscriber) args.get(0), pass); // Register a new
-																								// subscriber
+					// subscriber
 					if ((Boolean) ret == true) {
-						client.sendToClient(new Message("success",pass)); // Send success message if registration is
-																		// successful
+						client.sendToClient(new Message("success", pass)); // Send success message if registration is
+																			// successful
 					} else {
 						client.sendToClient(new Message("failed")); // Send failure message if registration fails
 					}
@@ -287,24 +286,16 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("success")); // Send success message for regular return
 					}
 					break;
-					
+
 				case "history":
-					ret = BLibDBC.getInstance().getSubscriberHistory((Integer)args.get(0));
-					if(ret != null) {
-						client.sendToClient(new Message("historyRetrieved", (List<Activity>)ret));
-					}else {
+					ret = BLibDBC.getInstance().getSubscriberHistory((Integer) args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("historyRetrieved", (List<Activity>) ret));
+					} else {
 						client.sendToClient(new Message("Failed")); // Send failure message
 					}
 					break;
-
-				
-				
-				
-				
-				
-				
-				
-					// case "getTitleByID":
+				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
 //						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send success message
@@ -319,6 +310,18 @@ public class BLibServer extends AbstractServer {
 
 		}
 
+	}
+
+	public void execute(Message msg) {
+		List<Object> args = ((Message) msg).getArguments();
+		switch (msg.getCommand()) {
+		case "unfreeze":
+
+			break;
+		case "sendEmail":
+			//TODO: create and call sendEmail()
+			break;
+		}
 	}
 
 	/**
@@ -345,17 +348,16 @@ public class BLibServer extends AbstractServer {
 		return true;
 	}
 
-	private String generatePassword(int length) { 
+	private String generatePassword(int length) {
 		StringBuilder str = new StringBuilder();
-		Random rand =  new Random();
-		for(int i=0;i<length;i++) {
+		Random rand = new Random();
+		for (int i = 0; i < length; i++) {
 			str.append(rand.nextInt(10));
 		}
 		return str.toString();
 	}
 
-	public void getCommands() {
-		
-		
+	public List<Message> getCommands() {
+		return BLibDBC.getInstance().getCommands();
 	}
 }

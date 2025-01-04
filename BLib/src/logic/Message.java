@@ -44,6 +44,11 @@ public class Message implements Serializable {
 		return arguments;// Return the list of arguments
 	}
 
+	public void addArgument(Object o) {
+		arguments.add(o);
+	}
+	
+	
 	/**
 	 * Converts the Message object to a string representation for easy viewing.
 	 * 
