@@ -8,12 +8,11 @@ import javafx.scene.control.CheckBox;
 public class Borrow implements Serializable {
 
 	// Private member variables for storing borrowing details
-	private Subscriber subscriber;
-	private BookCopy book;
-	private LocalDate dateOfBorrow; // The date when the book was borrowed
-	private LocalDate dueDate; // The due date for returning the book
-	private LocalDate dateOfReturn; // The actual date when the book was returned
-	private CheckBox selected;
+	protected Subscriber subscriber;
+	protected BookCopy book;
+	protected LocalDate dateOfBorrow; // The date when the book was borrowed
+	protected LocalDate dueDate; // The due date for returning the book
+	protected LocalDate dateOfReturn; // The actual date when the book was returned
 
 	// Constructor to initialize the borrowing details
 	public Borrow(Subscriber subscriber,BookCopy book,LocalDate dateOfBorrow, LocalDate dueDate, LocalDate dateOfReturn) {
@@ -22,25 +21,8 @@ public class Borrow implements Serializable {
 		this.dateOfBorrow = dateOfBorrow; // Set the date of borrow
 		this.dueDate = dueDate; // Set the due date
 		this.dateOfReturn = dateOfReturn; // Set the return date
-		selected.setSelected(false);
 	}
 
-	public String getAuthor() {
-		return this.book.getTitle().getAuthorName();
-	}
-	
-	public String getTitle() {
-		return this.book.getTitle().getTitleName();
-	}
-	
-	public boolean isSelected() {
-		return selected.isSelected();
-	}
-	
-	public void setSelected(boolean bool) {
-		selected.setSelected(bool);
-	}
-	
 	// Getter method for the date of borrow
 	public LocalDate getDateOfBorrow() {
 		return dateOfBorrow; // Return the date of borrow
