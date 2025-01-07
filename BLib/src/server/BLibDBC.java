@@ -88,8 +88,6 @@ public class BLibDBC {
 		try {
 			// Execute SQL query
 			pstmt = conn.prepareStatement("SELECT * FROM copies WHERE title_id = ?;");
-			if (pstmt.isClosed())
-				return null;
 			pstmt.setInt(1, title.getTitleID()); // Set the title ID parameter
 			ResultSet rs = pstmt.executeQuery();
 			Set<BookCopy> bookSet = new HashSet<>();
@@ -117,12 +115,11 @@ public class BLibDBC {
 			keyword = "%" + keyword + "%"; // Use wildcards for partial matching
 			// Execute SQL query
 			pstmt = conn.prepareStatement(
-					"SELECT * FROM titles WHERE title_name LIKE ? OR author_name LIKE ? OR title_description LIKE ?;");
-			if (pstmt.isClosed())
-				return null;
+					"SELECT * FROM titles WHERE title_name LIKE ? OR author_name LIKE ? OR title_description LIKE ? OR genre LIKE ?;");
 			pstmt.setString(1, keyword);
 			pstmt.setString(2, keyword);
 			pstmt.setString(3, keyword);
+			pstmt.setString(4, keyword);
 			ResultSet rs = pstmt.executeQuery();
 			Set<BookTitle> bookSet = new HashSet<>();
 			// Loop through result set and create BookTitle objects
