@@ -8,6 +8,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/ocsf.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-8.0.13.jar"/>
-	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry kind="lib" path="lib/javax.mail-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
