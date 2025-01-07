@@ -72,7 +72,7 @@ public class IPController {
 			}
 			try {
 				// Attempts to create a client instance and connect to the server.
-				client = new BLibClient(ip, 5555);
+				client = new BLibClient(ip, digit_port);
 				System.out.println("IP Entered Successfully");
 
 				// Hides the current window.
