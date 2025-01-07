@@ -37,9 +37,9 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("12341234"))
+		if (!db.connect("1234"))
 			return;
-		System.out.println(db.orderBook(4444, 10));
+		System.out.println(db.orderBook(8888,1));
 		db.disconnect();
 	}
 
@@ -111,6 +111,7 @@ public class BLibDBC {
 	 * @param keyword the search keyword to be used
 	 * @return a set of BookTitle objects that match the keyword
 	 */
+	// TODO:fix
 	public Set<BookTitle> getTitlesByKeyword(String keyword) {
 		try {
 			keyword = "%" + keyword + "%"; // Use wildcards for partial matching
@@ -181,7 +182,6 @@ public class BLibDBC {
 			LocalDate today = LocalDate.now();
 			LocalDate dueDate = today.plusWeeks(2);
 
-
 			// Insert new borrow record into the database
 			pstmt = conn.prepareStatement(
 					"INSERT INTO borrows(subscriber_id,copy_id,date_of_borrow,due_date) VALUE(?,?,?,?)");
@@ -206,19 +206,21 @@ public class BLibDBC {
 					"\"%s\" borrowed by %s on %s".formatted(copy.getTitle(), sub.getName(), today.toString()));
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
-			
+
 			// time the execution of send message
 			LocalDateTime now = LocalDateTime.now();
 			LocalDateTime reminderTime = now.plusWeeks(2).minusDays(1);
-			
+
 			pstmt = conn.prepareStatement(
 					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
 			pstmt.setString(1, "sendEmail");
-			pstmt.setString(2, "%s;dear %s,\nTomorrow (%s), your borrow of %s is due.\nPlease return it soon.\nBraude Library".formatted(sub.getEmail(),sub.getName(),dueDate,copy.getTitle()));
+			pstmt.setString(2,
+					"%s;dear %s,\nTomorrow (%s), your borrow of %s is due.\nPlease return it soon.\nBraude Library"
+							.formatted(sub.getEmail(), sub.getName(), dueDate, copy.getTitle()));
 			pstmt.setTimestamp(3, Timestamp.valueOf(reminderTime));
-			pstmt.setString(4, "%s;%s".formatted(sub.getId(),copy.getCopyID()));
+			pstmt.setString(4, "%s;%s".formatted(sub.getId(), copy.getCopyID()));
 			pstmt.execute();
-			
+
 			// Commit the transaction
 			conn.commit();
 			return true; // Return true if all operations succeed
@@ -264,10 +266,9 @@ public class BLibDBC {
 			LocalDate today = LocalDate.now();
 			Subscriber oldSubscriber = getSubscriberByID(newSubscriber.getId());
 			StringBuilder str = new StringBuilder();
-			if(userType.equalsIgnoreCase("subscriber")) {
+			if (userType.equalsIgnoreCase("subscriber")) {
 				str.append(newSubscriber.getName() + " updated their details: ");
-			}
-			else {
+			} else {
 				str.append(userType + " updated " + newSubscriber.getName() + "'s details: ");
 			}
 			// Execute SQL update to modify subscriber details
@@ -328,7 +329,7 @@ public class BLibDBC {
 	 *                   inserted
 	 * @return true if the registration was successful, false if it failed
 	 */
-	public Boolean registerSubscriber(Subscriber subscriber,String password) {
+	public Boolean registerSubscriber(Subscriber subscriber, String password) {
 		try {
 			LocalDate today = LocalDate.now();
 			// Insert a new subscriber record into the database
@@ -351,13 +352,12 @@ public class BLibDBC {
 			pstmt.execute();
 
 			// create new user to the new subscriber
-			pstmt  = conn.prepareStatement("INSERT INTO users VALUE (?,?,?)");
+			pstmt = conn.prepareStatement("INSERT INTO users VALUE (?,?,?)");
 			pstmt.setInt(1, subscriber.getId());
 			pstmt.setString(2, password);
 			pstmt.setString(3, "subscriber");
 			pstmt.execute();
-			
-			
+
 			// Commit the transaction
 			conn.commit();
 			return true; // Return true if the registration is successful
@@ -475,8 +475,6 @@ public class BLibDBC {
 
 	}
 
-	
-	
 	/**
 	 * Extends the duration of a Borrow by a specified number of days and logs the
 	 * extension activity.
@@ -508,7 +506,7 @@ public class BLibDBC {
 				pstmt.setString(2, "extension");
 				pstmt.setString(3, "\"%s\" extended borrow by %s on %s, the new due date is %s"
 						.formatted(borrow.getBook().getTitle(), borrow.getSubscriber().getName(), today, newDueDate));
-			
+
 			} else {
 				pstmt.setString(2, "manual extension");
 				pstmt.setString(3,
@@ -518,12 +516,14 @@ public class BLibDBC {
 			}
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
-			
-			if(userType.equals("subscriber")) {
+
+			if (userType.equals("subscriber")) {
 				LocalDateTime now = LocalDateTime.now();
 				pstmt = conn.prepareStatement("INSERT INTO librarian_messages(message, time) VALUE(?,?);");
-				pstmt.setString(1, "the subscriber %s extended their borrow duration of %s by %d days, the new due date is %s"
-						.formatted(borrow.getSubscriber().getName(),borrow.getBook().getTitle(),days,newDueDate));
+				pstmt.setString(1,
+						"the subscriber %s extended their borrow duration of %s by %d days, the new due date is %s"
+								.formatted(borrow.getSubscriber().getName(), borrow.getBook().getTitle(), days,
+										newDueDate));
 				pstmt.setTimestamp(2, Timestamp.valueOf(now));
 				pstmt.execute();
 			}
@@ -544,10 +544,11 @@ public class BLibDBC {
 	 * @return The number of allowed extensions, or null if an error occurs.
 	 */
 	public Integer getTitleMagicNumber(BookTitle title) {
-		// 0 < num  <= num of copies  : { there are between 0 to num of copies active borrows for the title}
+		// 0 < num <= num of copies : { there are between 0 to num of copies active
+		// borrows for the title}
 		// num = 0 : {all the copies are borrowed}
-		// -num of copies <= num < 0 : {there are |num| active orders for the title} 
-		// num = num of copies - num of borrows - num of orders 
+		// -num of copies <= num < 0 : {there are |num| active orders for the title}
+		// num = num of copies - num of borrows - num of orders
 		int sum = 0;
 		ResultSet rs;
 		try {
@@ -577,7 +578,7 @@ public class BLibDBC {
 			} else {
 				return null;
 			}
-			return sum ;
+			return sum;
 		} catch (SQLException e) {
 			return null;
 		}
@@ -610,8 +611,8 @@ public class BLibDBC {
 			pstmt.setInt(2, book.getCopyID());
 			pstmt.execute();
 
-			//TODO: update orders
-			
+			// TODO: update orders
+
 			// Log the return activity in the history table
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
@@ -666,8 +667,7 @@ public class BLibDBC {
 			pstmt.setString(3, "%s got frozen on %s until %s".formatted(sub.getName(), today, today.plusMonths(1)));
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
-			
-			
+
 			LocalDateTime unfreezeTime = LocalDateTime.now().plusMonths(1);
 			pstmt = conn.prepareStatement(
 					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
@@ -676,7 +676,7 @@ public class BLibDBC {
 			pstmt.setTimestamp(3, Timestamp.valueOf(unfreezeTime));
 			pstmt.setString(4, "%d".formatted(sub.getId()));
 			pstmt.execute();
-			
+
 			// Commit the transaction
 			conn.commit();
 			return true;
@@ -723,27 +723,27 @@ public class BLibDBC {
 			return false; // Return false if an error occurs
 		}
 	}
-	
-	
-	public List<Activity> getSubscriberHistory(int subID){
+
+	public List<Activity> getSubscriberHistory(int subID) {
 		try {
-		Subscriber sub = getSubscriberByID(subID);
-		if (sub == null)
-			return null;
-		pstmt = conn.prepareStatement("SELECT * FROM history WHERE subscriber_id = ? ORDER BY activity_date;");
-		pstmt.setInt(1, subID);
-		ResultSet rs = pstmt.executeQuery();
-		List<Activity> ret = new ArrayList<>();
-		while (rs.next()) {
-			Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
-			ret.add(activity);
-		}
-		return ret;
+			Subscriber sub = getSubscriberByID(subID);
+			if (sub == null)
+				return null;
+			pstmt = conn.prepareStatement("SELECT * FROM history WHERE subscriber_id = ? ORDER BY activity_date;");
+			pstmt.setInt(1, subID);
+			ResultSet rs = pstmt.executeQuery();
+			List<Activity> ret = new ArrayList<>();
+			while (rs.next()) {
+				Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4),
+						rs.getDate(5).toLocalDate());
+				ret.add(activity);
+			}
+			return ret;
 		} catch (SQLException e) {
 			return null;
 		}
 	}
-	
+
 	public Boolean orderTitle(BookTitle title, Subscriber sub) {
 		try {
 			LocalDate today = LocalDate.now();
@@ -751,12 +751,11 @@ public class BLibDBC {
 			pstmt.setInt(1, title.getTitleID());
 			pstmt.execute();
 
-			
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, sub.getId());
 			pstmt.setString(2, "order");
-			pstmt.setString(3, "%s ordered %s on %s".formatted(sub.getName(),title, today));
+			pstmt.setString(3, "%s ordered %s on %s".formatted(sub.getName(), title, today));
 
 			pstmt.setDate(4, Date.valueOf(today));
 			pstmt.execute();
@@ -769,9 +768,9 @@ public class BLibDBC {
 			return false; // Return false if an error occurs
 		}
 	}
-	
-	//TODO:test
-	public List<Message> getCommands(){
+
+	// TODO:test
+	public List<Message> getCommands() {
 		LocalDateTime now = LocalDateTime.now();
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM commands WHERE time_of_execution < ?");
@@ -779,16 +778,16 @@ public class BLibDBC {
 			ResultSet rs = pstmt.executeQuery();
 			List<Integer> commandIDs = new ArrayList<>();
 			List<Message> ret = new ArrayList<>();
-			while(rs.next()) {
+			while (rs.next()) {
 				commandIDs.add(rs.getInt(1));
 				Message msg = new Message(rs.getString(2));
-				for(String arg: rs.getString(3).split(";")) {
+				for (String arg : rs.getString(3).split(";")) {
 					msg.addArgument(arg);
 				}
 				ret.add(msg);
 			}
 
-			for(int i:commandIDs) {
+			for (int i : commandIDs) {
 				pstmt = conn.prepareStatement("DELETE FROM commands WHERE id = ?");
 				pstmt.setInt(1, i);
 				pstmt.execute();
@@ -802,7 +801,7 @@ public class BLibDBC {
 			return null; // Return false if an error occurs
 		}
 	}
-	//TODO:test
+
 	public List<Borrow> getSubscriberActiveBorrows(Subscriber sub) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM borrows WHERE subscriber_id = ? AND date_of_return IS NULL");
@@ -825,7 +824,7 @@ public class BLibDBC {
 
 	}
 
-	public List<String> getLibrarianMessages(){
+	public List<String> getLibrarianMessages() {
 		try {
 			pstmt = conn.prepareStatement("SELECT message FROM librarian_messages ORDER BY time");
 			ResultSet rs = pstmt.executeQuery();
@@ -839,7 +838,8 @@ public class BLibDBC {
 			return null;
 		}
 	}
-	public Boolean clearLibrarianMessages(){
+
+	public Boolean clearLibrarianMessages() {
 		try {
 			pstmt = conn.prepareStatement("DELETE FROM librarian_messages;");
 			pstmt.execute();
@@ -850,33 +850,32 @@ public class BLibDBC {
 			return false;
 		}
 	}
-	
-	public Boolean orderBook(int subID, int titleID){
+
+	public Boolean orderBook(int subID, int titleID) {
 		try {
 			Subscriber sub = getSubscriberByID(subID);
-			if(sub==null) {
+			if (sub == null) {
 				return false;
 			}
 			BookTitle title = getTitleByID(titleID);
-			if(title==null) {
+			if (title == null) {
 				return false;
 			}
 			LocalDate today = LocalDate.now();
-			
-			
-			//orders
+
+			// orders
 			pstmt = conn.prepareStatement("INSERT INTO orders(subscriber_id, title_id, order_date) VALUE (?,?,?);");
-			pstmt.setInt(1,subID);
-			pstmt.setInt(2,titleID);
-			pstmt.setDate(3,Date.valueOf(today));
+			pstmt.setInt(1, subID);
+			pstmt.setInt(2, titleID);
+			pstmt.setDate(3, Date.valueOf(today));
 			pstmt.execute();
-			
-			//titles
+
+			// titles
 			pstmt = conn.prepareStatement("UPDATE titles SET num_of_orders = num_of_orders + 1 WHERE title_id = ?;");
-			pstmt.setInt(1,titleID);
+			pstmt.setInt(1, titleID);
 			pstmt.execute();
-			
-			//history
+
+			// history
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subID);
@@ -892,33 +891,35 @@ public class BLibDBC {
 		}
 	}
 
-	public Integer getNumOfCopies(BookTitle title) {	
+	public Integer getNumOfCopies(BookTitle title) {
 		try {
 			pstmt = conn.prepareStatement("SELECT sum(is_borrowed) FROM copies WHERE title_id = ? GROUP BY title_id;");
 			pstmt.setInt(1, title.getTitleID());
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				return rs.getInt(1); 
+				return rs.getInt(1);
 			} else {
 				return null;
 			}
 		} catch (SQLException e) {
-			return null;					
+			return null;
 		}
 	}
 
-	
-	
-	
-	
-	
+	public List<Subscriber> getAllSubscribers() {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM subscribers;");
+			ResultSet rs = pstmt.executeQuery();
+			List<Subscriber> ret = new ArrayList<>();
+			while (rs.next()) {
+				ret.add(new Subscriber(rs.getInt("subscriber_id"), rs.getString("subscriber_name"),
+						rs.getString("subscriber_phone_number"), rs.getString("subscriber_email"),
+						rs.getString("subscriber_status")));
+			}
+			return ret;
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+
 }
-
-
-
-
-
-
-
-
-

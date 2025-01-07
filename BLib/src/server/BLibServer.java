@@ -312,7 +312,25 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("Failed","DB error")); // Send failure message
 					}
 					break;
+					
+				case "getSubscriberBorrows":
+					ret = BLibDBC.getInstance().getSubscriberActiveBorrows((Subscriber)args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("success",(List<Borrow>)ret));
+					}else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
 				
+				case "getAllSubscribers":
+					ret = BLibDBC.getInstance().getAllSubscribers();
+					if (ret != null) {
+						client.sendToClient(new Message("success",(List<Subscriber>)ret));
+					}else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
 				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
@@ -390,7 +408,7 @@ public class BLibServer extends AbstractServer {
 			return "Not all of the title copies are borrowed"; 
 		}
 		
-		if(-BLibDBC.getInstance().getTitleMagicNumber(title) >= BLibDBC.getInstance().getNumOfCopies(title)) {
+		if(BLibDBC.getInstance().getTitleMagicNumber(title)+BLibDBC.getInstance().getNumOfCopies(title)<=0) {
 			return "There are too many active orders";
 		}
 		return null;
