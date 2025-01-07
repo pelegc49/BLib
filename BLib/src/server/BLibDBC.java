@@ -39,7 +39,7 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
-		System.out.println(db.orderBook(8888,1));
+		System.out.println(db.orderBook(8888, 1));
 		db.disconnect();
 	}
 
@@ -153,6 +153,20 @@ public class BLibDBC {
 			return null; // Return null if no result is found
 		} catch (SQLException e) {
 			return null; // Return null if an error occurs
+		}
+	}
+	
+	
+	
+
+	public Boolean isCopyOrdered(int copyID) {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE copy_id = ?");
+			pstmt.setInt(1, copyID);
+			ResultSet rs = pstmt.executeQuery();
+			return rs.next();
+		} catch (SQLException e) {
+			return null;
 		}
 	}
 
@@ -581,6 +595,18 @@ public class BLibDBC {
 		}
 	}
 
+	
+	public Boolean isTitleOrdered(int titleID) {
+		try {
+			pstmt = conn.prepareStatement("SELECT num_of_orders>0 FROM titles WHERE title_id = ?;");
+			pstmt.setInt(1, titleID);
+			ResultSet rs = pstmt.executeQuery();
+			return rs.next();
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Processes the return of a borrowed book copy and logs the return activity.
 	 * 
@@ -590,11 +616,12 @@ public class BLibDBC {
 	 */
 	public Boolean returnBook(BookCopy book, boolean isLateReturn) {
 		try {
+			LocalDate today = LocalDate.now();
 			Borrow borrow = getCopyActiveBorrow(book);
 			if (borrow == null)
 				return false;
-
-			LocalDate today = LocalDate.now();
+			
+			boolean isOrdered = isTitleOrdered(book.getTitle().getTitleID());
 			pstmt = conn.prepareStatement(
 					"UPDATE borrows SET date_of_return = ? WHERE subscriber_id = ? AND copy_id =? AND date_of_borrow = ?;");
 			pstmt.setDate(1, Date.valueOf(today));
@@ -609,6 +636,11 @@ public class BLibDBC {
 			pstmt.execute();
 
 			// TODO: update orders
+			if(isOrdered) {
+				pstmt = conn.prepareStatement(
+						"UPDATE orders SET copy_id = ? WHERE title_id = ? AND copy_id =? AND date_of_borrow = ?;");
+				pstmt.setDate(1, Date.valueOf(today));
+			}
 
 			// Log the return activity in the history table
 			pstmt = conn.prepareStatement(

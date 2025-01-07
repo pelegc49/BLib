@@ -217,12 +217,17 @@ public class BLibServer extends AbstractServer {
 
 				// Handle creating a new borrow request
 				case "createBorrow":
+					if(BLibDBC.getInstance().isCopyOrdered((Integer) args.get(1))) {
+						client.sendToClient(new Message("failed","this copy is ordered")); // Send success message
+						
+					}
+					
 					ret = BLibDBC.getInstance().createBorrow((Integer) args.get(0), (Integer) args.get(1)); // Create a
 																											// borrow
 					if ((Boolean) ret == true) {
 						client.sendToClient(new Message("success")); // Send success message
 					} else {
-						client.sendToClient(new Message("failed")); // Send failure message if borrow creation fails
+						client.sendToClient(new Message("failed","DB error")); // Send failure message if borrow creation fails
 					}
 					break;
 
@@ -266,8 +271,11 @@ public class BLibServer extends AbstractServer {
 
 				// Handle return book request
 				case "return":
-					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve
-																										// active borrow
+					if(BLibDBC.getInstance().isTitleOrdered(((BookCopy) args.get(0)).getTitle().getTitleID())) {
+						
+					}
+					
+					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve																				// active borrow
 																										// for book copy
 					if (borrow == null) {
 						client.sendToClient(new Message("failed","DB error")); // Send failure message if borrow creation fails
