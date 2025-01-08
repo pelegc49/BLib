@@ -1,5 +1,6 @@
 package server;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
@@ -45,13 +46,13 @@ public class MessageController {
 
 
 	public static void main(String[] args) {
-		String[] mails = {"pelegc49@gmail.com","hitrifox@gmail.com","Gal.moyal111@gmail.com","Edenfur3253@gmail.com","Lidor.ben.david@e.braude.ac.il"};
+		String[] mails = {"pelegc49@gmail.com"/*,"hitrifox@gmail.com","Gal.moyal111@gmail.com","Edenfur3253@gmail.com","Lidor.ben.david@e.braude.ac.il"*/};
 		getInstance().sendEmail("HALLO\nHALLO\nHALLO\nHALLO\nHALLO\n", "America YA", mails);
 	}
 	
 
 	public void sendEmail(String text, String subject, String[] emailTo) {
-		System.out.println("sending email to " + emailTo);
+		System.out.println("sending email to " + Arrays.toString(emailTo));
 
         try {
             MimeMessage msg = new MimeMessage(session);
