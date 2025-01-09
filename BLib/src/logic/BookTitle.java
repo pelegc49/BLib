@@ -2,16 +2,16 @@ package logic;
 
 import java.io.Serializable;
 
-public class BookTitle implements Serializable{
+public class BookTitle implements Serializable {
 	private int titleID;
 	private String titleName;
 	private String authorName;
 	private String description;
 	private int numOfOrders;
 	private int numOfCopies;
-	
-	
-	public BookTitle(int titleID, String titleName, String authorName, String description, int numOfOrders, int numOfCopies) {
+
+	public BookTitle(int titleID, String titleName, String authorName, String description, int numOfOrders,
+			int numOfCopies) {
 		this.titleID = titleID;
 		this.titleName = titleName;
 		this.authorName = authorName;
@@ -19,7 +19,6 @@ public class BookTitle implements Serializable{
 		this.numOfOrders = numOfOrders;
 		this.numOfCopies = numOfCopies;
 	}
-
 
 	public int getTitleID() {
 		return titleID;
@@ -29,7 +28,6 @@ public class BookTitle implements Serializable{
 		return titleName;
 	}
 
-
 	public String getAuthorName() {
 		return authorName;
 	}
@@ -37,18 +35,25 @@ public class BookTitle implements Serializable{
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public int getNumOfOrders() {
 		return numOfOrders;
 	}
-	
+
 	public int getNumOfCopies() {
 		return numOfCopies;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof BookTitle)
+			return ((BookTitle)obj).titleID == this.titleID;
+		return false;
+	}
+
 	@Override
 	public String toString() {
-		return authorName +" : "+ titleName;
+		return authorName + " : " + titleName;
 	}
-		
+
 }

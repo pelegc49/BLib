@@ -1,6 +1,5 @@
 package server;
 
-import java.security.AlgorithmParametersSpi;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -20,6 +19,7 @@ import logic.BookCopy;
 import logic.BookTitle;
 import logic.Borrow;
 import logic.Message;
+import logic.Order;
 import logic.Subscriber;
 
 /**
@@ -39,7 +39,8 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
-		System.out.println(db.orderBook(8888, 1));
+		for(Order d: db.getSubscriberActiveOrders(db.getSubscriberByID(8888)))
+			System.out.println(d.getTitle());
 		db.disconnect();
 	}
 
@@ -52,7 +53,6 @@ public class BLibDBC {
 	}
 
 	/**
-	 * Retrieves a book title from the database based on the title ID.
 	 * 
 	 * @param titleID the ID of the book title to be fetched
 	 * @return the BookTitle object if found, otherwise null
@@ -155,16 +155,26 @@ public class BLibDBC {
 			return null; // Return null if an error occurs
 		}
 	}
-	
-	
-	
 
-	public Boolean isCopyOrdered(int copyID) {
+	public Order getCopyOrder(int copyID) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE copy_id = ?");
 			pstmt.setInt(1, copyID);
 			ResultSet rs = pstmt.executeQuery();
-			return rs.next();
+			if(rs.next())
+			{
+				Subscriber sub = getSubscriberByID(rs.getInt(2));
+				if(sub == null)
+					return null;
+				BookCopy copy = getCopyByID(copyID);
+				if(copy == null)
+					return null;
+				Order order=new Order(rs.getInt(1), sub, copy.getTitle(), rs.getTimestamp(5).toLocalDateTime());
+				order.setCopy(copy);
+				order.setAriveDate(rs.getDate(6).toLocalDate());
+				return order;
+			}
+			return null;
 		} catch (SQLException e) {
 			return null;
 		}
@@ -595,7 +605,6 @@ public class BLibDBC {
 		}
 	}
 
-	
 	public Boolean isTitleOrdered(int titleID) {
 		try {
 			pstmt = conn.prepareStatement("SELECT num_of_orders>0 FROM titles WHERE title_id = ?;");
@@ -606,7 +615,7 @@ public class BLibDBC {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Processes the return of a borrowed book copy and logs the return activity.
 	 * 
@@ -620,7 +629,7 @@ public class BLibDBC {
 			Borrow borrow = getCopyActiveBorrow(book);
 			if (borrow == null)
 				return false;
-			
+
 			boolean isOrdered = isTitleOrdered(book.getTitle().getTitleID());
 			pstmt = conn.prepareStatement(
 					"UPDATE borrows SET date_of_return = ? WHERE subscriber_id = ? AND copy_id =? AND date_of_borrow = ?;");
@@ -636,7 +645,7 @@ public class BLibDBC {
 			pstmt.execute();
 
 			// TODO: update orders
-			if(isOrdered) {
+			if (isOrdered) {
 				pstmt = conn.prepareStatement(
 						"UPDATE orders SET copy_id = ? WHERE title_id = ? AND copy_id =? AND date_of_borrow = ?;");
 				pstmt.setDate(1, Date.valueOf(today));
@@ -949,6 +958,36 @@ public class BLibDBC {
 		} catch (SQLException e) {
 			return null;
 		}
+	}
+
+	
+	
+	public List<Order> getSubscriberActiveOrders(Subscriber sub) {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE subscriber_id = ? ORDER BY order_date");
+			pstmt.setInt(1, sub.getId());
+			ResultSet rs = pstmt.executeQuery();
+			List<Order> ret = new ArrayList<>();
+			while (rs.next()) {
+				BookTitle title = getTitleByID(rs.getInt(3));
+				if (title == null) {
+					System.out.println("title id " + rs.getInt(3) + " not found");
+					return null;
+				}
+				Order order = new Order(rs.getInt(1), sub, title, rs.getTimestamp(5).toLocalDateTime());
+				if (rs.getInt(4) != 0) {
+					BookCopy copy = getCopyByID(rs.getInt(4));
+					order.setCopy(copy);
+					order.setAriveDate(rs.getDate(6).toLocalDate());
+				}
+				ret.add(order);
+			}
+			return ret;
+		} catch (SQLException e) {
+			// If an error occurs, return null
+			return null;
+		}
+
 	}
 
 }

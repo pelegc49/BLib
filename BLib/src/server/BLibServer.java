@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.management.InstanceNotFoundException;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
+
 import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
@@ -217,7 +219,7 @@ public class BLibServer extends AbstractServer {
 
 				// Handle creating a new borrow request
 				case "createBorrow":
-					if(BLibDBC.getInstance().isCopyOrdered((Integer) args.get(1))) {
+					if(BLibDBC.getInstance().getCopyOrder((Integer) args.get(1))) {
 						client.sendToClient(new Message("failed","this copy is ordered")); // Send success message
 						
 					}
@@ -339,6 +341,17 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("failed"));
 					}
 					break;
+					
+					
+				case "getSubscriberOrders":
+					ret = BLibDBC.getInstance().getSubscriberActiveOrders((Subscriber)args.get(0));
+					if (ret != null) {
+						client.sendToClient(new Message("success",(List<Order>)ret));
+					}else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
 				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
