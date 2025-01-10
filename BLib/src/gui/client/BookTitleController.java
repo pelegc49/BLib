@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import javafx.collections.FXCollections;
@@ -33,6 +34,8 @@ public class BookTitleController {
 	@FXML
 	private Label lblError; // Label to display error messages.
 	@FXML
+	private Label lblDueDate; // Label to display error messages.
+	@FXML
 	private Text txtTitle; // Text field to input the server IP address.
 	@FXML
 	private Text txtAuthorName; // Text field to input the server IP address.
@@ -47,11 +50,7 @@ public class BookTitleController {
 	@FXML
 	private TableColumn<BookCopy, Integer> columnBookId; // Button to exit the application.
 	@FXML
-	private TableColumn<BookCopy, String> columnStatus; // Button to exit the application.
-	@FXML
 	private TableColumn<BookCopy, String>  columnShelf; // Button to exit the application.
-	@FXML
-	private TableColumn<BookCopy, String> columnDueDate; // Button to exit the application.
 	
 
 	/**
@@ -113,16 +112,20 @@ public class BookTitleController {
 		Set<BookCopy> bookCopy = IPController.client.getCopiesByTitle(bt1);
 		data = FXCollections.observableArrayList();
 		for(BookCopy bc : bookCopy) {
-			data.add(bc);
+			if(!bc.isBorrowed())
+				data.add(bc);
 		}
 		
-		columnBookId.setCellValueFactory(new PropertyValueFactory<>("copyID"));
-		columnStatus.setCellValueFactory(new PropertyValueFactory<>("available"));
-		columnShelf.setCellValueFactory(new PropertyValueFactory<>("shelf"));
-		columnDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-		bookTable.setItems(data);
-		bookTable.getSortOrder().add(columnBookId);
-		
+		if(data.isEmpty()) {
+			LocalDate dueDate = IPController.client.getTitleClosestReturnDate(bt1);
+			lblDueDate.setText("Closest date of return is: " + dueDate.toString());
+		}
+		else {
+			columnBookId.setCellValueFactory(new PropertyValueFactory<>("copyID"));
+			columnShelf.setCellValueFactory(new PropertyValueFactory<>("shelf"));
+			bookTable.setItems(data);
+			bookTable.getSortOrder().add(columnBookId);
+		}
 		this.bt = bt1; // Assigns the subscriber to the controller.
 		this.txtTitle.setText(String.valueOf(bt.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(bt.getAuthorName()); // Sets the subscriber's name.

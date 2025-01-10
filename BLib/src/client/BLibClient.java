@@ -1,6 +1,7 @@
 package client;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -238,6 +239,14 @@ public class BLibClient extends AbstractClient {
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("success")) 
 			return (BookCopy) msg.getArguments().get(0); 
+		return null; 
+	}
+	
+	public LocalDate getTitleClosestReturnDate(BookTitle bt) {
+		msg = new Message("getTitleClosestReturnDate", bt); 
+		handleMessageFromClientUI(msg); 
+		if (msg.getCommand().equals("success")) 
+			return (LocalDate) msg.getArguments().get(0); 
 		return null; 
 	}
 }
