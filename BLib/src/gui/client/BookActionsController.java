@@ -33,9 +33,58 @@ public class BookActionsController {
 	private Button btnReturn = null;
 	
 	
-	public void Borrow(ActionEvent event) throws Exception {
-		//need to add
+	public void Borrow(ActionEvent event) {
+	    // Check if the ID text field is empty
+	    if (txtId.getText().isEmpty()) {
+	        display("No subscribers found in the database");
+	        return;
+	    }
+
+	    Integer subID;
+	    try {
+	        // Attempt to parse the ID as an integer
+	        subID = Integer.valueOf(txtId.getText());
+	    } catch (NumberFormatException e) {
+	        // Handle invalid input gracefully
+	        display("Invalid subscriber ID. Please enter a valid number.");
+	        return;
+	    }
+
+	    // Search for the subscriber using the provided ID
+	    Subscriber searchedSub = IPController.client.getSubscriber(subID);
+
+	    if (searchedSub == null) {
+	        // No subscriber found for the given ID
+	        display("No result found for the provided ID");
+	        return;
+	    }
+	 // Check if the ID text field is empty
+	    if (bookIDTXT.getText().isEmpty()) {
+	        display("No subscribers found in the database");
+	        return;
+	    }
+
+	    Integer bookID;
+	    try {
+	        // Attempt to parse the ID as an integer
+	    	bookID = Integer.valueOf(bookIDTXT.getText());
+	    } catch (NumberFormatException e) {
+	        // Handle invalid input gracefully
+	        display("Invalid subscriber ID. Please enter a valid number.");
+	        return;
+	    }
+
+	    // Search for the subscriber using the provided ID
+	    Subscriber searchedBook = IPController.client.getBook(bookID);
+
+	    if (searched == null) {
+	        // No subscriber found for the given ID
+	        display("No result found for the provided ID");
+	        return;
+	    }
+	    
 	}
+
 	
 	public void Return(ActionEvent event) throws Exception {
 		//need to add
