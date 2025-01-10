@@ -443,8 +443,14 @@ public class BLibServer extends AbstractServer {
 		List<Object> args = ((Message) msg).getArguments();
 		switch (msg.getCommand()) {
 		case "unfreeze":
+			BLibDBC.getInstance().unfreezeSubscriber((Integer) args.get(0));
 			
+			
+		case "gal":
+			System.out.println("%s  %s".formatted((String) args.get(0),(String) args.get(1)));
 			break;
+
+			
 		case "sendEmail":
 			//TODO: create and call sendEmail()
 			break;
