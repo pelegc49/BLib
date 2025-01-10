@@ -1076,6 +1076,9 @@ public class BLibDBC {
 
 	public LocalDate getTitleClosestReturnDate(BookTitle title) {
 		try {
+			if(getTitleMagicNumber(title) > 0)
+				return null;
+			
 			pstmt = conn.prepareStatement("SELECT due_date FROM (SELECT copy_id FROM copies WHERE title_id = ? AND is_borrowed = TRUE) AS a NATURAL JOIN borrows ORDER BY due_date DESC;");
 			pstmt.setInt(1, title.getTitleID());
 			ResultSet rs = pstmt.executeQuery();
