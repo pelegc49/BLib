@@ -220,8 +220,17 @@ public class BLibServer extends AbstractServer {
 
 				// Handle creating a new borrow request
 				case "createBorrow":
-					Order o = BLibDBC.getInstance().getCopyOrder((Integer) args.get(1));
-					if(o!=null) {
+					Order o = BLibDBC.getInstance().getOrderByCopy((Integer) args.get(1));
+					Subscriber sub = BLibDBC.getInstance().getSubscriberByID((Integer) args.get(0));
+					BookCopy copy = BLibDBC.getInstance().getCopyByID((Integer) args.get(1));
+					
+					err = canBorrow(sub,copy);
+					if(err != null) {
+						client.sendToClient(new Message("failed",err)); 
+						break;
+					}
+						
+					if(o != null) {
 						if(o.getSubscriber().getId() != (Integer) args.get(0)) {
 							client.sendToClient(new Message("failed","this copy is ordered")); // Send success message
 							break;
@@ -284,7 +293,7 @@ public class BLibServer extends AbstractServer {
 					
 					if(BLibDBC.getInstance().isTitleOrdered(((BookCopy) args.get(0)).getTitle().getTitleID())) {
 						BLibDBC.getInstance().updateOrder((BookCopy) args.get(0));
-						Order order = BLibDBC.getInstance().getCopyOrder(((BookCopy) args.get(0)).getCopyID());
+						Order order = BLibDBC.getInstance().getOrderByCopy(((BookCopy) args.get(0)).getCopyID());
 						MessageController.getInstance().sendEmail(order.getSubscriber().getEmail(),
 								"Your order has arrived!",
 								"Dear %s,\n\n".formatted(order.getSubscriber().getName())+
@@ -305,11 +314,13 @@ public class BLibServer extends AbstractServer {
 						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), true);
 						if (borrow.getDueDate().plusWeeks(1).compareTo(today) <= 0) {
 							BLibDBC.getInstance().freezeSubscriber(borrow.getSubscriber().getId());
+							
 							client.sendToClient(new Message("success","Freeze")); // Send freeze success message
 						} else {
 							client.sendToClient(new Message("success","Late")); // Send late return success message
 						}
 					} else {
+						BLibDBC.getInstance().cancelCommand("sendMessage","%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));
 						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), false);
 						client.sendToClient(new Message("success")); // Send success message for regular return
 					}
@@ -368,6 +379,37 @@ public class BLibServer extends AbstractServer {
 					}
 					break;
 					
+				
+					
+				case "getLibrarianMessages":
+					ret = BLibDBC.getInstance().getLibrarianMessages();
+					if (ret != null) {
+						client.sendToClient(new Message("success",(List<String>)ret));
+					}else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
+				case "clearLibrarianMessages":
+					ret = BLibDBC.getInstance().clearLibrarianMessages();
+					if ((Boolean) ret == true) {
+						client.sendToClient(new Message("success"));
+					} else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
+					
+				case "getCopyByID":
+					ret = BLibDBC.getInstance().getCopyByID((Integer) args.get(0));
+					
+					if (ret != null) {
+						client.sendToClient(new Message("success",(BookCopy)ret));
+					} else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
 				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
@@ -396,9 +438,15 @@ public class BLibServer extends AbstractServer {
 		case "sendEmail":
 			//TODO: create and call sendEmail()
 			break;
+		case "sendMessage":
+			Subscriber sub = BLibDBC.getInstance().getSubscriberByID((Integer) args.get(0));
+			MessageController.getInstance().sendMessage(sub, null, null);
+			break;
 		case "cancelOrder":
 			BLibDBC.getInstance().cancelOrder((Integer) args.get(0));
 			break;
+			
+			
 		}
 	}
 
@@ -441,12 +489,13 @@ public class BLibServer extends AbstractServer {
 	}
 	
 	private String canOrder(Subscriber sub, BookTitle title) {
+		if(sub.getStatus().equals("frozen"))
+			return "The subscriber is frozen";
+
 		for(Order o : BLibDBC.getInstance().getSubscriberActiveOrders(sub)) {
 			if(o.getTitle().equals(title)) 
 				return "This Book is already ordered";
 		}
-		if(sub.getStatus() == "frozen")
-			return "The subscriber is frozen";
 		
 		if(BLibDBC.getInstance().getTitleMagicNumber(title)>0) {
 			return "Not all of the title copies are borrowed"; 
@@ -455,8 +504,26 @@ public class BLibServer extends AbstractServer {
 		if(BLibDBC.getInstance().getTitleMagicNumber(title)+BLibDBC.getInstance().getNumOfCopies(title)<=0) {
 			return "There are too many active orders";
 		}
+		
+		for(Borrow b : BLibDBC.getInstance().getSubscriberActiveBorrows(sub)) {
+			if(b.getBook().getTitle().equals(title)) 
+				return "This Book is already Borrowed";
+		}
 		return null;
 			
+	}
+	
+	
+	private String canBorrow(Subscriber sub, BookCopy copy) {
+		if(sub.getStatus().equals("frozen"))
+			return "The subscriber is frozen";
+		
+		for(Borrow b : BLibDBC.getInstance().getSubscriberActiveBorrows(sub)) {
+			if(b.getBook().getTitle().equals(copy.getTitle())) 
+				return "This Book is already Borrowed";
+		}
+		return null;
+		
 	}
 	
 	

@@ -1,6 +1,5 @@
 package server;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
@@ -12,6 +11,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import logic.Subscriber;
 
 public class MessageController {
 	
@@ -50,6 +51,11 @@ public class MessageController {
 //		getInstance().sendEmail("HALLO\nHALLO\nHALLO\nHALLO\nHALLO\n", "America YA", mails);
 //	}
 	
+	public void sendMessage(Subscriber subTo,String subject, String text ){
+		sendEmail(subTo.getEmail(), subject, text);
+		sendSMS(subTo.getPhone(), text);
+	}
+	
 
 	public void sendEmail(String emailTo, String subject, String text) {
 		System.out.println("sending email to " + emailTo);
@@ -78,7 +84,7 @@ public class MessageController {
 
 	}
 
-	public void sendSMS(String msg, String phoneTo) {
+	public void sendSMS(String phoneTo, String msg) {
 		System.out.println("sending SMS to " + phoneTo);
 
 		System.out.println("SMS sent");
