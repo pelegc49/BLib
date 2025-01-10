@@ -62,7 +62,8 @@ public class SubscriberListController implements Initializable{
 	public void searchBtn(Event event) {
 		ObservableList<Subscriber> data;
 		Integer subID;
-		
+		data = FXCollections.observableArrayList();
+
 		// Check if searchInput is empty
 	    if ((txtSearch.getText()).isEmpty()) {
 	        // Fetch all subscribers from the database
@@ -71,6 +72,11 @@ public class SubscriberListController implements Initializable{
 	            display("No subscribers found in the database");
 	            return;
 	    }
+	        else {
+	        	for(Subscriber sub : allSubscribers) {
+	    			data.add(sub);
+	    		}
+	        }
 	    }
 	        
 		try {
@@ -82,7 +88,6 @@ public class SubscriberListController implements Initializable{
 		}
 		Subscriber searched = IPController.client.getSubscriber(subID);
 		System.out.println("subID = "+subID);
-		data = FXCollections.observableArrayList();
 		data.add(searched);
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
