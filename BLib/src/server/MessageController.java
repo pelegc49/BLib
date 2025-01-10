@@ -45,14 +45,14 @@ public class MessageController {
 	}
 
 
-	public static void main(String[] args) {
-		String[] mails = {"pelegc49@gmail.com"/*,"hitrifox@gmail.com","Gal.moyal111@gmail.com","Edenfur3253@gmail.com","Lidor.ben.david@e.braude.ac.il"*/};
-		getInstance().sendEmail("HALLO\nHALLO\nHALLO\nHALLO\nHALLO\n", "America YA", mails);
-	}
+//	public static void main(String[] args) {
+//		String[] mails = {"pelegc49@gmail.com"/*,"hitrifox@gmail.com","Gal.moyal111@gmail.com","Edenfur3253@gmail.com","Lidor.ben.david@e.braude.ac.il"*/};
+//		getInstance().sendEmail("HALLO\nHALLO\nHALLO\nHALLO\nHALLO\n", "America YA", mails);
+//	}
 	
 
-	public void sendEmail(String text, String subject, String[] emailTo) {
-		System.out.println("sending email to " + Arrays.toString(emailTo));
+	public void sendEmail(String emailTo, String subject, String text) {
+		System.out.println("sending email to " + emailTo);
 
         try {
             MimeMessage msg = new MimeMessage(session);
@@ -65,8 +65,8 @@ public class MessageController {
 			msg.setText(text, "UTF-8");
 			
 			msg.setSentDate(new Date());
-			for(String s : emailTo)
-				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(s, false));
+			
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo, false));
 			Transport.send(msg);
 			System.out.println("email sent");
         } catch (MessagingException mex) {

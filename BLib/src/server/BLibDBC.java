@@ -231,16 +231,13 @@ public class BLibDBC {
 			// time the execution of send message
 			LocalDateTime now = LocalDateTime.now();
 			LocalDateTime reminderTime = now.plusWeeks(2).minusDays(1);
-
-			pstmt = conn.prepareStatement(
-					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
-			pstmt.setString(1, "sendEmail");
-			pstmt.setString(2,
-					"%s;dear %s,\nTomorrow (%s), your borrow of %s is due.\nPlease return it soon.\nBraude Library"
-							.formatted(sub.getEmail(), sub.getName(), dueDate, copy.getTitle()));
-			pstmt.setTimestamp(3, Timestamp.valueOf(reminderTime));
-			pstmt.setString(4, "%s;%s".formatted(sub.getId(), copy.getCopyID()));
-			pstmt.execute();
+			
+			createCommand("sendEmail",
+					"%s;dear %s,\nTomorrow (%s), your borrow of \"%s\" is due.\nPlease return it soon.\nBraude Library"
+					.formatted(sub.getEmail(), sub.getName(), dueDate, copy.getTitle()),
+					reminderTime,
+					"%s;%s".formatted(sub.getId(), copy.getCopyID()),
+					false);
 
 			// Commit the transaction
 			conn.commit();
@@ -250,6 +247,7 @@ public class BLibDBC {
 			return false; // Return false if an error occurs
 		}
 	}
+
 
 	/**
 	 * Retrieves a book copy from the database based on the copy ID.
@@ -630,7 +628,6 @@ public class BLibDBC {
 			if (borrow == null)
 				return false;
 
-			boolean isOrdered = isTitleOrdered(book.getTitle().getTitleID());
 			pstmt = conn.prepareStatement(
 					"UPDATE borrows SET date_of_return = ? WHERE subscriber_id = ? AND copy_id =? AND date_of_borrow = ?;");
 			pstmt.setDate(1, Date.valueOf(today));
@@ -642,14 +639,7 @@ public class BLibDBC {
 			pstmt = conn.prepareStatement("UPDATE copies SET is_borrowed = ? WHERE copy_id = ?;");
 			pstmt.setBoolean(1, false);
 			pstmt.setInt(2, book.getCopyID());
-			pstmt.execute();
-
-			// TODO: update orders
-			if (isOrdered) {
-				pstmt = conn.prepareStatement(
-						"UPDATE orders SET copy_id = ? WHERE title_id = ? AND copy_id =? AND date_of_borrow = ?;");
-				pstmt.setDate(1, Date.valueOf(today));
-			}
+			pstmt.execute();	
 
 			// Log the return activity in the history table
 			pstmt = conn.prepareStatement(
@@ -961,7 +951,6 @@ public class BLibDBC {
 	}
 
 	
-	
 	public List<Order> getSubscriberActiveOrders(Subscriber sub) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE subscriber_id = ? ORDER BY order_date");
@@ -990,4 +979,117 @@ public class BLibDBC {
 
 	}
 
+	public Boolean updateOrder(BookCopy copy) {
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE title_id = ? ORDER BY order_date;");
+			pstmt.setInt(1, copy.getTitle().getTitleID());
+			ResultSet rs = pstmt.executeQuery();
+			if (!rs.next()) {
+				return null;
+			}
+			int orderID = rs.getInt(1);
+			
+			
+			LocalDate today = LocalDate.now();
+			pstmt = conn.prepareStatement(
+					"UPDATE orders SET copy_id = ?, arive_date = ? WHERE order_id = ?;");
+			pstmt.setInt(1, copy.getCopyID());
+			pstmt.setDate(2, Date.valueOf(today));
+			pstmt.setInt(3, orderID);
+			pstmt.execute();
+			
+			conn.commit();
+			return true;
+		}catch (SQLException e) {
+			rollback();
+			return false;
+		}
+		
+	}
+
+	
+	public Boolean createCommand(String  command, String arguments, LocalDateTime timeOfExe, String identifyer,boolean commit) throws SQLException {
+		try {
+			pstmt = conn.prepareStatement(
+					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
+			pstmt.setString(1, command);
+			pstmt.setString(2, arguments);
+			pstmt.setTimestamp(3, Timestamp.valueOf(timeOfExe));
+			pstmt.setString(4, identifyer);
+			pstmt.execute();
+			
+			if(commit) {
+				conn.commit();
+			}
+			return true;
+			
+		} catch (SQLException e) {
+			if(commit) {
+				rollback();
+				return false;
+			}else {
+				throw e;
+			}
+			
+		}
+		
+	}
+
+	public Boolean createCommand(String  command, String arguments, LocalDateTime timeOfExe, String identifyer) {
+		try {
+			return createCommand(command, arguments, timeOfExe, identifyer,true);
+		}catch (SQLException e) {
+			return false;
+		}
+	}
+
+	public Boolean cancelCommand(String command, String identifyer) {
+		try {
+			pstmt = conn.prepareStatement("DELETE FROM commands WHERE command = ? AND identifyer = ?");
+			pstmt.setString(1, command);
+			pstmt.setString(2, identifyer);
+			pstmt.execute();
+			
+			conn.commit();
+			return true;
+		} catch (Exception e) {
+			rollback();
+			return false;
+			
+		}
+		
+	}
+	
+	public Boolean cancelOrder(int copyID) {
+		try {
+			pstmt = conn.prepareStatement("DELETE FROM orders WHERE copy_id = ?");
+			pstmt.setInt(1, copyID);
+			pstmt.execute();
+			
+			conn.commit();
+			return true;
+		} catch (Exception e) {
+			rollback();
+			return false;
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

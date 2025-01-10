@@ -2,24 +2,24 @@ package server;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.management.InstanceNotFoundException;
-
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 
 import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
 import logic.Borrow;
 import logic.Message;
+import logic.Order;
 import logic.Subscriber;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
-import java.util.Random;
 
 /**
  * This class represents the server of the BLib application. It extends the
@@ -133,6 +133,7 @@ public class BLibServer extends AbstractServer {
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		System.out.println("receive message:" + msg); // Log the received message
 		LocalDate today = LocalDate.now();
+		LocalDateTime now = LocalDateTime.now();
 		String err;
 		if (msg instanceof Message) { // Check if the received message is an instance of the Message class
 			List<Object> args = ((Message) msg).getArguments(); // Retrieve arguments from the message
@@ -219,9 +220,15 @@ public class BLibServer extends AbstractServer {
 
 				// Handle creating a new borrow request
 				case "createBorrow":
-					if(BLibDBC.getInstance().getCopyOrder((Integer) args.get(1))) {
-						client.sendToClient(new Message("failed","this copy is ordered")); // Send success message
-						
+					Order o = BLibDBC.getInstance().getCopyOrder((Integer) args.get(1));
+					if(o!=null) {
+						if(o.getSubscriber().getId() != (Integer) args.get(0)) {
+							client.sendToClient(new Message("failed","this copy is ordered")); // Send success message
+							break;
+						}else {
+							BLibDBC.getInstance().cancelCommand("cancelOrder","%d".formatted((Integer) args.get(1)));
+							execute(new Message("cancelOrder",(Integer) args.get(1)));
+						}
 					}
 					
 					ret = BLibDBC.getInstance().createBorrow((Integer) args.get(0), (Integer) args.get(1)); // Create a
@@ -273,11 +280,20 @@ public class BLibServer extends AbstractServer {
 
 				// Handle return book request
 				case "return":
+					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve																				// active borrow
+					
 					if(BLibDBC.getInstance().isTitleOrdered(((BookCopy) args.get(0)).getTitle().getTitleID())) {
-						
+						BLibDBC.getInstance().updateOrder((BookCopy) args.get(0));
+						Order order = BLibDBC.getInstance().getCopyOrder(((BookCopy) args.get(0)).getCopyID());
+						MessageController.getInstance().sendEmail(borrow.getSubscriber().getEmail(),
+								"Your order has arrived!",
+								"Dear %s,\n\n".formatted(borrow.getSubscriber().getName())+
+								"Your book order of \"%s\" has arrived and is ready for pickup.\n".formatted(((BookCopy) args.get(0)).getTitle())+
+								"Please collect it within the next two days, or the order will be canceled.\n\n"+
+								"Best regards, BLib library");
+						BLibDBC.getInstance().createCommand("cancelOrder", "%d".formatted(((BookCopy) args.get(0)).getCopyID()), now.plusDays(2), "%d".formatted(((BookCopy) args.get(0)).getCopyID()));
 					}
 					
-					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve																				// active borrow
 																										// for book copy
 					if (borrow == null) {
 						client.sendToClient(new Message("failed","DB error")); // Send failure message if borrow creation fails
@@ -379,6 +395,9 @@ public class BLibServer extends AbstractServer {
 			break;
 		case "sendEmail":
 			//TODO: create and call sendEmail()
+			break;
+		case "cancelOrder":
+			BLibDBC.getInstance().cancelOrder((Integer) args.get(0));
 			break;
 		}
 	}
