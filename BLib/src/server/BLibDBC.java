@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,16 +35,76 @@ public class BLibDBC {
 	private static Connection conn; // Connection object to interact with the database
 	private static PreparedStatement pstmt; // Statement object for executing SQL queries
 
+	
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
-		for (Order d : db.getSubscriberActiveOrders(db.getSubscriberByID(8888)))
-			System.out.println(d.getTitle());
+		db.createCommand("gal", "1;2", LocalDateTime.now().plusMinutes(1), "123");
 		db.disconnect();
 	}
 
+	
+	// in order to make singleton work
+	private BLibDBC() {
+		}
+
+	public boolean disconnect() {
+		try {
+			if (conn == null) {
+				System.out.println("SQL disconnection failed (connection is null)");
+				return false; // Return false if the connection is null
+			}
+			if (conn.isClosed()) {
+				System.out.println("SQL disconnection failed (connection is closed)");
+				return false; // Return false if the connection is already closed
+			}
+			// Try closing the connection
+			conn.close();
+			return true; // Return true if disconnection is successful
+		} catch (SQLException e) {
+			// If disconnection fails, print error message and return false
+			System.out.println("SQL disconnection failed (exception thrown)");
+			return false;
+		}
+	}
+
+	private void rollback() {
+		try {
+			conn.rollback(); // Rollback the current transaction
+		} catch (SQLException e) {
+			// If rollback fails, attempt to disconnect and reconnect to the database
+			disconnect();
+			connect(pass);
+		}
+	}
+
+	public boolean connect(String password) {
+		pass = password; // Store the password for later use in reconnection
+		try {
+			// Try loading the MySQL JDBC driver
+			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
+			System.out.println("Driver definition succeed");
+		} catch (Exception ex) {
+			// If the driver fails to load, print error message and return false
+			System.out.println("Driver definition failed");
+			return false;
+		}
+		try {
+			// Try connecting to the database
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=Asia/Jerusalem", "root", password);
+			conn.setAutoCommit(false); // Disable auto-commit to handle transactions manually
+			System.out.println("SQL connection succeed");
+			return true; // Return true if connection is successful
+		} catch (Exception e) {
+			// If the connection fails, print error message and return false
+			System.out.println("SQL connection failed");
+			return false;
+		}
+	}
+	
 	// Singleton pattern to ensure only one instance of BLibDBC exists
 	public static BLibDBC getInstance() {
 		if (!(instance instanceof BLibDBC)) {
@@ -52,6 +113,7 @@ public class BLibDBC {
 		return instance;
 	}
 
+	
 	/**
 	 * 
 	 * @param titleID the ID of the book title to be fetched
@@ -74,10 +136,7 @@ public class BLibDBC {
 
 	}
 
-	// in order to make singleton work
-	private BLibDBC() {
-	}
-
+	
 	/**
 	 * Retrieves all book copies associated with a particular book title.
 	 * 
@@ -102,6 +161,7 @@ public class BLibDBC {
 		}
 	}
 
+	
 	/**
 	 * Retrieves a set of book titles that match a given keyword in the title,
 	 * author, or description.
@@ -134,6 +194,7 @@ public class BLibDBC {
 		}
 	}
 
+	
 	/**
 	 * Retrieves a subscriber's details from the database using their subscriber ID.
 	 * 
@@ -156,6 +217,7 @@ public class BLibDBC {
 		}
 	}
 
+	
 	public Order getOrderByCopy(int copyID) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE copy_id = ?");
@@ -179,6 +241,7 @@ public class BLibDBC {
 		}
 	}
 
+	
 	/**
 	 * Creates a new borrow record and updates the book copy's status to 'borrowed'.
 	 * 
@@ -245,12 +308,15 @@ public class BLibDBC {
 		}
 	}
 
+	
 	/**
 	 * Retrieves a book copy from the database based on the copy ID.
 	 * 
 	 * @param copyID the ID of the book copy to be fetched
 	 * @return the BookCopy object if found, otherwise null
 	 */
+	
+
 	public BookCopy getCopyByID(int copyID) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM copies WHERE copy_id = ?");
@@ -276,6 +342,7 @@ public class BLibDBC {
 	 * @param newSubscriber the Subscriber object containing updated information
 	 * @return true if the update was successful, false if it failed
 	 */
+
 
 	public Boolean updateSubscriber(Subscriber newSubscriber, String userType) {
 		try {
@@ -328,15 +395,9 @@ public class BLibDBC {
 	/**
 	 * Rolls back the current transaction in case of an error.
 	 */
-	private void rollback() {
-		try {
-			conn.rollback(); // Rollback the current transaction
-		} catch (SQLException e) {
-			// If rollback fails, attempt to disconnect and reconnect to the database
-			disconnect();
-			connect(pass);
-		}
-	}
+	
+
+	
 
 	/**
 	 * Registers a new subscriber by inserting their information into the database.
@@ -345,6 +406,8 @@ public class BLibDBC {
 	 *                   inserted
 	 * @return true if the registration was successful, false if it failed
 	 */
+	
+
 	public Boolean registerSubscriber(Subscriber subscriber, String password) {
 		try {
 			LocalDate today = LocalDate.now();
@@ -389,6 +452,8 @@ public class BLibDBC {
 	 * @param password the password of the user
 	 * @return the user's role if the login is successful, otherwise null
 	 */
+	
+
 	public String login(int userid, String password) {
 		try {
 			// Execute SQL query to check if the user ID and password match
@@ -414,55 +479,18 @@ public class BLibDBC {
 	 * @param password the password for the database connection
 	 * @return true if the connection is successful, false if it fails
 	 */
-	public boolean connect(String password) {
-		pass = password; // Store the password for later use in reconnection
-		try {
-			// Try loading the MySQL JDBC driver
-			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
-			System.out.println("Driver definition succeed");
-		} catch (Exception ex) {
-			// If the driver fails to load, print error message and return false
-			System.out.println("Driver definition failed");
-			return false;
-		}
-		try {
-			// Try connecting to the database
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=Asia/Jerusalem", "root", password);
-			conn.setAutoCommit(false); // Disable auto-commit to handle transactions manually
-			System.out.println("SQL connection succeed");
-			return true; // Return true if connection is successful
-		} catch (Exception e) {
-			// If the connection fails, print error message and return false
-			System.out.println("SQL connection failed");
-			return false;
-		}
-	}
+	
+
+	
 
 	/**
 	 * Closes the connection to the database.
 	 * 
 	 * @return true if the disconnection is successful, false if it fails
 	 */
-	public boolean disconnect() {
-		try {
-			if (conn == null) {
-				System.out.println("SQL disconnection failed (connection is null)");
-				return false; // Return false if the connection is null
-			}
-			if (conn.isClosed()) {
-				System.out.println("SQL disconnection failed (connection is closed)");
-				return false; // Return false if the connection is already closed
-			}
-			// Try closing the connection
-			conn.close();
-			return true; // Return true if disconnection is successful
-		} catch (SQLException e) {
-			// If disconnection fails, print error message and return false
-			System.out.println("SQL disconnection failed (exception thrown)");
-			return false;
-		}
-	}
+	
+
+	
 
 	/**
 	 * Retrieves the active Borrow record for a given BookCopy if it exists.
@@ -470,6 +498,8 @@ public class BLibDBC {
 	 * @param copy The BookCopy for which to retrieve the active Borrow.
 	 * @return The active Borrow object or null if not found or an error occurs.
 	 */
+	
+
 	public Borrow getCopyActiveBorrow(BookCopy copy) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM borrows WHERE copy_id = ? AND date_of_return IS NULL");
@@ -500,9 +530,12 @@ public class BLibDBC {
 	 *                 or admin type).
 	 * @return True if the extension is successful, false otherwise.
 	 */
+	
+
 	public Boolean extendDuration(Borrow borrow, int days, String userType) {
 		try {
 			LocalDate newDueDate = borrow.getDueDate().plusDays(days);
+			
 			// Log the extension activity in the history table
 			pstmt = conn.prepareStatement("UPDATE borrows SET due_date = ? WHERE "
 					+ "subscriber_id = ? AND copy_id = ? AND date_of_borrow = ?");
@@ -513,6 +546,7 @@ public class BLibDBC {
 			pstmt.execute();
 
 			LocalDate today = LocalDate.now();
+			
 			// Log the extension activity in the history table
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
@@ -542,6 +576,14 @@ public class BLibDBC {
 				pstmt.setTimestamp(2, Timestamp.valueOf(now));
 				pstmt.execute();
 			}
+			
+			LocalDateTime notification = LocalDateTime.of(newDueDate.minusDays(1), LocalTime.now());
+			pstmt = conn.prepareStatement("UPDATE commands SET time_of_execution=? WHERE command = ? AND identifyer = ?");
+			pstmt.setTimestamp(1, Timestamp.valueOf(notification));
+			pstmt.setString(2, "sendMessage");
+			pstmt.setString(3, "%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));
+			
+			
 			// Commit the transaction
 			conn.commit();
 			return true; // Return true if the extension is successful
@@ -551,6 +593,9 @@ public class BLibDBC {
 		}
 	}
 
+	
+
+
 	/**
 	 * Retrieves the number of allowed extensions for a given BookTitle.
 	 * 
@@ -558,6 +603,8 @@ public class BLibDBC {
 	 *              extensions.
 	 * @return The number of allowed extensions, or null if an error occurs.
 	 */
+	
+
 	public Integer getTitleMagicNumber(BookTitle title) {
 		// 0 < num <= num of copies : { there are between 0 to num of copies active
 		// borrows for the title}
@@ -599,6 +646,8 @@ public class BLibDBC {
 		}
 	}
 
+	
+
 	public Boolean isTitleOrdered(int titleID) {
 		try {
 			pstmt = conn.prepareStatement("SELECT num_of_orders>0 FROM titles WHERE title_id = ?;");
@@ -617,6 +666,8 @@ public class BLibDBC {
 	 * @param isLateReturn True if the return is late, false otherwise.
 	 * @return True if the return is successful, false otherwise.
 	 */
+	
+
 	public Boolean returnBook(BookCopy book, boolean isLateReturn) {
 		try {
 			LocalDate today = LocalDate.now();
@@ -673,7 +724,9 @@ public class BLibDBC {
 	 *         subscriber does not exist.
 	 */
 	
+	
 	public Boolean freezeSubscriber(int subID) {
+
 		try {
 			LocalDate today = LocalDate.now();
 			Subscriber sub = getSubscriberByID(subID);
@@ -707,6 +760,8 @@ public class BLibDBC {
 			return false; // Return false if an error occurs
 		}
 	}
+	
+	
 
 	/**
 	 * Unfreezes a subscriber's account and logs the action.
@@ -745,6 +800,8 @@ public class BLibDBC {
 		}
 	}
 
+	
+
 	public List<Activity> getSubscriberHistory(int subID) {
 		try {
 			Subscriber sub = getSubscriberByID(subID);
@@ -765,41 +822,25 @@ public class BLibDBC {
 		}
 	}
 
-	public Boolean orderTitle(BookTitle title, Subscriber sub) {
-		try {
-			LocalDate today = LocalDate.now();
-			pstmt = conn.prepareStatement("UPDATE titles SET num_of_orders = num_of_orders + 1 WHERE title_id = ? ;");
-			pstmt.setInt(1, title.getTitleID());
-			pstmt.execute();
+	
 
-			pstmt = conn.prepareStatement(
-					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
-			pstmt.setInt(1, sub.getId());
-			pstmt.setString(2, "order");
-			pstmt.setString(3, "%s ordered %s on %s".formatted(sub.getName(), title, today));
+	
 
-			pstmt.setDate(4, Date.valueOf(today));
-			pstmt.execute();
-			// Commit the transaction
-			conn.commit();
-			return true;
-
-		} catch (SQLException e) {
-			rollback(); // Rollback transaction if any error occurs
-			return false; // Return false if an error occurs
-		}
-	}
+	
 
 	// TODO:test
+	
+
 	public List<Message> getCommands() {
 		LocalDateTime now = LocalDateTime.now();
 		try {
-			pstmt = conn.prepareStatement("SELECT * FROM commands WHERE time_of_execution < ?");
-			pstmt.setTimestamp(1, Timestamp.valueOf(now));
+			pstmt = conn.prepareStatement("SELECT * FROM commands");
 			ResultSet rs = pstmt.executeQuery();
 			List<Integer> commandIDs = new ArrayList<>();
 			List<Message> ret = new ArrayList<>();
 			while (rs.next()) {
+				if(rs.getTimestamp(4).toLocalDateTime().compareTo(now)> 0 )
+					continue;
 				commandIDs.add(rs.getInt(1));
 				Message msg = new Message(rs.getString(2));
 				for (String arg : rs.getString(3).split(";")) {
@@ -809,6 +850,7 @@ public class BLibDBC {
 			}
 
 			for (int i : commandIDs) {
+				
 				pstmt = conn.prepareStatement("DELETE FROM commands WHERE id = ?");
 				pstmt.setInt(1, i);
 				pstmt.execute();
@@ -822,6 +864,8 @@ public class BLibDBC {
 			return null; // Return false if an error occurs
 		}
 	}
+
+	
 
 	public List<Borrow> getSubscriberActiveBorrows(Subscriber sub) {
 		try {
@@ -845,6 +889,8 @@ public class BLibDBC {
 
 	}
 
+	
+
 	public List<String> getLibrarianMessages() {
 		try {
 			pstmt = conn.prepareStatement("SELECT message FROM librarian_messages ORDER BY time");
@@ -860,6 +906,7 @@ public class BLibDBC {
 		}
 	}
 
+	
 	public Boolean clearLibrarianMessages() {
 		try {
 			pstmt = conn.prepareStatement("DELETE FROM librarian_messages;");
@@ -871,7 +918,8 @@ public class BLibDBC {
 			return false;
 		}
 	}
-
+	
+	
 	public Boolean orderBook(int subID, int titleID) {
 		try {
 			Subscriber sub = getSubscriberByID(subID);
@@ -912,6 +960,7 @@ public class BLibDBC {
 		}
 	}
 
+
 	public Integer getNumOfCopies(BookTitle title) {
 		try {
 			pstmt = conn.prepareStatement("SELECT sum(is_borrowed) FROM copies WHERE title_id = ? GROUP BY title_id;");
@@ -926,6 +975,7 @@ public class BLibDBC {
 			return null;
 		}
 	}
+
 
 	public List<Subscriber> getAllSubscribers() {
 		try {
@@ -943,6 +993,7 @@ public class BLibDBC {
 		}
 	}
 
+	
 	public List<Order> getSubscriberActiveOrders(Subscriber sub) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE subscriber_id = ? ORDER BY order_date");
@@ -971,6 +1022,7 @@ public class BLibDBC {
 
 	}
 
+	
 	public Boolean updateOrder(BookCopy copy) {
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE title_id = ? ORDER BY order_date;");
@@ -997,6 +1049,7 @@ public class BLibDBC {
 
 	}
 
+	
 	public Boolean createCommand(String command, String arguments, LocalDateTime timeOfExe, String identifyer,
 			boolean commit) throws SQLException {
 		try {
@@ -1025,6 +1078,7 @@ public class BLibDBC {
 
 	}
 
+
 	public Boolean createCommand(String command, String arguments, LocalDateTime timeOfExe, String identifyer) {
 		try {
 			return createCommand(command, arguments, timeOfExe, identifyer, true);
@@ -1033,23 +1087,39 @@ public class BLibDBC {
 		}
 	}
 
+
 	public Boolean cancelCommand(String command, String identifyer) {
+		try {
+			return cancelCommand(command, identifyer, true);
+		} catch (SQLException e) {
+			return false;
+		}
+
+	}
+
+	
+	public Boolean cancelCommand(String command, String identifyer, boolean commit) throws SQLException {
 		try {
 			pstmt = conn.prepareStatement("DELETE FROM commands WHERE command = ? AND identifyer = ?");
 			pstmt.setString(1, command);
 			pstmt.setString(2, identifyer);
 			pstmt.execute();
-
-			conn.commit();
+			
+			if(commit)
+				conn.commit();
 			return true;
 		} catch (Exception e) {
-			rollback();
-			return false;
+			if (commit) {
+				rollback();
+				return false;
+			} else {
+				throw e;
+			}
 
 		}
-
+		
 	}
-
+	
 	public Boolean cancelOrder(int copyID) {
 		try {
 			BookCopy copy = getCopyByID(copyID);
@@ -1074,6 +1144,7 @@ public class BLibDBC {
 
 	}
 
+	
 	public LocalDate getTitleClosestReturnDate(BookTitle title) {
 		try {
 			if(getTitleMagicNumber(title) > 0)
