@@ -9,7 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField; 
 import javafx.scene.layout.Pane; 
-import javafx.stage.Stage; 
+import javafx.stage.Stage;
+import logic.BookCopy;
 import logic.Subscriber; 
 
 /**
@@ -63,6 +64,12 @@ public class BookActionsController {
 	        display("No subscribers found in the database");
 	        return;
 	    }
+	 // Check if the Sub is frozen
+	    if (searchedSub.getStatus().equals("frozen")) {
+	    	display("Subscriber is frozen, cant borrow book.");
+	    	return;
+	    }
+	    
 
 	    Integer bookID;
 	    try {
@@ -70,18 +77,20 @@ public class BookActionsController {
 	    	bookID = Integer.valueOf(bookIDTXT.getText());
 	    } catch (NumberFormatException e) {
 	        // Handle invalid input gracefully
-	        display("Invalid subscriber ID. Please enter a valid number.");
+	        display("Invalid Book ID. Please enter a valid number.");
 	        return;
 	    }
 
 	    // Search for the subscriber using the provided ID
-	    Subscriber searchedBook = IPController.client.getBook(bookID);
+	    BookCopy searchedBook = IPController.client.getCopyByID();
 
-	    if (searched == null) {
+	    if (searchedBook == null) {
 	        // No subscriber found for the given ID
 	        display("No result found for the provided ID");
 	        return;
 	    }
+	    
+	    
 	    
 	}
 

@@ -232,8 +232,8 @@ public class BLibClient extends AbstractClient {
 		return null; 
 	}
 	
-	public BookCopy getCopyByID() {
-		msg = new Message("getCopyByID"); 
+	public BookCopy getCopyByID(int id) {
+		msg = new Message("getCopyByID", id); 
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("success")) 
 			return (BookCopy) msg.getArguments().get(0); 
