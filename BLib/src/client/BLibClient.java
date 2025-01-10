@@ -225,7 +225,7 @@ public class BLibClient extends AbstractClient {
 	}
 	
 	public List<Subscriber> getAllSubscribers() {
-		msg = new Message("getAllSubscribersAll"); 
+		msg = new Message("getAllSubscribers"); 
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("success")) 
 			return (List<Subscriber>) msg.getArguments().get(0); 
