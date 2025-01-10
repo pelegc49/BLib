@@ -71,7 +71,7 @@ public class UpdateDetailsController {
 		boolean changed = false;
 		if(!txtPhone.getText().equals(s.getPhone())) {
 			try {
-				Integer.parseInt(txtPhone.getText()); // Validates that the phone number contains only digits.
+				Long.parseLong(txtPhone.getText()); // Validates that the phone number contains only digits.
 			} catch (Exception e) {
 				display("Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
 				return;
@@ -80,10 +80,10 @@ public class UpdateDetailsController {
 		}
 		
 		if(!txtEmail.getText().equals(s.getEmail())) {
-			String regex = "^[A-Za-z0-9]{1,30}@"
-					+"[A-Za-z0-9]{1,16}"
-					+"(?:\\.[A-Za-z0-9]{1,16}){0,4}"
-					+"\\.[A-Za-z]{1,}$";
+			String regex = "^[A-Za-z0-9.]{1,99}@"
+						 + "[A-Za-z0-9]{1,99}"
+						 + "(?:\\.[A-Za-z0-9]{1,99}){0,99}"
+						 + "\\.[A-Za-z]{1,}$";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(txtEmail.getText());
 			
