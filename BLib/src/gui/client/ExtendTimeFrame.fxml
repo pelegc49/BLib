@@ -16,13 +16,13 @@
         <columns>
           <TableColumn id="checkBoxColumn" fx:id="checkBoxColumn" minWidth="0.0" prefWidth="22.0">
              <graphic>
-                <CheckBox id="checkBox" fx:id="checkBox" mnemonicParsing="false" />
+                <CheckBox id="selectAllCheckBox" fx:id="selectAllCheckBox" mnemonicParsing="false" onMouseClicked="#selectAllBtn" />
              </graphic>
           </TableColumn>
           <TableColumn id="authorColumn" fx:id="authorColumn" prefWidth="60.0" text="author" />
           <TableColumn id="titleColumn" fx:id="titleColumn" prefWidth="124.0" text="title" />
           <TableColumn id="dueDateColumn" fx:id="dueDateColumn" prefWidth="94.0" text="due date" />
-            <TableColumn id="errorMessageColumn" fx:id="errorMessageColumn" prefWidth="100.0" text="message" />
+          <TableColumn id="errorMessageColumn" fx:id="errorMessageColumn" prefWidth="100.0" text="message" />
         </columns>
       </TableView>
       <Label fx:id="lblError" layoutX="79.0" layoutY="376.0" prefHeight="17.0" prefWidth="174.0" textFill="#009600">

@@ -133,8 +133,8 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Extend the borrowing duration for a book
-	public Message extendDuration(Borrow borrow, int days) {
-		msg = new Message("extend", borrow, days); // Create message
+	public Message extendDuration(Borrow borrow, int days, String type) {
+		msg = new Message("extend", borrow, days, type); // Create message
 		handleMessageFromClientUI(msg); // Send to server
 		return msg; // Return subscriber
 	}

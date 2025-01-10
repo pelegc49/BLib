@@ -1,10 +1,11 @@
 package logic;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javafx.scene.control.CheckBox;
 
-public class BorrowWithCheckBox extends Borrow {
+public class BorrowWithCheckBox extends Borrow implements Serializable {
 
 	// Private member variables for storing borrowing details
 	private CheckBox selected;
@@ -13,6 +14,7 @@ public class BorrowWithCheckBox extends Borrow {
 	// Constructor to initialize the borrowing details
 	public BorrowWithCheckBox(Subscriber subscriber,BookCopy book,LocalDate dateOfBorrow, LocalDate dueDate, LocalDate dateOfReturn) {
 		super(subscriber, book, dateOfBorrow, dueDate, dateOfReturn);
+		selected = new CheckBox();
 		selected.setSelected(false);
 		errorMessage = "";
 	}
@@ -33,12 +35,12 @@ public class BorrowWithCheckBox extends Borrow {
 		return this.book.getTitle().getTitleName();
 	}
 	
-	public boolean isSelected() {
-		return selected.isSelected();
+	public CheckBox isSelected() {
+		return selected;
 	}
 	
-	public void setSelected(boolean bool) {
-		selected.setSelected(bool);
+	public void setSelected(boolean state) {
+		this.selected.setSelected(state);
 	}
 	
 	// Getter method for the date of borrow
