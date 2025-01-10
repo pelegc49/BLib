@@ -71,7 +71,7 @@ public class UpdateDetailsController {
 		boolean changed = false;
 		if(!txtPhone.getText().equals(s.getPhone())) {
 			try {
-				Integer.parseInt(txtPhone.getText()); // Validates that the phone number contains only digits.
+				Long.parseLong(txtPhone.getText()); // Validates that the phone number contains only digits.
 			} catch (Exception e) {
 				display("Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
 				return;
