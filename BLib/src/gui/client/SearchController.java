@@ -52,7 +52,6 @@ public class SearchController{
 	@FXML
 	private TableColumn<BookTitle, String> titleColumn;
 	
-	
 	public void searchBtn(Event event) {
 		ObservableList<BookTitle> data;
 		String keyword = txtSearch.getText();
@@ -131,11 +130,6 @@ public class SearchController{
 	 */
 	public void display(String message) {
 		lblError.setText(message);
-	}
-	
-	// Enables the enter key to activate the OK button
-	public void handleKey(KeyEvent event) {
-		searchBtn(event);
 	}
 	
 	public void nextPage(Event event, String fileName, String title) throws Exception{
