@@ -410,6 +410,16 @@ public class BLibServer extends AbstractServer {
 					}
 					break;
 					
+				case "getTitleClosestReturnDate":
+					ret = BLibDBC.getInstance().getTitleClosestReturnDate((BookTitle) args.get(0));
+					
+					if (ret != null) {
+						client.sendToClient(new Message("success",(LocalDate)ret));
+					} else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
 				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
 //					if (ret != null) { 
