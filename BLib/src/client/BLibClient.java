@@ -216,10 +216,10 @@ public class BLibClient extends AbstractClient {
 		return msg;
 	}
 	
-	public List<Borrow> getBorrowBySubscriberID(int subID) {
-		msg = new Message("getBorrowBySubscriberID", subID); 
+	public List<Borrow> getSubscriberBorrows(Subscriber subscriber) {
+		msg = new Message("getSubscriberBorrows", subscriber); 
 		handleMessageFromClientUI(msg); 
-		if (msg.getCommand().equals("borrowFound")) 
+		if (msg.getCommand().equals("success")) 
 			return (List<Borrow>) msg.getArguments().get(0); 
 		return null; 
 	}

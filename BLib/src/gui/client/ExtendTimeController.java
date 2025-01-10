@@ -31,7 +31,7 @@ import logic.Subscriber;
  * and transitions the user to the main application interface upon successful login.
  */
 public class ExtendTimeController{
-	private int subID;
+	private Subscriber subscriber;
 	@FXML
 	private TextField txtSearch;
 	@FXML
@@ -98,13 +98,13 @@ public class ExtendTimeController{
                 break;
             }
         }
-	    loadBorrows(subID);
+	    loadBorrows(subscriber);
 	}
 	
-	public void loadBorrows(int subID) {
-		this.subID = subID;
+	public void loadBorrows(Subscriber subscriber) {
+		this.subscriber = subscriber;
 		ObservableList<Borrow> data;
-		List<Borrow> borrows = IPController.client.getBorrowBySubscriberID(subID); // TODO: this function from BLibServer
+		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber); // TODO: this function from BLibServer
 		data = FXCollections.observableArrayList();
 		for(Borrow b : borrows) {
 			data.add(b);

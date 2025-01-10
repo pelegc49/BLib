@@ -43,7 +43,7 @@ public class SubscriberClientGUIController {
 		Stage primaryStage = new Stage();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".fxml").openStream());
 		ExtendTimeController extendTimeController = loader.getController();
-		extendTimeController.loadBorrows(AuthenticationController.subscriber.getId());
+		extendTimeController.loadBorrows(AuthenticationController.subscriber);
 		// Set up and display the new scene.
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".css").toExternalForm());
