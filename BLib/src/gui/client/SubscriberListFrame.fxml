@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="411.0" prefWidth="485.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
+<AnchorPane prefHeight="411.0" prefWidth="485.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
 	<children>
-      <TextField id="txtSearch" fx:id="txtSearch" layoutX="14.0" layoutY="18.0" onKeyPressed="#handleKey" promptText="Search" />
+      <TextField id="txtSearch" fx:id="txtSearch" layoutX="14.0" layoutY="18.0" onKeyTyped="#searchBtn" promptText="Search" />
  	  <Button id="btnBack" fx:id="btnBack" layoutX="430.0" layoutY="371.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
       <Button id="btnSearch" fx:id="btnSearch" layoutX="174.0" layoutY="18.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
       <TableView id="subTable" fx:id="subTable" layoutX="13.0" layoutY="51.0" prefHeight="314.0" prefWidth="461.0">

@@ -38,6 +38,8 @@ import logic.Subscriber;
  */
 public class SubscriberListController implements Initializable{
 	
+	private List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
+	
 	@FXML
 	private TextField txtSearch;
 	@FXML
@@ -61,41 +63,38 @@ public class SubscriberListController implements Initializable{
 	
 	
 	public void searchBtn(Event event) {
+		String id, phone, name, email;
 	    ObservableList<Subscriber> data = FXCollections.observableArrayList();
-        List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
-
-	    try {
-	        // Check if search input is empty
-	        if (txtSearch.getText().isEmpty()) {
-	            if (allSubscribers == null || allSubscribers.isEmpty()) {
-	                display("No subscribers found in the database");
-	                return;
-	            }
-	        } else {
-	            data.addAll(allSubscribers);
-	            Integer subID = Integer.valueOf(txtSearch.getText());
-	            Subscriber searched = IPController.client.getSubscriber(subID);
-	            if (searched == null) {
-	                display("No result found for the provided ID");
-	                return;
-	            }
-	            data.add(searched);
-	        }
-
-	        // Update table columns
-	        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-	        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-	        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-	        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-	        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-	        subTable.setItems(data);
-
-	    } catch (NumberFormatException e) {
-	        display("Invalid ID format. Please enter a numeric value.");
-	    } catch (Exception e) {
-	        display("An error occurred: " + e.getMessage());
-	        e.printStackTrace();
-	    }
+        //List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
+        
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        
+        String text = txtSearch.getText().toLowerCase();
+        
+        if (text.isEmpty()){
+        	data.addAll(allSubscribers);
+        }
+        else {
+        	for(Subscriber subscriber : allSubscribers) {
+	    		id = String.valueOf(subscriber.getId()).toLowerCase();
+	    		phone = subscriber.getPhone().toLowerCase();
+	    		name = subscriber.getName().toLowerCase();
+	    		email = subscriber.getEmail().toLowerCase();
+	    		if(id.contains(String.valueOf(text)) ||
+	    		   phone.contains(String.valueOf(text)) ||
+	    		   name.contains(String.valueOf(text)) ||
+	    		   email.contains(String.valueOf(text)))
+	    		{
+	    			data.add(subscriber);
+	    		}
+	    	}
+        }
+        subTable.setItems(data);
+        
 	 // allows to click on row
 	 		subTable.setRowFactory(tv -> {
 	 		    TableRow<Subscriber> rowa = new TableRow<>();
@@ -121,7 +120,7 @@ public class SubscriberListController implements Initializable{
 	 					updateDetailsController.loadSubscriber(rowData);
 	 		    		// Set up and display the new scene.
 	 		    		Scene scene = new Scene(root);
-	 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "updateDetailsController" +".css").toExternalForm());
+	 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "UpdateDetailsController" +".css").toExternalForm());
 	 		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 	 		    		primaryStage.setTitle(title[0] +" - "+ rowData.getName());
 	 		    		primaryStage.setScene(scene);
@@ -151,11 +150,6 @@ public class SubscriberListController implements Initializable{
 	public void display(String message) {
 		lblError.setText(message);
 	}
-	
-	// Enables the enter key to activate the OK button
-		public void handleKey(KeyEvent event) {
-			searchBtn(event);
-		}
 	
 	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
 		// FXMLLoader for loading the main GUI.
