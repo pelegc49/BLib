@@ -7,7 +7,7 @@
 	<children>
 		<Button id="btnBack" fx:id="btnBack" layoutX="210.0" layoutY="277.0" mnemonicParsing="false" onAction="#backBtn" text="Log Out" />
 	    <Button id="signupSub" layoutX="14.0" layoutY="56.0" mnemonicParsing="false" onAction="#signUpBtn" text="Sign Up Subscriber" />
-	    <Button id="btnBookActions" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" onAction="#bookActionsBtn" text="Borrow a book" />
+	    <Button id="btnBookActions" layoutX="14.0" layoutY="101.0" mnemonicParsing="false" onAction="#bookActionsBtn" text="Book actions" />
 	    <Button id="btnUpdateDetails" fx:id="btnUpdateDetails" layoutX="171.0" layoutY="56.0" mnemonicParsing="false" onAction="#updateDetailsBtn" text="Subscribers" />
 	    <Button id="btnSearch" fx:id="btnSearch" layoutX="14.0" layoutY="152.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
       <Button id="btnSubReprt" layoutX="14.0" layoutY="206.0" mnemonicParsing="false" onAction="#subReport" text="Subscriber Report" />
