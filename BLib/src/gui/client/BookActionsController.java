@@ -68,7 +68,7 @@ public class BookActionsController {
 	    // Search for the subscriber using the provided ID
 	    BookCopy searchedBook = IPController.client.getCopyByID(bookID);
 	    
-	    IPController.client.borrowBook(searchedBook, searchedSub);
+	    IPController.client.borrowBook(searchedBook.getTitle(), searchedSub);
 	}
 
 	

@@ -127,7 +127,7 @@ public class BLibClient extends AbstractClient {
 	}
 	
 	// Borrow a book for a subscriber
-	public void borrowBook(BookCopy book, Subscriber sub) {
+	public void borrowBook(BookTitle book, Subscriber sub) {
 		msg = new Message("createBorrow",sub ,book); // Create borrow message
 		handleMessageFromClientUI(msg); // Send to server
 	}
