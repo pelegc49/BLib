@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -67,7 +70,7 @@ public class UpdateDetailsController {
 	 * @param event The ActionEvent triggered by clicking the Save button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void saveBtn(ActionEvent event) throws Exception {
+	public void saveBtn(Event event) {
 		boolean changed = false;
 		if(!txtPhone.getText().equals(s.getPhone())) {
 			try {
@@ -126,6 +129,13 @@ public class UpdateDetailsController {
 	    else{
 	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
 	    }
+	}
+	
+	// Enables the enter key to activate the OK button
+	public void handleKey(KeyEvent event) {
+		if(event.getCode().equals(KeyCode.ENTER)) {
+			saveBtn(event);
+		}
 	}
 	
 	/**

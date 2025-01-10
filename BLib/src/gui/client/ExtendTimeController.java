@@ -81,14 +81,12 @@ public class ExtendTimeController{
 	    boolean flag = false;
 	    for (BorrowWithCheckBox borrowWCB : bookTable.getItems()) {
 	        if (borrowWCB.isSelected().isSelected()) {
-	    		// המרת Borrow ל-BorrowWithCheckBox
 	    		Borrow borrow = new Borrow(
 	    				borrowWCB.getSubscriber(),
 	    				borrowWCB.getBook(),
 	    				borrowWCB.getDateOfBorrow(),
 	    				borrowWCB.getDueDate(),
 	    				borrowWCB.getDateOfReturn());
-	    		// gpt
 	            Message msg = IPController.client.extendDuration(borrow, 7, "subscriber");
 	            if (msg.getCommand().equals("failed")) {
                     if(((String) msg.getArguments().get(0)).equals("the subscriber is frozen")) {
@@ -109,6 +107,7 @@ public class ExtendTimeController{
                 break;
             }
         }
+	    selectAllCheckBox.setSelected(false);
 	    bookTable.refresh();
 	    loadBorrowsAlready(subscriber, List.copyOf(bookTable.getItems()));
 	}
@@ -118,7 +117,6 @@ public class ExtendTimeController{
 		ObservableList<BorrowWithCheckBox> data;
 		List<Borrow> borrow = IPController.client.getSubscriberBorrows(subscriber);
 		
-		// המרת Borrow ל-BorrowWithCheckBox
 		List<BorrowWithCheckBox> borrowWithCheckBoxes = borrow.stream()
 				.map(borrowWCB -> new BorrowWithCheckBox(
 						borrowWCB.getSubscriber(),
@@ -127,7 +125,6 @@ public class ExtendTimeController{
 						borrowWCB.getDueDate(),
 						borrowWCB.getDateOfReturn()))
 				.collect(Collectors.toList());
-		// gpt
 		
 		data = FXCollections.observableArrayList();
 		for(BorrowWithCheckBox borrowWCB : borrowWithCheckBoxes) {
@@ -150,7 +147,6 @@ public class ExtendTimeController{
 		ObservableList<BorrowWithCheckBox> data;
 		List<Borrow> borrow = IPController.client.getSubscriberBorrows(subscriber);
 		
-		// המרת Borrow ל-BorrowWithCheckBox
 		List<BorrowWithCheckBox> borrowWithCheckBoxes = borrow.stream()
 				.map(borrowWCB -> new BorrowWithCheckBox(
 						borrowWCB.getSubscriber(),
@@ -159,7 +155,6 @@ public class ExtendTimeController{
 						borrowWCB.getDueDate(),
 						borrowWCB.getDateOfReturn()))
 				.collect(Collectors.toList());
-		// gpt
 		
 		for(BorrowWithCheckBox b : borrowWithCheckBoxes) {
 			for(BorrowWithCheckBox c : bWCB) {

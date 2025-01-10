@@ -1,15 +1,20 @@
 package gui.client;
 
-import javafx.event.ActionEvent; 
-import javafx.fxml.FXML; 
-import javafx.fxml.FXMLLoader; 
-import javafx.scene.Node; 
-import javafx.scene.Scene; 
+import java.io.IOException;
+
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField; 
-import javafx.scene.layout.Pane; 
-import javafx.stage.Stage; 
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import logic.Subscriber; 
 
 /**
@@ -41,7 +46,7 @@ public class AuthenticationController {
 	 * @param event The action event triggered by clicking the button.
 	 * @throws Exception If an error occurs during the login process.
 	 */
-	public void Send(ActionEvent event) throws Exception {
+	public void sendBtn(Event event) {
 		String id; // String to store the entered ID.
 		FXMLLoader loader = new FXMLLoader(); // FXMLLoader for loading the main GUI.
 		int digit_id = 0; // Variable to hold the numeric value of the ID.
@@ -88,11 +93,18 @@ public class AuthenticationController {
 	 * @param event The action event triggered by clicking the button.
 	 * @throws Exception If an error occurs during termination.
 	 */
-	public void getExitBtn(ActionEvent event) throws Exception {
+	public void exitBtn(ActionEvent event) throws Exception {
 		System.out.println("Exit Successfully");
 		System.exit(0);
 	}
 
+	// Enables the enter key to activate the OK button
+	public void handleKey(KeyEvent event) {
+		if(event.getCode().equals(KeyCode.ENTER)) {
+			sendBtn(event);
+		}
+	}
+	
 	/**
 	 * Displays an error or informational message to the user.
 	 * 
@@ -102,7 +114,7 @@ public class AuthenticationController {
 		lblError.setText(message);
 	}
 	
-	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
+	public void nextPage(Event event, String fileName, String title){
 		// FXMLLoader for loading the main GUI.
 		FXMLLoader loader = new FXMLLoader(); 
 		
@@ -111,7 +123,10 @@ public class AuthenticationController {
 
 		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
+		Pane root = null;
+		try {
+			root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
+		} catch (IOException e) {}
 
 		// Set up and display the new scene.
 		Scene scene = new Scene(root);

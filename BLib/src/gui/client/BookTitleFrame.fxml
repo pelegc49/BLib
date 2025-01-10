@@ -32,12 +32,13 @@
                </VBox.margin>
             </Text>
             <TableView id="bookTable" fx:id="bookTable" prefHeight="159.0" prefWidth="463.0">
-              <columns>
-                <TableColumn id="columnBookId" fx:id="columnBookId" prefWidth="105.0" text="book id" />
-                <TableColumn id="columnStatus" fx:id="columnStatus" prefWidth="123.0" text="status" />
-                <TableColumn id="columnShelf" fx:id="columnShelf" prefWidth="103.0" text="shelf" />
-                <TableColumn id="columnDueDate" fx:id="columnDueDate" prefWidth="133.0" text="date of return" />
-              </columns>
+            	<placeholder>
+        			<Label id="lblDueDate" fx:id="lblDueDate" text=""/>
+    			</placeholder>
+              	<columns>
+                	<TableColumn id="columnBookId" fx:id="columnBookId" prefWidth="222.0" text="book id" />
+                	<TableColumn id="columnShelf" fx:id="columnShelf" prefWidth="242.0" text="shelf" />
+              	</columns>
             </TableView>
          </children>
       </VBox>

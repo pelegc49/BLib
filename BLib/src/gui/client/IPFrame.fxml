@@ -6,10 +6,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="207.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.IPController">
+<AnchorPane onKeyPressed="#handleKey" prefHeight="207.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.IPController">
    <children>
-      <TextField id="txtIp" fx:id="txtIp" layoutX="104.0" layoutY="50.0" onKeyPressed="#handleKey" text="localhost" />
-      <TextField id="txtPort" fx:id="txtPort" layoutX="104.0" layoutY="93.0" onKeyPressed="#handleKey" text="5555" />
+      <TextField id="txtIp" fx:id="txtIp" layoutX="104.0" layoutY="50.0" text="localhost" />
+      <TextField id="txtPort" fx:id="txtPort" layoutX="104.0" layoutY="93.0" text="5555" />
       <Button id="btnExit" fx:id="btnExit" focusTraversable="false" layoutX="218.0" layoutY="164.0" mnemonicParsing="false" onAction="#exitBtn" text="Exit" />
       <Button id="btnSend" fx:id="btnSend" focusTraversable="false" layoutX="157.0" layoutY="164.0" mnemonicParsing="false" onAction="#sendBtn" text="Send" />
       <Label layoutX="11.0" layoutY="53.0" text="IP Address:" />
