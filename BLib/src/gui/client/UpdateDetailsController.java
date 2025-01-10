@@ -80,7 +80,7 @@ public class UpdateDetailsController {
 		}
 		
 		if(!txtEmail.getText().equals(s.getEmail())) {
-			String regex = "^[A-Za-z0-9]{1,99}@"
+			String regex = "^[A-Za-z0-9.]{1,99}@"
 					+"[A-Za-z0-9]{1,99}"
 					+"(?:\\.[A-Za-z0-9]{1,99}){0,99}"
 					+"\\.[A-Za-z]{1,}$";
