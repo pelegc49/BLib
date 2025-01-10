@@ -62,7 +62,7 @@ public class SubscriberListController implements Initializable{
 	public void searchBtn(Event event) {
 		ObservableList<Subscriber> data;
 		Integer subID;
-		/*
+		
 		// Check if searchInput is empty
 	    if ((txtSearch.getText()).isEmpty()) {
 	        // Fetch all subscribers from the database
@@ -71,7 +71,8 @@ public class SubscriberListController implements Initializable{
 	            display("No subscribers found in the database");
 	            return;
 	    }
-	        */
+	    }
+	        
 		try {
 			subID = Integer.valueOf(txtSearch.getText());
 		} 
@@ -89,19 +90,7 @@ public class SubscriberListController implements Initializable{
 		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 		statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 		subTable.setItems(data);
-		// allows to click on row
-		subTable.setRowFactory(tv -> {
-			TableRow<Subscriber> rowa = new TableRow<>();
-			rowa.setOnMouseClicked(eventa -> {
-				if (eventa.getClickCount() == 2 && (! rowa.isEmpty()) ) {
-					Subscriber rowData = rowa.getItem();
-					System.out.println(rowData);
-				}
-			});
-			return rowa ;
-		});
 	}
-		
 	
 
 	/**

@@ -223,4 +223,12 @@ public class BLibClient extends AbstractClient {
 			return (List<Borrow>) msg.getArguments().get(0); 
 		return null; 
 	}
+	
+	public List<Subscriber> getAllSubscribers() {
+		msg = new Message("getAllSubscribersAll"); 
+		handleMessageFromClientUI(msg); 
+		if (msg.getCommand().equals("success")) 
+			return (List<Subscriber>) msg.getArguments().get(0); 
+		return null; 
+	}
 }
