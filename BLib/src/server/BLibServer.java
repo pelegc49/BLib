@@ -285,9 +285,9 @@ public class BLibServer extends AbstractServer {
 					if(BLibDBC.getInstance().isTitleOrdered(((BookCopy) args.get(0)).getTitle().getTitleID())) {
 						BLibDBC.getInstance().updateOrder((BookCopy) args.get(0));
 						Order order = BLibDBC.getInstance().getCopyOrder(((BookCopy) args.get(0)).getCopyID());
-						MessageController.getInstance().sendEmail(borrow.getSubscriber().getEmail(),
+						MessageController.getInstance().sendEmail(order.getSubscriber().getEmail(),
 								"Your order has arrived!",
-								"Dear %s,\n\n".formatted(borrow.getSubscriber().getName())+
+								"Dear %s,\n\n".formatted(order.getSubscriber().getName())+
 								"Your book order of \"%s\" has arrived and is ready for pickup.\n".formatted(((BookCopy) args.get(0)).getTitle())+
 								"Please collect it within the next two days, or the order will be canceled.\n\n"+
 								"Best regards, BLib library");
@@ -441,6 +441,10 @@ public class BLibServer extends AbstractServer {
 	}
 	
 	private String canOrder(Subscriber sub, BookTitle title) {
+		for(Order o : BLibDBC.getInstance().getSubscriberActiveOrders(sub)) {
+			if(o.getTitle().equals(title)) 
+				return "This Book is already ordered";
+		}
 		if(sub.getStatus() == "frozen")
 			return "The subscriber is frozen";
 		
