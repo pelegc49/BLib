@@ -1,16 +1,17 @@
 package gui.client;
 
-import javafx.event.ActionEvent; 
-import javafx.fxml.FXML; 
-import javafx.fxml.FXMLLoader; 
-import javafx.scene.Node; 
-import javafx.scene.Scene; 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField; 
-import javafx.scene.layout.Pane; 
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import logic.BookCopy;
+import logic.Message;
 import logic.Subscriber; 
 
 /**
@@ -85,7 +86,8 @@ public class BookActionsController {
 	    // Search for the subscriber using the provided ID
 	    BookCopy searchedBook = IPController.client.getCopyByID(bookID);
 	    
-	    IPController.client.returnBook(searchedBook);
+	    Message msg = IPController.client.returnBook(searchedBook);
+	    System.out.println(msg.getCommand());
 	}
 	
 		

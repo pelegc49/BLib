@@ -128,7 +128,7 @@ public class BLibClient extends AbstractClient {
 	
 	// Borrow a book for a subscriber
 	public void borrowBook(BookCopy book, Subscriber sub) {
-		msg = new Message("borrowBook", book, sub); // Create borrow message
+		msg = new Message("createBorrow", book, sub); // Create borrow message
 		handleMessageFromClientUI(msg); // Send to server
 	}
 
@@ -146,9 +146,10 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Return a borrowed book
-	public void returnBook(BookCopy book) {
-		msg = new Message("returnBook", book); // Create return message
+	public Message returnBook(BookCopy book) {
+		msg = new Message("return", book); // Create return message
 		handleMessageFromClientUI(msg); // Send to server
+		return msg;
 	}
 
 	// Retrieve the subscriber's activity history
