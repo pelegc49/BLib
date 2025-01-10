@@ -87,7 +87,7 @@ public class BookActionsController {
 	    BookCopy searchedBook = IPController.client.getCopyByID(bookID);
 	    
 	    Message msg = IPController.client.returnBook(searchedBook);
-	    //System.out.println(msg.getCommand());
+	    System.out.println(msg.getCommand());
 	}
 	
 		
