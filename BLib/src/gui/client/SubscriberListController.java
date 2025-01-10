@@ -60,42 +60,43 @@ public class SubscriberListController implements Initializable{
 	
 	
 	public void searchBtn(Event event) {
-		ObservableList<Subscriber> data;
-		Integer subID;
-		data = FXCollections.observableArrayList();
+	    ObservableList<Subscriber> data = FXCollections.observableArrayList();
 
-		// Check if searchInput is empty
-	    if ((txtSearch.getText()).isEmpty()) {
-	        // Fetch all subscribers from the database
-	        List<Subscriber> allSubscribers = IPController.client.getAllSubscribers(); // Assuming such a method exists
-	        if (allSubscribers == null || allSubscribers.isEmpty()) {
-	            display("No subscribers found in the database");
-	            return;
-	    }
-	        else {
-	        	for(Subscriber sub : allSubscribers) {
-	    			data.add(sub);
-	    		}
+	    try {
+	        // Check if search input is empty
+	        if (txtSearch.getText().isEmpty()) {
+	            List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
+	            if (allSubscribers == null || allSubscribers.isEmpty()) {
+	                display("No subscribers found in the database");
+	                return;
+	            }
+	            data.addAll(allSubscribers);
+	        } else {
+	            Integer subID = Integer.valueOf(txtSearch.getText());
+	            Subscriber searched = IPController.client.getSubscriber(subID);
+	            if (searched == null) {
+	                display("No result found for the provided ID");
+	                return;
+	            }
+	            data.add(searched);
 	        }
+
+	        // Update table columns
+	        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+	        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+	        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+	        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+	        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+	        subTable.setItems(data);
+
+	    } catch (NumberFormatException e) {
+	        display("Invalid ID format. Please enter a numeric value.");
+	    } catch (Exception e) {
+	        display("An error occurred: " + e.getMessage());
+	        e.printStackTrace();
 	    }
-	        
-		try {
-			subID = Integer.valueOf(txtSearch.getText());
-		} 
-		catch (NumberFormatException e) {
-		    display("No result found");
-		    return;
-		}
-		Subscriber searched = IPController.client.getSubscriber(subID);
-		System.out.println("subID = "+subID);
-		data.add(searched);
-		idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-		statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-		subTable.setItems(data);
 	}
+
 	
 
 	/**
