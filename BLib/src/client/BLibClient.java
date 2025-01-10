@@ -222,7 +222,7 @@ public class BLibClient extends AbstractClient {
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("success")) 
 			return (List<Borrow>) msg.getArguments().get(0); 
-		return null; 
+		return null;
 	}
 	
 	public List<Subscriber> getAllSubscribers() {
