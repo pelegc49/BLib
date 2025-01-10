@@ -59,4 +59,16 @@ public class Borrow implements Serializable {
 	public BookCopy getBook() {
 		return book;
 	}
+	
+	public int getBookCopyId() {
+		return book.getCopyID();
+	}
+	
+	public String getBookTitle() {
+		return book.getTitle().getTitleName();
+	}
+	
+	public String getBookAuthor() {
+		return book.getTitle().getAuthorName();
+	}
 }

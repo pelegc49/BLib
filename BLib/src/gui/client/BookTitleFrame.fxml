@@ -10,13 +10,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="352.0" prefWidth="501.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookTitleController">
+<AnchorPane prefHeight="392.0" prefWidth="501.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookTitleController">
    <children>
-      <Button id="btnBack" fx:id="btnBack" focusTraversable="false" layoutX="437.0" layoutY="302.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
-      <Button id="btnOrder" fx:id="btnOrder" focusTraversable="false" layoutX="14.0" layoutY="302.0" mnemonicParsing="false" onAction="#orderBtn" text="Order" />
+      <Button id="btnBack" fx:id="btnBack" focusTraversable="false" layoutX="437.0" layoutY="332.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
+      <Button id="btnOrder" fx:id="btnOrder" focusTraversable="false" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" onAction="#orderBtn" text="Order" />
       <Label id="lblTitle" fx:id="lblTitle" layoutX="38.0" layoutY="36.0" text="Title:" />
       <Label id="lblAuthorName" fx:id="lblAuthorName" layoutX="38.0" layoutY="62.0" text="Author Name:" />
-      <Label id="lblDescription" fx:id="lblDescription" layoutX="35.0" layoutY="88.0" text="Description:" />
+      <Label id="lblDescription" fx:id="lblDescription" layoutX="35.0" layoutY="119.0" text="Description:" />
       <Text id="txtTitle" fx:id="txtTitle" layoutX="131.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Text id="txtAuthorName" fx:id="txtAuthorName" layoutX="131.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Label id="lblError" fx:id="lblError" layoutX="66.0" layoutY="306.0" textFill="RED">
@@ -24,7 +24,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <VBox layoutX="16.0" layoutY="89.0" prefHeight="207.0" prefWidth="463.0">
+      <VBox layoutX="16.0" layoutY="119.0" prefHeight="207.0" prefWidth="463.0">
          <children>
             <Text id="txtDescription" fx:id="txtDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="350.0">
                <VBox.margin>
@@ -33,7 +33,7 @@
             </Text>
             <TableView id="bookTable" fx:id="bookTable" prefHeight="159.0" prefWidth="463.0">
             	<placeholder>
-        			<Label id="lblDueDate" fx:id="lblDueDate" text=""/>
+        			<Label id="lblDueDate" fx:id="lblDueDate" text="" />
     			</placeholder>
               	<columns>
                 	<TableColumn id="columnBookId" fx:id="columnBookId" prefWidth="222.0" text="book id" />
@@ -42,5 +42,7 @@
             </TableView>
          </children>
       </VBox>
+      <Label id="lblDescription" fx:id="lblDescription1" layoutX="33.0" layoutY="91.0" text="Genre:" />
+      <Text id="txtGenre" fx:id="txtGenre" layoutX="131.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
    </children>
 </AnchorPane>

@@ -40,6 +40,8 @@ public class BookTitleController {
 	@FXML
 	private Text txtAuthorName; // Text field to input the server IP address.
 	@FXML
+	private Text txtGenre; // Text field to input the server IP address.
+	@FXML
 	private Text txtDescription; // Text field to input the server IP address.
 	@FXML
 	private Button btnBack = null; // Button to exit the application.
@@ -130,6 +132,7 @@ public class BookTitleController {
 		this.txtTitle.setText(String.valueOf(bt.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(bt.getAuthorName()); // Sets the subscriber's name.
 		this.txtDescription.setText(bt.getDescription()); // Sets the subscriber's phone.
+		//this.txtGenre.setText(bt.getGenre()); TODO -----------------------------------------------------
 	}
 	
 	public void loadOrderButton(String title) {

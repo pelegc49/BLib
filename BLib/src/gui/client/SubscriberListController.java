@@ -102,8 +102,6 @@ public class SubscriberListController implements Initializable{
 	 		        if (eventa.getClickCount() == 2 && !rowa.isEmpty()) {
 	 		        	Subscriber rowData = rowa.getItem();
 	 		    		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	 		    	    String currentTitle = currentStage.getTitle();
-	 		    	    String[] title = currentTitle.split(" ");
 	 		    	    
 	 		    		// FXMLLoader for loading the main GUI.
 	 		    		FXMLLoader loader = new FXMLLoader(); 
@@ -122,7 +120,7 @@ public class SubscriberListController implements Initializable{
 	 		    		Scene scene = new Scene(root);
 	 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "UpdateDetailsController" +".css").toExternalForm());
 	 		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-	 		    		primaryStage.setTitle(title[0] +" - "+ rowData.getName());
+	 		    		primaryStage.setTitle("Update Details");
 	 		    		primaryStage.setScene(scene);
 	 		    		primaryStage.show();
 	 		        }

@@ -33,6 +33,8 @@ public class UpdateDetailsController {
 	private Label lblPhone;
 	@FXML
 	private Label lblEmail;
+	@FXML
+	private Label lblStatus;
 
 	// Text fields to edit subscriber details.
 	@FXML
@@ -61,6 +63,15 @@ public class UpdateDetailsController {
 		this.txtName.setText(s.getName()); // Sets the subscriber's name.
 		this.txtPhone.setText(s.getPhone()); // Sets the subscriber's phone.
 		this.txtEmail.setText(s.getEmail()); // Sets the subscriber's email.
+		if(s.getStatus().equals("active")) {
+			this.lblStatus.setTextFill(Color.GREEN);
+		}
+		else {
+			this.lblStatus.setTextFill(Color.RED);
+		}
+		String capitalizedStatus = s.getStatus().substring(0, 1).toUpperCase() + s.getStatus().substring(1);
+		this.lblStatus.setText(capitalizedStatus);
+		
 	}
 
 
