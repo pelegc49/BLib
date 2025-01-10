@@ -27,17 +27,20 @@ public class ServerTimer implements Runnable{
 	
 	@Override
 	public void run() {
-		//check relevant commands
-		List<Message> list = server.getCommands();
-		
-		//execute one by one
-		for(Message msg: list) {
-			server.execute(msg);
+		while(true) {
+			System.out.println("server timer running");
+			//check relevant commands
+			List<Message> list = server.getCommands();
+			
+			//execute one by one
+			for(Message msg: list) {
+				server.execute(msg);
+			}
+			//sleep for delayMinutes minutes
+			try {
+				Thread.sleep(delayMinutes*60*1000); // sleep 
+			} catch (InterruptedException e) {}
 		}
-		//sleep for delayMinutes minutes
-		try {
-			Thread.sleep(delayMinutes*60*1000); // sleep 
-		} catch (InterruptedException e) {}
 	}
 
 
