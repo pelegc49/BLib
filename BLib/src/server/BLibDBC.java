@@ -11,9 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import logic.Activity;
 import logic.BookCopy;
@@ -30,6 +32,7 @@ import logic.Subscriber;
  */
 public class BLibDBC {
 	private String pass;
+	private static Calendar tz;
 	private static BLibDBC instance;
 
 	private static Connection conn; // Connection object to interact with the database
@@ -39,9 +42,11 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("1234"))
+		if (!db.connect("12341234"))
 			return;
+		db.createCommand("gal", "1;2", LocalDateTime.now().minusMinutes(1), "123");
 		db.createCommand("gal", "1;2", LocalDateTime.now().plusMinutes(1), "123");
+		db.createCommand("gal", "3;2", LocalDateTime.now().plusMinutes(3), "123");
 		db.disconnect();
 	}
 
@@ -92,6 +97,7 @@ public class BLibDBC {
 			return false;
 		}
 		try {
+			tz = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jerusalem"));
 			// Try connecting to the database
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=Asia/Jerusalem", "root", password);
@@ -230,9 +236,9 @@ public class BLibDBC {
 				BookCopy copy = getCopyByID(copyID);
 				if (copy == null)
 					return null;
-				Order order = new Order(rs.getInt(1), sub, copy.getTitle(), rs.getTimestamp(5).toLocalDateTime());
+				Order order = new Order(rs.getInt(1), sub, copy.getTitle(), rs.getTimestamp(5,tz).toLocalDateTime());
 				order.setCopy(copy);
-				order.setAriveDate(rs.getDate(6).toLocalDate());
+				order.setAriveDate(rs.getDate(6,tz).toLocalDate());
 				return order;
 			}
 			return null;
@@ -270,8 +276,8 @@ public class BLibDBC {
 					"INSERT INTO borrows(subscriber_id,copy_id,date_of_borrow,due_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subscriberID);
 			pstmt.setInt(2, copyID);
-			pstmt.setDate(3, Date.valueOf(today));
-			pstmt.setDate(4, Date.valueOf(dueDate));
+			pstmt.setDate(3, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(dueDate),tz);
 			pstmt.execute();
 
 			// Update the book copy's status to borrowed
@@ -287,7 +293,7 @@ public class BLibDBC {
 			pstmt.setString(2, "borrow");
 			pstmt.setString(3,
 					"\"%s\" borrowed by %s on %s".formatted(copy.getTitle(), sub.getName(), today.toString()));
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			// time the execution of send message
@@ -379,7 +385,7 @@ public class BLibDBC {
 			pstmt.setString(2, "update subscriber");
 			pstmt.setString(3, str.toString());
 
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			// Commit the transaction
@@ -426,7 +432,7 @@ public class BLibDBC {
 			pstmt.setString(2, "new subscriber");
 			pstmt.setString(3, "%s is now a subscriber since %s".formatted(subscriber.getName(), today));
 
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			// create new user to the new subscriber
@@ -510,7 +516,7 @@ public class BLibDBC {
 				if (sub == null) {
 					return null;
 				}
-				return new Borrow(sub, copy, rs.getDate(4).toLocalDate(), rs.getDate(5).toLocalDate(), null);
+				return new Borrow(sub, copy, rs.getDate(4,tz).toLocalDate(), rs.getDate(5,tz).toLocalDate(), null);
 			}
 			return null;
 		} catch (SQLException e) {
@@ -539,10 +545,10 @@ public class BLibDBC {
 			// Log the extension activity in the history table
 			pstmt = conn.prepareStatement("UPDATE borrows SET due_date = ? WHERE "
 					+ "subscriber_id = ? AND copy_id = ? AND date_of_borrow = ?");
-			pstmt.setDate(1, Date.valueOf(newDueDate));
+			pstmt.setDate(1, Date.valueOf(newDueDate),tz);
 			pstmt.setInt(2, borrow.getSubscriber().getId());
 			pstmt.setInt(3, borrow.getBook().getCopyID());
-			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()));
+			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()),tz);
 			pstmt.execute();
 
 			LocalDate today = LocalDate.now();
@@ -563,7 +569,7 @@ public class BLibDBC {
 								borrow.getBook().getTitle(), borrow.getSubscriber().getName(), userType, today,
 								newDueDate));
 			}
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			if (userType.equals("subscriber")) {
@@ -573,13 +579,13 @@ public class BLibDBC {
 						"the subscriber %s extended their borrow duration of %s by %d days, the new due date is %s"
 								.formatted(borrow.getSubscriber().getName(), borrow.getBook().getTitle(), days,
 										newDueDate));
-				pstmt.setTimestamp(2, Timestamp.valueOf(now));
+				pstmt.setTimestamp(2, Timestamp.valueOf(now),tz);
 				pstmt.execute();
 			}
 			
 			LocalDateTime notification = LocalDateTime.of(newDueDate.minusDays(1), LocalTime.now());
 			pstmt = conn.prepareStatement("UPDATE commands SET time_of_execution=? WHERE command = ? AND identifyer = ?");
-			pstmt.setTimestamp(1, Timestamp.valueOf(notification));
+			pstmt.setTimestamp(1, Timestamp.valueOf(notification),tz);
 			pstmt.setString(2, "sendMessage");
 			pstmt.setString(3, "%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));
 			
@@ -677,10 +683,10 @@ public class BLibDBC {
 
 			pstmt = conn.prepareStatement(
 					"UPDATE borrows SET date_of_return = ? WHERE subscriber_id = ? AND copy_id =? AND date_of_borrow = ?;");
-			pstmt.setDate(1, Date.valueOf(today));
+			pstmt.setDate(1, Date.valueOf(today),tz);
 			pstmt.setInt(2, borrow.getSubscriber().getId());
 			pstmt.setInt(3, book.getCopyID());
-			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()));
+			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()),tz);
 			pstmt.execute();
 
 			pstmt = conn.prepareStatement("UPDATE copies SET is_borrowed = ? WHERE copy_id = ?;");
@@ -703,7 +709,7 @@ public class BLibDBC {
 						borrow.getSubscriber().getName(), today, Math.abs(late)));
 			}
 
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			// Commit the transaction
@@ -743,7 +749,7 @@ public class BLibDBC {
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "freeze");
 			pstmt.setString(3, "%s got frozen on %s until %s".formatted(sub.getName(), today, today.plusMonths(1)));
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			LocalDateTime unfreezeTime = LocalDateTime.now().plusMonths(1);
@@ -788,7 +794,7 @@ public class BLibDBC {
 			pstmt.setString(2, "unfreeze");
 			pstmt.setString(3, "%s got unfrozen on %s ".formatted(sub.getName(), today));
 
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 			// Commit the transaction
 			conn.commit();
@@ -813,7 +819,7 @@ public class BLibDBC {
 			List<Activity> ret = new ArrayList<>();
 			while (rs.next()) {
 				Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4),
-						rs.getDate(5).toLocalDate());
+						rs.getDate(5,tz).toLocalDate());
 				ret.add(activity);
 			}
 			return ret;
@@ -834,13 +840,14 @@ public class BLibDBC {
 	public List<Message> getCommands() {
 		LocalDateTime now = LocalDateTime.now();
 		try {
-			pstmt = conn.prepareStatement("SELECT * FROM commands");
+			pstmt = conn.prepareStatement("SELECT * FROM commands WHERE time_of_execution < ?");
+			pstmt.setTimestamp(1, Timestamp.valueOf(now), tz);
 			ResultSet rs = pstmt.executeQuery();
 			List<Integer> commandIDs = new ArrayList<>();
 			List<Message> ret = new ArrayList<>();
 			while (rs.next()) {
-				if(rs.getTimestamp(4).toLocalDateTime().compareTo(now)> 0 )
-					continue;
+//				if(rs.getTimestamp(4,tz).toLocalDateTime().compareTo(now)> 0 )
+//					continue;
 				commandIDs.add(rs.getInt(1));
 				Message msg = new Message(rs.getString(2));
 				for (String arg : rs.getString(3).split(";")) {
@@ -879,7 +886,7 @@ public class BLibDBC {
 					System.out.println("copy id " + rs.getInt(3) + " not found");
 					return null;
 				}
-				ret.add(new Borrow(sub, copy, rs.getDate(4).toLocalDate(), rs.getDate(5).toLocalDate(), null));
+				ret.add(new Borrow(sub, copy, rs.getDate(4,tz).toLocalDate(), rs.getDate(5,tz).toLocalDate(), null));
 			}
 			return ret;
 		} catch (SQLException e) {
@@ -936,7 +943,7 @@ public class BLibDBC {
 			pstmt = conn.prepareStatement("INSERT INTO orders(subscriber_id, title_id, order_date) VALUE (?,?,?);");
 			pstmt.setInt(1, subID);
 			pstmt.setInt(2, titleID);
-			pstmt.setDate(3, Date.valueOf(today));
+			pstmt.setDate(3, Date.valueOf(today),tz);
 			pstmt.execute();
 
 			// titles
@@ -950,7 +957,7 @@ public class BLibDBC {
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "order");
 			pstmt.setString(3, "%s ordered the book \"%s\" on %s".formatted(sub.getName(), title, today));
-			pstmt.setDate(4, Date.valueOf(today));
+			pstmt.setDate(4, Date.valueOf(today),tz);
 			pstmt.execute();
 			conn.commit();
 			return true;
@@ -1006,11 +1013,11 @@ public class BLibDBC {
 					System.out.println("title id " + rs.getInt(3) + " not found");
 					return null;
 				}
-				Order order = new Order(rs.getInt(1), sub, title, rs.getTimestamp(5).toLocalDateTime());
+				Order order = new Order(rs.getInt(1), sub, title, rs.getTimestamp(5,tz).toLocalDateTime());
 				if (rs.getInt(4) != 0) {
 					BookCopy copy = getCopyByID(rs.getInt(4));
 					order.setCopy(copy);
-					order.setAriveDate(rs.getDate(6).toLocalDate());
+					order.setAriveDate(rs.getDate(6,tz).toLocalDate());
 				}
 				ret.add(order);
 			}
@@ -1036,7 +1043,7 @@ public class BLibDBC {
 			LocalDate today = LocalDate.now();
 			pstmt = conn.prepareStatement("UPDATE orders SET copy_id = ?, arive_date = ? WHERE order_id = ?;");
 			pstmt.setInt(1, copy.getCopyID());
-			pstmt.setDate(2, Date.valueOf(today));
+			pstmt.setDate(2, Date.valueOf(today),tz);
 			pstmt.setInt(3, orderID);
 			pstmt.execute();
 
@@ -1057,7 +1064,7 @@ public class BLibDBC {
 					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
 			pstmt.setString(1, command);
 			pstmt.setString(2, arguments);
-			pstmt.setTimestamp(3, Timestamp.valueOf(timeOfExe));
+			pstmt.setTimestamp(3, Timestamp.valueOf(timeOfExe),tz);
 			pstmt.setString(4, identifyer);
 			pstmt.execute();
 
@@ -1154,7 +1161,7 @@ public class BLibDBC {
 			pstmt.setInt(1, title.getTitleID());
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next())
-				return rs.getDate(1).toLocalDate();
+				return rs.getDate(1,tz).toLocalDate();
 			
 			return null;
 		} catch (SQLException e) {
