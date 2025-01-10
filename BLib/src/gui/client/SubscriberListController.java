@@ -62,17 +62,17 @@ public class SubscriberListController implements Initializable{
 	
 	public void searchBtn(Event event) {
 	    ObservableList<Subscriber> data = FXCollections.observableArrayList();
+        List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
 
 	    try {
 	        // Check if search input is empty
 	        if (txtSearch.getText().isEmpty()) {
-	            List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
 	            if (allSubscribers == null || allSubscribers.isEmpty()) {
 	                display("No subscribers found in the database");
 	                return;
 	            }
-	            data.addAll(allSubscribers);
 	        } else {
+	            data.addAll(allSubscribers);
 	            Integer subID = Integer.valueOf(txtSearch.getText());
 	            Subscriber searched = IPController.client.getSubscriber(subID);
 	            if (searched == null) {
