@@ -51,6 +51,7 @@ public class ViewHistoryController{
 		descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
 		historyTable.setItems(data);
+		historyTable.getSortOrder().add(dateColumn);
 	}
 	
 	/**

@@ -78,7 +78,6 @@ public class BookTitleController {
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
-		// for debugging purposes print true of false for this action \/
 		Message msg = IPController.client.orderTitle(AuthenticationController.subscriber, bt);
 		if(msg.getCommand().equals("success")) {
 			// FXMLLoader for loading the main GUI.
@@ -103,9 +102,7 @@ public class BookTitleController {
 		}
 		else {
 			display((String)msg.getArguments().get(0));
-			System.out.println("failed to create an order");
 		}
-		// debugging till here 										  /\
 		
 	}
 	

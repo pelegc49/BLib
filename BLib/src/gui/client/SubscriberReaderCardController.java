@@ -1,8 +1,12 @@
 package gui.client;
 
 import java.util.List;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,7 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.Borrow;
-import logic.BorrowWithCheckBox;
+import logic.BorrowPlus;
 import logic.Message;
 import logic.Subscriber; 
 
@@ -55,23 +59,22 @@ public class SubscriberReaderCardController {
 	@FXML
 	private Button btnExtend = null; // Button to initiate the connection to the server.
 	@FXML
-	private TableView<BorrowWithCheckBox> bookTable; // Button to exit the application.
+	private TableView<Entry<BorrowPlus, Borrow>> tableBook; // Button to exit the application.
 	@FXML
-	private TableColumn<BorrowWithCheckBox, CheckBox> columnCheckBox;
+	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox;
 	@FXML
-	private TableColumn<BorrowWithCheckBox, String> columnBookId; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnBookId; // Label to display error messages.
 	@FXML
-	private TableColumn<BorrowWithCheckBox, String> columnTitleName; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle; // Label to display error messages.
 	@FXML
-	private TableColumn<BorrowWithCheckBox, String> columnAuthorName; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor; // Label to display error messages.
 	@FXML
-	private TableColumn<BorrowWithCheckBox, String> columnDueDate; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate; // Label to display error messages.
 	@FXML
-	private TableColumn<BorrowWithCheckBox, String> columnErrorMessage;
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage;
 	@FXML
-	private CheckBox selectAllCheckBox;
+	private CheckBox checkBoxSelectAll;
 
-	
 	public void loadSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
 		this.txtId.setText(String.valueOf(subscriber.getId()));
@@ -89,116 +92,50 @@ public class SubscriberReaderCardController {
 	}
 	
 	public void loadBorrows(Subscriber subscriber) {
-		ObservableList<BorrowWithCheckBox> data;
+		ObservableList<Entry<BorrowPlus, Borrow>> data = FXCollections.observableArrayList();
 		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber);
 		
-		
-		List<BorrowWithCheckBox> borrowWithCheckBoxes = borrows.stream()
-				.map(borrowWCB -> new BorrowWithCheckBox(
-						borrowWCB.getSubscriber(),
-						borrowWCB.getBook(),
-						borrowWCB.getDateOfBorrow(),
-						borrowWCB.getDueDate(),
-						borrowWCB.getDateOfReturn()))
-				.collect(Collectors.toList());
-		
-		data = FXCollections.observableArrayList();
-		for(BorrowWithCheckBox borrowWCB : borrowWithCheckBoxes) {
-			data.add(borrowWCB);
+		for (Borrow borrow : borrows) {
+			data.add(new SimpleEntry<>(new BorrowPlus(), borrow));
 		}
 		
-		if(data.isEmpty()) {
-			lblTable.setText("No borrows");
-		}
-		else {
-			columnCheckBox.setCellValueFactory(new PropertyValueFactory<>("selected"));
-			columnBookId.setCellValueFactory(new PropertyValueFactory<>("copyId"));
-			columnTitleName.setCellValueFactory(new PropertyValueFactory<>("title"));
-			columnAuthorName.setCellValueFactory(new PropertyValueFactory<>("author"));
-			columnDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-			columnErrorMessage.setCellValueFactory(new PropertyValueFactory<>("errorMessage"));
-			
-			bookTable.setItems(data);
-			bookTable.getSortOrder().add(columnBookId);
-		}
+        columnCheckBox.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue().getKey().getCheckBox()));
+        columnAuthor.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getAuthor()));
+        columnTitle.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getTitleName()));
+        columnDueDate.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getDueDate().toString()));
+        columnErrorMessage.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getKey().getErrorMessage()));
+        
+		tableBook.setItems(data);
+		tableBook.getSortOrder().add(columnDueDate);
 	}
 	
-	public void searchBtn(ActionEvent event) {}
-	
 	public void extendBtn(ActionEvent event) {
-	    boolean flag = false;
-	    for (BorrowWithCheckBox borrowWCB : bookTable.getItems()) {
-	        if (borrowWCB.isSelected().isSelected()) {
-	    		Borrow borrow = new Borrow(
-	    				borrowWCB.getSubscriber(),
-	    				borrowWCB.getBook(),
-	    				borrowWCB.getDateOfBorrow(),
-	    				borrowWCB.getDueDate(),
-	    				borrowWCB.getDateOfReturn());
-	            Message msg = IPController.client.extendDuration(borrow, 7, "subscriber");
+	    for(Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
+	    	Borrow borrow = entry.getValue();
+	    	BorrowPlus borrowPlus = entry.getKey();
+	        if (borrowPlus.getCheckBox().isSelected()) {
+	            Message msg = IPController.client.extendDuration(borrow, 7, AuthenticationController.librarianName);
 	            if (msg.getCommand().equals("failed")) {
                     if(((String) msg.getArguments().get(0)).equals("the subscriber is frozen")) {
                         display("Your account is suspended", Color.RED);
-                        flag = true;
                         break;
                     }
-                    else {
-                    	borrowWCB.setErrorMessage((String) msg.getArguments().get(0));
-                    }
+                    borrowPlus.setErrorMessage((String) msg.getArguments().get(0));
                 }
 	            else {
-	            	borrowWCB.setErrorMessage("Extended succeed");
+	            	borrowPlus.setErrorMessage("Extend succeed");
+	            	borrow.setDueDate(borrow.getDueDate().plusDays(7));
 	            }
             }
-            if (flag) {
-                break;
-            }
         }
-	    selectAllCheckBox.setSelected(false);
-	    bookTable.refresh();
-	    loadBorrowsAlready(subscriber, List.copyOf(bookTable.getItems()));
-	}
-	
-	public void loadBorrowsAlready(Subscriber subscriber, List<BorrowWithCheckBox> bWCB) {
-		this.subscriber = subscriber;
-		ObservableList<BorrowWithCheckBox> data;
-		List<Borrow> borrow = IPController.client.getSubscriberBorrows(subscriber);
-		
-		List<BorrowWithCheckBox> borrowWithCheckBoxes = borrow.stream()
-				.map(borrowWCB -> new BorrowWithCheckBox(
-						borrowWCB.getSubscriber(),
-						borrowWCB.getBook(),
-						borrowWCB.getDateOfBorrow(),
-						borrowWCB.getDueDate(),
-						borrowWCB.getDateOfReturn()))
-				.collect(Collectors.toList());
-		
-		for(BorrowWithCheckBox b : borrowWithCheckBoxes) {
-			for(BorrowWithCheckBox c : bWCB) {
-				if(b.getBook().getTitle().equals(c.getBook().getTitle())) {
-					b.setErrorMessage(c.getErrorMessage());
-				}
-			}
-		}
-		
-		data = FXCollections.observableArrayList();
-		for(BorrowWithCheckBox borrowWCB : borrowWithCheckBoxes) {
-			data.add(borrowWCB);
-		}
-		
-		columnCheckBox.setCellValueFactory(new PropertyValueFactory<>("selected"));
-		columnAuthorName.setCellValueFactory(new PropertyValueFactory<>("author"));
-		columnTitleName.setCellValueFactory(new PropertyValueFactory<>("title"));
-		columnDueDate.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-		columnErrorMessage.setCellValueFactory(new PropertyValueFactory<>("errorMessage"));
-		
-		bookTable.setItems(data);
-		bookTable.getSortOrder().add(columnDueDate);
+	    checkBoxSelectAll.setSelected(false);
+	    selectAllBtn(event);
+	    tableBook.refresh();
 	}
 	
 	public void selectAllBtn(Event event) {
-		for (BorrowWithCheckBox borrowWCB : bookTable.getItems()) {
-			borrowWCB.setSelected(selectAllCheckBox.isSelected());
+		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
+			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());
 		}
 	}
 	

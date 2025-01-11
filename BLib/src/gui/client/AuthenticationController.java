@@ -24,6 +24,7 @@ import logic.Subscriber;
  */
 public class AuthenticationController {
 	public static Subscriber subscriber; // Static reference to the currently authenticated subscriber.
+	public static String librarianName;
 
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.
@@ -48,7 +49,7 @@ public class AuthenticationController {
 	 */
 	public void sendBtn(Event event) {
 		String id; // String to store the entered ID.
-		FXMLLoader loader = new FXMLLoader(); // FXMLLoader for loading the main GUI.
+		//FXMLLoader loader = new FXMLLoader(); // FXMLLoader for loading the main GUI.
 		int digit_id = 0; // Variable to hold the numeric value of the ID.
 		id = txtId.getText(); // Retrieve the text entered in the ID field.
 		String password = txtPassword.getText(); // Retrieve the text entered in the password field.
@@ -71,7 +72,8 @@ public class AuthenticationController {
 		} 
 		// If both fields are valid, attempt to log in.
 		else {
-			switch(IPController.client.login(digit_id, password)) {
+			String name = IPController.client.login(digit_id, password);
+			switch(name) {
 				case "subscriber":
 					subscriber = IPController.client.getSubscriber(digit_id);
 					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
@@ -81,6 +83,7 @@ public class AuthenticationController {
 					break;
 				// case for the librarian with her name
 				default:
+					librarianName = name;
 					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
 					break;
 			}
