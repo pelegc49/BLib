@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeSet;
 
-import javax.annotation.processing.Generated;
 import javax.imageio.ImageIO;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -40,11 +39,11 @@ public class ReportGenerator extends Application {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void start(Stage primaryStage) throws Exception {
+
 		CategoryAxis xAxis = new CategoryAxis();
 		NumberAxis yAxis = new NumberAxis();
 		xAxis.setLabel("Date");
 		yAxis.setLabel("Number of Members");
-
 		StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
 		stackedBarChart.setTitle("Frozen and Active Members Over Time");
 
@@ -62,7 +61,6 @@ public class ReportGenerator extends Application {
 		Month curMonth = date.getMonth();
 		while (date.getMonth().equals(curMonth)) {
 		    LocalDate min = dates.isEmpty() ? null : dates.first(); // Get the earliest date from the TreeSet
-		    
 		    if (min != null && min.compareTo(date) <= 0) {
 		        // Found data for this date
 		        Integer[] status = map.get(min); // Get the status for the current date
@@ -80,14 +78,10 @@ public class ReportGenerator extends Application {
 		        dates.remove(min);
 		    } else {
 		        // If no data for this date, use the last known status
-		        if (lastKnownStatus != null) {
-		            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[0]));
-		            activeSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[1]));
-		        } else {
-		            // If no known data at all, add 0
-		            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), 0));
-		            activeSeries.getData().add(new XYChart.Data<>(date.format(f), 0));
-		        }
+		       
+	            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[0]));
+	            activeSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[1]));
+		       
 		    }
 		    
 		    // Move to the next day
@@ -95,9 +89,10 @@ public class ReportGenerator extends Application {
 		}
 
 		stackedBarChart.getData().addAll(activeSeries, frozenSeries);
-		
+
 		
         Scene scene = new Scene(stackedBarChart, 800, 600);
+        scene.getStylesheets().add(getClass().getResource("../gui/server/Server.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((E) -> System.exit(0));
         primaryStage.show();
