@@ -34,7 +34,9 @@ public class BLibServer extends AbstractServer {
 	// A map storing connected clients and their respective information (IP address
 	// and host name)
 	private static Map<ConnectionToClient, String[]> connectedClients = new HashMap<>();
-
+	
+	private ReportGenerator reportGenerator;
+	
 	/**
 	 * Private constructor that initializes the server and begins listening on the
 	 * provided port.
@@ -45,6 +47,7 @@ public class BLibServer extends AbstractServer {
 	private BLibServer(int port) throws IOException {
 		super(port); // Call the superclass constructor to initialize the server
 		listen(); // Start listening for client connections
+		reportGenerator = new ReportGenerator();
 		ServerTimer.start(this);
 	}
 
@@ -445,7 +448,7 @@ public class BLibServer extends AbstractServer {
 
 	
 	
-	public static void execute(Message msg) {
+	public void execute(Message msg) {
 		List<Object> args = ((Message) msg).getArguments();
 		Subscriber sub;
 		switch (msg.getCommand()) {
@@ -466,7 +469,9 @@ public class BLibServer extends AbstractServer {
 			break;
 		
 		case "gegerateGraphs":
-			
+			LocalDate today = LocalDate.now();
+			System.out.println(today);
+			reportGenerator.GenerateReport(today);
 			
 		}
 	}
@@ -549,6 +554,11 @@ public class BLibServer extends AbstractServer {
 		}
 		return null;
 		
+	}
+
+	public Map<LocalDate, Integer[]> getSubscribersStatusOnMonth(LocalDate date) {
+		// TODO Auto-generated method stub
+		return BLibDBC.getInstance().getSubscribersStatusOnMonth(date);
 	}
 	
 	

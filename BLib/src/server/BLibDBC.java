@@ -1,5 +1,6 @@
 package server;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -10,10 +11,13 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -44,18 +48,20 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234"))
 			return;
-		BookCopy c1,c2,c3,c4,c5,c7;
-		c1=db.getCopyByID(8);
-		c2=db.getCopyByID(9);
-		c3=db.getCopyByID(19);
-		c4=db.getCopyByID(6);
-		c5=db.getCopyByID(9);
-		c7=db.getCopyByID(007);
-		LocalDateTime now = LocalDateTime.now();
-		LocalDate today = LocalDate.now();
-		Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow(c5); // Retrieve																				// active borrow
-	
-		
+//		LocalDate today = LocalDate.now();
+//		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");		
+//		System.out.println(today.format(f));
+//		BookCopy c1,c2,c3,c4,c5,c7;
+//		c1=db.getCopyByID(8);
+//		c2=db.getCopyByID(9);
+//		c3=db.getCopyByID(19);
+//		c4=db.getCopyByID(6);
+//		c5=db.getCopyByID(9);
+//		c7=db.getCopyByID(007);
+//		LocalDateTime now = LocalDateTime.now();
+//		Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow(c5); // Retrieve																				// active borrow
+//	
+//		
 ////return
 //		if(BLibDBC.getInstance().isTitleOrdered((c5).getTitle().getTitleID())) {
 //			if(BLibDBC.getInstance().updateOrder(c5)) {
@@ -160,7 +166,14 @@ public class BLibDBC {
 //			System.out.println(new Message("success")); // Send success message
 //		} else {
 //			System.out.println(new Message("failed","DB error")); // Send failure message
-//		}		
+//		}	
+		
+		try {
+			BLibServer.getInstance(5555).execute(new Message("gegerateGraphs"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		db.disconnect();
 	}
 
@@ -540,11 +553,25 @@ public class BLibDBC {
 			pstmt.setString(5, subscriber.getStatus());
 			pstmt.execute();
 
+			
+			pstmt = conn.prepareStatement("SELECT subscriber_status, COUNT(*) FROM subscribers GROUP BY subscriber_status;");
+			ResultSet rs = pstmt.executeQuery();
+			int numActive = 0;
+			int numFrozen = 0;
+			while(rs.next()) {
+				if(rs.getString(1).equals("active"))
+					numActive = rs.getInt(2);
+				if(rs.getString(1).equals("frozen"))
+					numFrozen = rs.getInt(2);
+			}
+			
+			
+			
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subscriber.getId());
 			pstmt.setString(2, "new subscriber");
-			pstmt.setString(3, "%s is now a subscriber since %s".formatted(subscriber.getName(), today));
+			pstmt.setString(3, "%s is now a subscriber since %s;%d;%d".formatted(subscriber.getName(), today,numActive,numFrozen));
 
 			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
@@ -858,13 +885,26 @@ public class BLibDBC {
 			pstmt.setString(1, "frozen");
 			pstmt.setInt(2, subID);
 			pstmt.execute();
+			
+			pstmt = conn.prepareStatement("SELECT subscriber_status, COUNT(*) FROM subscribers GROUP BY subscriber_status;");
+			ResultSet rs = pstmt.executeQuery();
+			int numActive = 0;
+			int numFrozen = 0;
+			while(rs.next()) {
+				if(rs.getString(1).equals("active"))
+					numActive = rs.getInt(2);
+				if(rs.getString(1).equals("frozen"))
+					numFrozen = rs.getInt(2);
+			}
+			
+			
 
 			// Log the freeze Subscriber activity in the history table
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "freeze");
-			pstmt.setString(3, "%s got frozen on %s until %s".formatted(sub.getName(), today, today.plusMonths(1)));
+			pstmt.setString(3, "%s got frozen on %s until %s;%d;%d".formatted(sub.getName(), today, today.plusMonths(1),numActive,numFrozen));
 			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
@@ -903,12 +943,25 @@ public class BLibDBC {
 			pstmt.setInt(2, subID);
 			pstmt.execute();
 
+			pstmt = conn.prepareStatement("SELECT subscriber_status, COUNT(*) FROM subscribers GROUP BY subscriber_status;");
+			ResultSet rs = pstmt.executeQuery();
+			
+			int numActive = 0;
+			int numFrozen = 0;
+			while(rs.next()) {
+				if(rs.getString(1).equals("active"))
+					numActive = rs.getInt(2);
+				if(rs.getString(1).equals("frozen"))
+					numFrozen = rs.getInt(2);
+			}
+			
+			
 			// Log the unfreeze Subscriber activity in the history table
 			pstmt = conn.prepareStatement(
 					"INSERT INTO history(subscriber_id,activity_type,activity_description,activity_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "unfreeze");
-			pstmt.setString(3, "%s got unfrozen on %s ".formatted(sub.getName(), today));
+			pstmt.setString(3, "%s got unfrozen on %s;%d;%d".formatted(sub.getName(), today,numActive,numFrozen));
 
 			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
@@ -934,7 +987,7 @@ public class BLibDBC {
 			ResultSet rs = pstmt.executeQuery();
 			List<Activity> ret = new ArrayList<>();
 			while (rs.next()) {
-				Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4),
+				Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4).split(";")[0],
 						rs.getDate(5,ILTimeZone).toLocalDate());
 				ret.add(activity);
 			}
@@ -1286,6 +1339,79 @@ public class BLibDBC {
 		}
 		
 	}
+
+
+
+//	public Integer getNumOfActiveSubscribers(LocalDate date) {
+//		try {
+//			pstmt = conn.prepareStatement("SELECT activity_description FROM history WHERE activity_date <= ? AND activity_type in ('new subscriber','freeze','unfreeze') GROUP BY activity_date HAVING item_id = MAX(item_id) order by activity_date DESC;");
+//			pstmt.setDate(1, Date.valueOf(date),ILTimeZone);
+//			ResultSet rs = pstmt.executeQuery();
+//			if(rs.next()) {
+//				return Integer.parseInt(rs.getString(1).split(";")[1]);
+//			}
+//			return 0;
+//		} catch (NumberFormatException | SQLException e) {
+//			return null;
+//		}
+//	}
+//	
+//	public Integer getNumOfFrozenSubscribers(LocalDate date) {
+//		try {
+//			pstmt = conn.prepareStatement("SELECT activity_description FROM history WHERE activity_date <= ? AND activity_type in ('new subscriber','freeze','unfreeze') GROUP BY activity_date HAVING item_id = MAX(item_id) order by activity_date DESC;");
+//			pstmt.setDate(1, Date.valueOf(date),ILTimeZone);
+//			ResultSet rs = pstmt.executeQuery();
+//			if(rs.next()) {
+//					return Integer.parseInt(rs.getString(1).split(";")[2]);
+//			}
+//			return 0;
+//		} catch (NumberFormatException | SQLException e) {
+//			return null;
+//		}
+//	}
+//	
+//	public Integer[] getSubscribersStatus(LocalDate date) {
+//		Integer[] ret = new Integer[2];
+//		
+//	}
+	
+	public Map<LocalDate,Integer[]> getSubscribersStatusOnMonth(LocalDate date){
+		Month curMonth = date.getMonth();
+		date = LocalDate.of(date.getYear(), curMonth, 1).plusMonths(1).minusDays(1);
+		try {
+			Map<LocalDate,Integer[]> ret = new HashMap<>();
+			pstmt = conn.prepareStatement("SELECT h.activity_date, h.activity_description "
+					+ "FROM history h "
+					+ "INNER JOIN ("
+						+ "SELECT activity_date, MAX(item_id) AS item_id "
+						+ "FROM history "
+						+ "WHERE activity_date <= ? AND activity_type IN ('new subscriber', 'freeze', 'unfreeze') "
+						+ "GROUP BY activity_date) subquery "
+					+ "ON h.activity_date = subquery.activity_date AND h.item_id = subquery.item_id "
+					+ "ORDER BY h.activity_date DESC;");
+			pstmt.setDate(1, Date.valueOf(date),ILTimeZone);
+			ResultSet rs = pstmt.executeQuery();
+			Integer[] lst = new Integer[2];
+			boolean first = true;
+			while(rs.next()) {
+				if(rs.getDate(1).toLocalDate().getMonth().equals(curMonth) || first) {
+					lst[0] = Integer.parseInt(rs.getString(2).split(";")[1]);
+					lst[1] = Integer.parseInt(rs.getString(2).split(";")[2]);
+					ret.put(rs.getDate(1).toLocalDate(), lst.clone());
+				}else {
+					if(!first)
+						break;
+					first = false;
+				}
+			}
+			return ret;
+		} catch (NumberFormatException | SQLException e) {
+			return null;
+		}
+	}
+
+
+
 	
 }
 
