@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,7 +18,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import logic.Activity; 
+import logic.Activity;
+import logic.Subscriber; 
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -25,7 +27,7 @@ import logic.Activity;
  * and transitions the user to the main application interface upon successful login.
  */
 public class ViewHistoryController{
-	
+	private Subscriber subscriber;
 	@FXML
 	private Button btnBack = null; // Button for exiting the application.
 	@FXML
@@ -37,8 +39,9 @@ public class ViewHistoryController{
 	@FXML
 	private TableColumn<Activity, LocalDate> dateColumn;
 	
-	public void loadHistory(int subID) {
-		List<Activity> activities = IPController.client.getSubscriberHistory(subID);
+	public void loadHistory(Subscriber subscriber) {
+		this.subscriber = subscriber;
+		List<Activity> activities = IPController.client.getSubscriberHistory(subscriber.getId());
 		ObservableList<Activity> data;
 		data = FXCollections.observableArrayList();
 		for(Activity ac : activities) {
@@ -65,8 +68,27 @@ public class ViewHistoryController{
 	    	nextPage(event, "SubscriberClientGUIFrame", title);
 	    }
 	    else{
-	    	title = "Librarian Main Menu";
-	    	nextPage(event, "LibrarianClientGUIFrame", title);
+    		// FXMLLoader for loading the main GUI.
+    		FXMLLoader loader = new FXMLLoader(); 
+    		// Hide the current window.
+    		((Node) event.getSource()).getScene().getWindow().hide();
+
+    		// Load the main application interface.
+    		Stage primaryStage = new Stage();
+    		Pane root = null;
+			try {
+				root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
+			} catch (IOException e) {}
+			SubscriberReaderCardController subscriberReaderCardController = loader.getController();
+			subscriberReaderCardController.loadSubscriber(subscriber);
+			subscriberReaderCardController.loadBorrows(subscriber);
+    		// Set up and display the new scene.
+    		Scene scene = new Scene(root);
+    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".css").toExternalForm());
+    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+    		primaryStage.setTitle("Subscriber's Reader Card");
+    		primaryStage.setScene(scene);
+    		primaryStage.show();
 	    }
 	}
 

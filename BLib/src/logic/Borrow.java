@@ -3,8 +3,6 @@ package logic;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import javafx.scene.control.CheckBox;
-
 public class Borrow implements Serializable {
 
 	// Private member variables for storing borrowing details
@@ -60,15 +58,15 @@ public class Borrow implements Serializable {
 		return book;
 	}
 	
-	public int getBookCopyId() {
+	public int getCopyId() {
 		return book.getCopyID();
 	}
 	
-	public String getBookTitle() {
+	public String getTitleName() {
 		return book.getTitle().getTitleName();
 	}
 	
-	public String getBookAuthor() {
+	public String getAuthor() {
 		return book.getTitle().getAuthorName();
 	}
 }

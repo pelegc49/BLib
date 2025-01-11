@@ -83,7 +83,7 @@ public class SubscriberClientGUIController {
 		Stage primaryStage = new Stage();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml").openStream());
 		ViewHistoryController viewHistoryController = loader.getController();
-		viewHistoryController.loadHistory(AuthenticationController.subscriber.getId());
+		viewHistoryController.loadHistory(AuthenticationController.subscriber);
 		// Set up and display the new scene.
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".css").toExternalForm());

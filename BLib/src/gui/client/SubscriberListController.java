@@ -36,7 +36,7 @@ import logic.Subscriber;
  * It manages the login process, including ID and password validation, 
  * and transitions the user to the main application interface upon successful login.
  */
-public class SubscriberListController implements Initializable{
+public class SubscriberListController{
 	
 	private List<Subscriber> allSubscribers = IPController.client.getAllSubscribers();
 	
@@ -101,7 +101,6 @@ public class SubscriberListController implements Initializable{
 	 		    rowa.setOnMouseClicked(eventa -> {
 	 		        if (eventa.getClickCount() == 2 && !rowa.isEmpty()) {
 	 		        	Subscriber rowData = rowa.getItem();
-	 		    		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	 		    	    
 	 		    		// FXMLLoader for loading the main GUI.
 	 		    		FXMLLoader loader = new FXMLLoader(); 
@@ -112,15 +111,18 @@ public class SubscriberListController implements Initializable{
 	 		    		Stage primaryStage = new Stage();
 	 		    		Pane root = null;
 	 					try {
-	 						root = loader.load(getClass().getResource("/gui/client/"+ "UpdateDetailsController" +".fxml").openStream());
-	 					} catch (IOException e) {}
-	 					UpdateDetailsController updateDetailsController = loader.getController();
-	 					updateDetailsController.loadSubscriber(rowData);
+	 						root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
+	 					} catch (IOException e) {
+	 						e.printStackTrace();
+	 					}
+	 					SubscriberReaderCardController subscriberReaderCardController = loader.getController();
+	 					subscriberReaderCardController.loadSubscriber(rowData);
+	 					subscriberReaderCardController.loadBorrows(rowData);
 	 		    		// Set up and display the new scene.
 	 		    		Scene scene = new Scene(root);
-	 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "UpdateDetailsController" +".css").toExternalForm());
+	 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".css").toExternalForm());
 	 		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-	 		    		primaryStage.setTitle("Update Details");
+	 		    		primaryStage.setTitle("Subscriber's Reader Card");
 	 		    		primaryStage.setScene(scene);
 	 		    		primaryStage.show();
 	 		        }
@@ -167,11 +169,5 @@ public class SubscriberListController implements Initializable{
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -71,7 +71,6 @@ public class SearchController{
 		    rowa.setOnMouseClicked(eventa -> {
 		        if (eventa.getClickCount() == 2 && !rowa.isEmpty()) {
 		        	BookTitle rowData = rowa.getItem();
-		            System.out.println(rowData); // delete me
 		    		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		    	    String currentTitle = currentStage.getTitle();
 		    	    String[] title = currentTitle.split(" ");

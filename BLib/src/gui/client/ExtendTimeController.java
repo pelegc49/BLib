@@ -95,7 +95,6 @@ public class ExtendTimeController{
                         break;
                     }
                     else {
-                    	System.out.println("ok");
                     	borrowWCB.setErrorMessage((String) msg.getArguments().get(0));
                     }
                 }
@@ -131,7 +130,6 @@ public class ExtendTimeController{
 			data.add(borrowWCB);
 		}
 		
-
 		checkBoxColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
 		authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
 		titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
