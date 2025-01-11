@@ -46,7 +46,7 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("1234"))
+		if (!db.connect("12341234"))
 			return;
 //		LocalDate today = LocalDate.now();
 //		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");		

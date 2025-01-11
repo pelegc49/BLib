@@ -93,19 +93,17 @@ public class ReportGenerator extends Application {
 
 		stackedBarChart.getData().addAll(activeSeries, frozenSeries);
 
+		Scene scene = new Scene(stackedBarChart, 800, 600);
 		
-        Scene scene = new Scene(stackedBarChart, 800, 600);
         scene.getStylesheets().add(getClass().getResource("../gui/server/Server.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((E) -> System.exit(0));
         primaryStage.show();
         WritableImage image = stackedBarChart.snapshot(null, null);
         
-        System.out.println(4);
         File file = new File("chart.png");
         
         try {
-        	System.out.println(3);
 			ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
 			System.out.println("Chart saved as image: " + file.getAbsolutePath());
 		} catch (IOException e) {

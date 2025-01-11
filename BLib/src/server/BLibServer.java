@@ -469,7 +469,7 @@ public class BLibServer extends AbstractServer {
 			break;
 		
 		case "gegerateGraphs":
-			LocalDate today = LocalDate.now();
+			LocalDate today = LocalDate.now().minusMonths(2);
 			System.out.println(today);
 			reportGenerator.GenerateReport(today);
 			
