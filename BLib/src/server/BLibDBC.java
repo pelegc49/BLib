@@ -46,7 +46,7 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("12341234"))
+		if (!db.connect("1234"))
 			return;
 //		LocalDate today = LocalDate.now();
 //		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");		
@@ -1392,17 +1392,13 @@ public class BLibDBC {
 			pstmt.setDate(1, Date.valueOf(date),ILTimeZone);
 			ResultSet rs = pstmt.executeQuery();
 			Integer[] lst = new Integer[2];
-			boolean first = true;
 			while(rs.next()) {
-				if(rs.getDate(1).toLocalDate().getMonth().equals(curMonth) || first) {
 					lst[0] = Integer.parseInt(rs.getString(2).split(";")[1]);
 					lst[1] = Integer.parseInt(rs.getString(2).split(";")[2]);
 					ret.put(rs.getDate(1).toLocalDate(), lst.clone());
-				}else {
-					if(!first)
+					if(!rs.getDate(1).toLocalDate().getMonth().equals(curMonth)) {						
 						break;
-					first = false;
-				}
+					}						
 			}
 			return ret;
 		} catch (NumberFormatException | SQLException e) {

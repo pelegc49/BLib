@@ -38,6 +38,7 @@ public class ReportGenerator extends Application {
 	
 	@Override
 	@SuppressWarnings("unchecked")
+	
 	public void start(Stage primaryStage) throws Exception {
 
 		CategoryAxis xAxis = new CategoryAxis();
@@ -53,7 +54,9 @@ public class ReportGenerator extends Application {
 		XYChart.Series<String, Number> activeSeries = new XYChart.Series<>();
 		activeSeries.setName("Active");
 		date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+		
 		Map<LocalDate, Integer[]> map = BLibServer.getInstance().getSubscribersStatusOnMonth(date);
+		
 		TreeSet<LocalDate> dates = new TreeSet<>();
 		dates.addAll(map.keySet());
 		
