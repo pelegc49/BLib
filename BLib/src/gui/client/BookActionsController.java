@@ -36,16 +36,6 @@ public class BookActionsController {
 	
 	
 	public void borrowBtn(ActionEvent event) {
-	    Integer subID;
-	    try {
-	        // Attempt to parse the ID as an integer
-	        subID = Integer.valueOf(txtSubscriberId.getText());
-	    } catch (NumberFormatException e) {
-	        // Handle invalid input
-	        display("Invalid subscriber ID", Color.RED);
-	        return;
-	    }
-
 	    Integer bookID;
 	    try {
 	        // Attempt to parse the ID as an integer
@@ -53,6 +43,16 @@ public class BookActionsController {
 	    } catch (NumberFormatException e) {
 	        // Handle invalid input
 	        display("Invalid Book ID", Color.RED);
+	        return;
+	    }
+	    
+	    Integer subID;
+	    try {
+	        // Attempt to parse the ID as an integer
+	        subID = Integer.valueOf(txtSubscriberId.getText());
+	    } catch (NumberFormatException e) {
+	        // Handle invalid input
+	        display("Invalid subscriber ID", Color.RED);
 	        return;
 	    }
 
@@ -72,7 +72,7 @@ public class BookActionsController {
 	    	bookID = Integer.valueOf(txtBookId.getText());
 	    } catch (NumberFormatException e) {
 	        // Handle invalid input
-	        display("Invalid Book ID.", Color.RED);
+	        display("Invalid Book ID", Color.RED);
 	        return;
 	    }
 
@@ -90,7 +90,23 @@ public class BookActionsController {
 	
 		
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+		// FXMLLoader for loading the main GUI.
+		FXMLLoader loader = new FXMLLoader(); 
+		
+		// Hide the current window.
+		((Node) event.getSource()).getScene().getWindow().hide();
+
+		// Load the main application interface.
+		Stage primaryStage = new Stage();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+
+		// Set up and display the new scene.
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle("Librarian Main Menu");
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 
 	/**
@@ -102,25 +118,4 @@ public class BookActionsController {
 		lblError.setTextFill(color);
 		lblError.setText(message);
 	}
-	
-	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
-	
 }

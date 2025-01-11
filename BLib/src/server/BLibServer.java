@@ -310,7 +310,7 @@ public class BLibServer extends AbstractServer {
 					
 																										// for book copy
 					if (borrow == null) {
-						client.sendToClient(new Message("failed","DB error")); // Send failure message if borrow creation fails
+						client.sendToClient(new Message("failed","No such borrowed book")); // Send failure message if borrow creation fails
 						break;
 					}
 					// If the due date is passed, process as late return and potentially freeze the
@@ -327,7 +327,7 @@ public class BLibServer extends AbstractServer {
 					} else {
 						BLibDBC.getInstance().cancelCommand("sendMessage","%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));
 						BLibDBC.getInstance().returnBook((BookCopy) args.get(0), false);
-						client.sendToClient(new Message("success")); // Send success message for regular return
+						client.sendToClient(new Message("success", "The return was successful")); // Send success message for regular return
 					}
 					break;
 
