@@ -263,12 +263,7 @@ public class BLibServer extends AbstractServer {
 
 				// Handle extend borrow duration request
 				case "extend":
-					if (BLibDBC.getInstance()
-							.getTitleMagicNumber(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
-						client.sendToClient(new Message("failed","this title is ordered")); // If no extension allowed, send failure message
-						break;
-					}
-
+					
 					if (args.get(2).equals("subscriber")) {
 						err = canExtend((Borrow) args.get(0));
 						if (err != null) { // Check if the borrow can be extended
@@ -276,6 +271,13 @@ public class BLibServer extends AbstractServer {
 							break;
 						}
 					}
+					
+					if (BLibDBC.getInstance()
+							.getTitleMagicNumber(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
+						client.sendToClient(new Message("failed","this title is ordered")); // If no extension allowed, send failure message
+						break;
+					}
+
 					ret = BLibDBC.getInstance().extendDuration((Borrow) args.get(0), (Integer) args.get(1),
 							(String) args.get(2)); // Extend the borrow duration
 					if ((Boolean) ret == true) {
