@@ -9,26 +9,36 @@ public class BookTitle implements Serializable {
 	private String description;
 	private int numOfOrders;
 	private int numOfCopies;
-	//private String genre;
+	private String genre;
 
+//	public BookTitle(int titleID, String titleName, String authorName, String description, int numOfOrders,
+//			int numOfCopies/*, String genre*/) {
+//		this.titleID = titleID;
+//		this.titleName = titleName;
+//		this.authorName = authorName;
+//		this.description = description;
+//		this.numOfOrders = numOfOrders;
+//		this.numOfCopies = numOfCopies;
+//		//this.genre = genre;
+//	}
 	public BookTitle(int titleID, String titleName, String authorName, String description, int numOfOrders,
-			int numOfCopies/*, String genre*/) {
+			int numOfCopies, String genre) {
 		this.titleID = titleID;
 		this.titleName = titleName;
 		this.authorName = authorName;
 		this.description = description;
 		this.numOfOrders = numOfOrders;
 		this.numOfCopies = numOfCopies;
-		//this.genre = genre;
+		this.genre = genre;
 	}
 
-//	public String getGenre() {
-//		return genre;
-//	}
-//
-//	public void setGenre(String genre) {
-//		this.genre = genre;
-//	}
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
 	
 	public int getTitleID() {
 		return titleID;

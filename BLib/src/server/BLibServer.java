@@ -444,7 +444,7 @@ public class BLibServer extends AbstractServer {
 		switch (msg.getCommand()) {
 		case "unfreeze":
 			BLibDBC.getInstance().unfreezeSubscriber((Integer) args.get(0));
-			
+			break;
 			
 		case "gal":
 			System.out.println("%s  %s".formatted((String) args.get(0),(String) args.get(1)));
@@ -452,7 +452,7 @@ public class BLibServer extends AbstractServer {
 
 			
 		case "sendEmail":
-			//TODO: create and call sendEmail()
+			MessageController.getInstance().sendEmail((String) args.get(0), (String) args.get(1), (String) args.get(2));
 			break;
 		case "sendMessage":
 			Subscriber sub = BLibDBC.getInstance().getSubscriberByID((Integer) args.get(0));

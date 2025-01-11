@@ -44,9 +44,9 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234"))
 			return;
-		db.createCommand("gal", "1;2", LocalDateTime.now().minusMinutes(1), "123");
+		db.createCommand("gal", "1;2", LocalDateTime.now(), "123");
 		db.createCommand("gal", "1;2", LocalDateTime.now().plusMinutes(1), "123");
-		db.createCommand("gal", "3;2", LocalDateTime.now().plusMinutes(3), "123");
+		db.createCommand("gal", "3;2", LocalDateTime.now().plusMinutes(2), "123");
 		db.disconnect();
 	}
 
@@ -133,7 +133,7 @@ public class BLibDBC {
 			// If a result is found, return a BookTitle object created from the result
 			if (rs.next()) {
 				return new BookTitle(titleID, rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5),
-						rs.getInt(6));
+						rs.getInt(6), rs.getString(7));
 			}
 			return null; // Return null if no result is found
 		} catch (SQLException e) {
@@ -191,7 +191,7 @@ public class BLibDBC {
 			// Loop through result set and create BookTitle objects
 			while (rs.next()) {
 				BookTitle title = new BookTitle(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-						rs.getInt(5), rs.getInt(6));
+						rs.getInt(5), rs.getInt(6), rs.getString(7));
 				bookSet.add(title);
 			}
 			return bookSet; // Return the set of book titles
