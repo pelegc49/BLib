@@ -52,12 +52,13 @@ public class MessageController {
 //	}
 	
 	public void sendMessage(Subscriber subTo,String subject, String text ){
-		sendEmail(subTo.getEmail(), subject, text);
+		sendEmail(subTo, subject, text);
 		sendSMS(subTo.getPhone(), text);
 	}
 	
 
-	public void sendEmail(String emailTo, String subject, String text) {
+	public void sendEmail(Subscriber subTo, String subject, String text) {
+		String emailTo = subTo.getEmail();
 		System.out.println("sending email to " + emailTo);
 
         try {

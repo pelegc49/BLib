@@ -283,7 +283,6 @@ public class BLibServer extends AbstractServer {
 					} else {
 						client.sendToClient(new Message("failed","DB error")); // Send failure message
 					}
-					// TODO: add message logic
 
 					break;
 
@@ -292,15 +291,16 @@ public class BLibServer extends AbstractServer {
 					Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow((BookCopy) args.get(0)); // Retrieve																				// active borrow
 					
 					if(BLibDBC.getInstance().isTitleOrdered(((BookCopy) args.get(0)).getTitle().getTitleID())) {
-						BLibDBC.getInstance().updateOrder((BookCopy) args.get(0));
-						Order order = BLibDBC.getInstance().getOrderByCopy(((BookCopy) args.get(0)).getCopyID());
-						MessageController.getInstance().sendEmail(order.getSubscriber().getEmail(),
-								"Your order has arrived!",
-								"Dear %s,\n\n".formatted(order.getSubscriber().getName())+
-								"Your book order of \"%s\" has arrived and is ready for pickup.\n".formatted(((BookCopy) args.get(0)).getTitle())+
-								"Please collect it within the next two days, or the order will be canceled.\n\n"+
-								"Best regards, BLib library");
-						BLibDBC.getInstance().createCommand("cancelOrder", "%d".formatted(((BookCopy) args.get(0)).getCopyID()), now.plusDays(2), "%d".formatted(((BookCopy) args.get(0)).getCopyID()));
+						if(BLibDBC.getInstance().updateOrder((BookCopy) args.get(0))){
+							Order order = BLibDBC.getInstance().getOrderByCopy(((BookCopy) args.get(0)).getCopyID());
+							MessageController.getInstance().sendEmail(order.getSubscriber(),
+									"Your order has arrived!",
+									"Dear %s,\n\n".formatted(order.getSubscriber().getName())+
+									"Your book order of \"%s\" has arrived and is ready for pickup.\n".formatted(((BookCopy) args.get(0)).getTitle())+
+									"Please collect it within the next two days, or the order will be canceled.\n\n"+
+									"Best regards, BLib library");
+							BLibDBC.getInstance().createCommand("cancelOrder", "%d".formatted(((BookCopy) args.get(0)).getCopyID()), now.plusDays(2), "%d".formatted(((BookCopy) args.get(0)).getCopyID()));
+						}
 					}
 					
 																										// for book copy
@@ -338,7 +338,7 @@ public class BLibServer extends AbstractServer {
 				case "order":
 					err = canOrder((Subscriber)args.get(0), (BookTitle)args.get(1));
 					if(err != null) {
-						sendToAllClients(new Message("Failed", err));
+						client.sendToClient(new Message("Failed", err));
 						break;
 					}
 	
@@ -419,6 +419,10 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("failed"));
 					}
 					break;
+				default:
+					client.sendToClient(new Message("unknownCommand: "+((Message) msg).getCommand()));
+					
+					
 					
 				// case "getTitleByID":
 //					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
@@ -439,28 +443,27 @@ public class BLibServer extends AbstractServer {
 
 	
 	
-	public void execute(Message msg) {
+	public static void execute(Message msg) {
 		List<Object> args = ((Message) msg).getArguments();
+		Subscriber sub;
 		switch (msg.getCommand()) {
 		case "unfreeze":
-			BLibDBC.getInstance().unfreezeSubscriber((Integer) args.get(0));
+			BLibDBC.getInstance().unfreezeSubscriber(Integer.parseInt((String)args.get(0)));
 			break;
-			
-		case "gal":
-			System.out.println("%s  %s".formatted((String) args.get(0),(String) args.get(1)));
-			break;
-
 			
 		case "sendEmail":
-			MessageController.getInstance().sendEmail((String) args.get(0), (String) args.get(1), (String) args.get(2));
+			sub = BLibDBC.getInstance().getSubscriberByID(Integer.parseInt((String)args.get(0)));
+			MessageController.getInstance().sendEmail(sub, (String) args.get(1), (String) args.get(2));
 			break;
 		case "sendMessage":
-			Subscriber sub = BLibDBC.getInstance().getSubscriberByID((Integer) args.get(0));
-			MessageController.getInstance().sendMessage(sub, null, null);
+			sub = BLibDBC.getInstance().getSubscriberByID(Integer.parseInt((String)args.get(0)));
+			MessageController.getInstance().sendMessage(sub, (String) args.get(1), (String) args.get(2));
 			break;
 		case "cancelOrder":
-			BLibDBC.getInstance().cancelOrder((Integer) args.get(0));
+			BLibDBC.getInstance().cancelOrder(Integer.parseInt((String)args.get(0)));
 			break;
+		
+		case "gegerateGraphs":
 			
 			
 		}
@@ -473,7 +476,7 @@ public class BLibServer extends AbstractServer {
 	 * @param borrow the borrow object to check
 	 * @return true if the borrow can be extended, false otherwise
 	 */
-	private String canExtend(Borrow borrow) {
+	public static String canExtend(Borrow borrow) { //TODO: change to private
 		// Check if the subscriber's status is "frozen". If yes, they can't extend the
 		// borrow period.
 		if (borrow.getSubscriber().getStatus().equals("frozen")) {
@@ -486,6 +489,9 @@ public class BLibServer extends AbstractServer {
 		
 		if (borrow.getDueDate().minusWeeks(1).compareTo(LocalDate.now()) >= 0) {
 			return "extention not available until %s".formatted(borrow.getDueDate().minusWeeks(1));
+		}
+		if (borrow.getDueDate().compareTo(LocalDate.now()) < 0) {
+			return "extention not available after due date";
 		}
 		// If none of the conditions above are met, the borrow can be extended.
 		return null;
@@ -504,9 +510,14 @@ public class BLibServer extends AbstractServer {
 		return BLibDBC.getInstance().getCommands();
 	}
 	
-	private String canOrder(Subscriber sub, BookTitle title) {
+	public static String canOrder(Subscriber sub, BookTitle title) {//TODO: change to private
 		if(sub.getStatus().equals("frozen"))
 			return "The subscriber is frozen";
+		
+		for(Borrow b : BLibDBC.getInstance().getSubscriberActiveBorrows(sub)) {
+			if(b.getBook().getTitle().equals(title)) 
+				return "This Book is already Borrowed";
+		}
 
 		for(Order o : BLibDBC.getInstance().getSubscriberActiveOrders(sub)) {
 			if(o.getTitle().equals(title)) 
@@ -521,16 +532,12 @@ public class BLibServer extends AbstractServer {
 			return "There are too many active orders";
 		}
 		
-		for(Borrow b : BLibDBC.getInstance().getSubscriberActiveBorrows(sub)) {
-			if(b.getBook().getTitle().equals(title)) 
-				return "This Book is already Borrowed";
-		}
 		return null;
 			
 	}
 	
 	
-	private String canBorrow(Subscriber sub, BookCopy copy) {
+	public static String canBorrow(Subscriber sub, BookCopy copy) {//TODO: change to private
 		if(sub.getStatus().equals("frozen"))
 			return "The subscriber is frozen";
 		

@@ -32,7 +32,7 @@ import logic.Subscriber;
  */
 public class BLibDBC {
 	private String pass;
-	private static Calendar tz;
+	private static Calendar ILTimeZone;
 	private static BLibDBC instance;
 
 	private static Connection conn; // Connection object to interact with the database
@@ -44,9 +44,123 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("12341234"))
 			return;
-		db.createCommand("gal", "1;2", LocalDateTime.now(), "123");
-		db.createCommand("gal", "1;2", LocalDateTime.now().plusMinutes(1), "123");
-		db.createCommand("gal", "3;2", LocalDateTime.now().plusMinutes(2), "123");
+		BookCopy c1,c2,c3,c4,c5,c7;
+		c1=db.getCopyByID(8);
+		c2=db.getCopyByID(9);
+		c3=db.getCopyByID(19);
+		c4=db.getCopyByID(6);
+		c5=db.getCopyByID(9);
+		c7=db.getCopyByID(007);
+		LocalDateTime now = LocalDateTime.now();
+		LocalDate today = LocalDate.now();
+		Borrow borrow = BLibDBC.getInstance().getCopyActiveBorrow(c5); // Retrieve																				// active borrow
+	
+		
+////return
+//		if(BLibDBC.getInstance().isTitleOrdered((c5).getTitle().getTitleID())) {
+//			if(BLibDBC.getInstance().updateOrder(c5)) {
+//				Order order = BLibDBC.getInstance().getOrderByCopy((c5).getCopyID());
+//				MessageController.getInstance().sendEmail(order.getSubscriber(),
+//						"Your order has arrived!",
+//						"Dear %s,\n\n".formatted(order.getSubscriber().getName())+
+//						"Your book order of \"%s\" has arrived and is ready for pickup.\n".formatted((c5).getTitle())+
+//						"Please collect it within the next two days, or the order will be canceled.\n\n"+
+//						"Best regards, BLib library");
+//				BLibDBC.getInstance().createCommand("cancelOrder", "%d".formatted((c5).getCopyID()), now.plusDays(2), "%d".formatted((c5).getCopyID()));
+//			}
+//		}
+//		
+//																							// for book copy
+//		if (borrow == null) {
+//			System.out.println(new Message("failed","DB error")); // Send failure message if borrow creation fails
+//			return;
+//		}
+//		// If the due date is passed, process as late return and potentially freeze the
+//		// subscriber
+//		if (borrow.getDueDate().compareTo(today) < 0) {
+//			BLibDBC.getInstance().returnBook(c5, true);
+//			if (borrow.getDueDate().plusWeeks(1).compareTo(today) <= 0) {
+//				BLibDBC.getInstance().freezeSubscriber(borrow.getSubscriber().getId());
+//				
+//				System.out.println(new Message("success","Freeze")); // Send freeze success message
+//			} else {
+//				System.out.println(new Message("success","Late")); // Send late return success message
+//			}
+//		} else {
+//			BLibDBC.getInstance().cancelCommand("sendMessage","%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));
+////			BLibDBC.getInstance().cancelCommand("sendMessage","%s;%s"c5ubscriber().getId(), borrow.getBook().getCopyID()));
+//			BLibDBC.getInstance().returnBook(c5, false);
+//			System.out.println(new Message("success")); // Send success message for regular return
+//		}
+		
+////borrow
+//		int copyId = 11;
+//		int subId = 7777;
+//		Order o = BLibDBC.getInstance().getOrderByCopy(copyId);
+//		Subscriber sub = BLibDBC.getInstance().getSubscriberByID(subId);
+//		BookCopy copy = BLibDBC.getInstance().getCopyByID(copyId);
+//		
+//		String err = BLibServer.canBorrow(sub,copy);
+//		if(err != null) {
+//			System.out.println(new Message("failed",err)); 
+//			return;
+//		}
+//			
+//		if(o != null) {
+//			if(o.getSubscriber().getId() != subId) {
+//				System.out.println(new Message("failed","this copy is ordered")); // Send success message
+//				return;
+//			}else {
+//				BLibDBC.getInstance().cancelCommand("cancelOrder","%d".formatted(copyId));
+//				BLibServer.execute(new Message("cancelOrder","%d".formatted(copyId)));
+//			}
+//		}
+//		
+//		Object ret = BLibDBC.getInstance().createBorrow(subId, copyId); // Create a
+//																								// borrow
+//		if ((Boolean) ret == true) {
+//			System.out.println(new Message("success")); // Send success message
+//		} else {
+//			System.out.println(new Message("failed","DB error")); // Send failure message if borrow creation fails
+//		}
+		
+//order
+		Subscriber sub = BLibDBC.getInstance().getSubscriberByID(1111);
+		BookTitle title = db.getTitleByID(4);
+		String err = BLibServer.canOrder(sub, title);
+		if(err != null) {
+			System.out.println(new Message("Failed", err));
+			return;
+		}
+
+		Object ret = BLibDBC.getInstance().orderBook(sub.getId(),title.getTitleID());
+		if (ret != null) {
+			System.out.println(new Message("success"));
+		} else {
+			System.out.println(new Message("Failed","DB error")); // Send failure message
+		}
+		
+////extend
+//		if (BLibDBC.getInstance()
+//				.getTitleMagicNumber((borrow).getBook().getTitle()) < 0) {
+//			System.out.println(new Message("failed","this title is ordered")); // If no extension allowed, send failure message
+//			return;
+//		}
+//
+//		if ("Sarah Naaman".equals("subscriber")) {
+//			String err = BLibServer.canExtend(borrow);
+//			if (err != null) { // Check if the borrow can be extended
+//				System.out.println(new Message("failed",err));
+//				return;
+//			}
+//		}
+//		Object ret = BLibDBC.getInstance().extendDuration(borrow, 4,
+//				"Sarah Naaman"); // Extend the borrow duration
+//		if ((Boolean) ret == true) {
+//			System.out.println(new Message("success")); // Send success message
+//		} else {
+//			System.out.println(new Message("failed","DB error")); // Send failure message
+//		}		
 		db.disconnect();
 	}
 
@@ -97,7 +211,7 @@ public class BLibDBC {
 			return false;
 		}
 		try {
-			tz = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jerusalem"));
+			ILTimeZone = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jerusalem"));
 			// Try connecting to the database
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost/BLibDB?useSSL=FALSE&serverTimezone=Asia/Jerusalem", "root", password);
@@ -236,9 +350,9 @@ public class BLibDBC {
 				BookCopy copy = getCopyByID(copyID);
 				if (copy == null)
 					return null;
-				Order order = new Order(rs.getInt(1), sub, copy.getTitle(), rs.getTimestamp(5,tz).toLocalDateTime());
+				Order order = new Order(rs.getInt(1), sub, copy.getTitle(), rs.getTimestamp(5,ILTimeZone).toLocalDateTime());
 				order.setCopy(copy);
-				order.setAriveDate(rs.getDate(6,tz).toLocalDate());
+				order.setAriveDate(rs.getDate(6,ILTimeZone).toLocalDate());
 				return order;
 			}
 			return null;
@@ -276,8 +390,8 @@ public class BLibDBC {
 					"INSERT INTO borrows(subscriber_id,copy_id,date_of_borrow,due_date) VALUE(?,?,?,?)");
 			pstmt.setInt(1, subscriberID);
 			pstmt.setInt(2, copyID);
-			pstmt.setDate(3, Date.valueOf(today),tz);
-			pstmt.setDate(4, Date.valueOf(dueDate),tz);
+			pstmt.setDate(3, Date.valueOf(today),ILTimeZone);
+			pstmt.setDate(4, Date.valueOf(dueDate),ILTimeZone);
 			pstmt.execute();
 
 			// Update the book copy's status to borrowed
@@ -293,7 +407,7 @@ public class BLibDBC {
 			pstmt.setString(2, "borrow");
 			pstmt.setString(3,
 					"\"%s\" borrowed by %s on %s".formatted(copy.getTitle(), sub.getName(), today.toString()));
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
 			// time the execution of send message
@@ -385,7 +499,7 @@ public class BLibDBC {
 			pstmt.setString(2, "update subscriber");
 			pstmt.setString(3, str.toString());
 
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
 			// Commit the transaction
@@ -432,7 +546,7 @@ public class BLibDBC {
 			pstmt.setString(2, "new subscriber");
 			pstmt.setString(3, "%s is now a subscriber since %s".formatted(subscriber.getName(), today));
 
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
 			// create new user to the new subscriber
@@ -516,7 +630,7 @@ public class BLibDBC {
 				if (sub == null) {
 					return null;
 				}
-				return new Borrow(sub, copy, rs.getDate(4,tz).toLocalDate(), rs.getDate(5,tz).toLocalDate(), null);
+				return new Borrow(sub, copy, rs.getDate(4,ILTimeZone).toLocalDate(), rs.getDate(5,ILTimeZone).toLocalDate(), null);
 			}
 			return null;
 		} catch (SQLException e) {
@@ -545,10 +659,10 @@ public class BLibDBC {
 			// Log the extension activity in the history table
 			pstmt = conn.prepareStatement("UPDATE borrows SET due_date = ? WHERE "
 					+ "subscriber_id = ? AND copy_id = ? AND date_of_borrow = ?");
-			pstmt.setDate(1, Date.valueOf(newDueDate),tz);
+			pstmt.setDate(1, Date.valueOf(newDueDate),ILTimeZone);
 			pstmt.setInt(2, borrow.getSubscriber().getId());
 			pstmt.setInt(3, borrow.getBook().getCopyID());
-			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()),tz);
+			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()),ILTimeZone);
 			pstmt.execute();
 
 			LocalDate today = LocalDate.now();
@@ -569,7 +683,7 @@ public class BLibDBC {
 								borrow.getBook().getTitle(), borrow.getSubscriber().getName(), userType, today,
 								newDueDate));
 			}
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
 			if (userType.equals("subscriber")) {
@@ -579,13 +693,13 @@ public class BLibDBC {
 						"the subscriber %s extended their borrow duration of %s by %d days, the new due date is %s"
 								.formatted(borrow.getSubscriber().getName(), borrow.getBook().getTitle(), days,
 										newDueDate));
-				pstmt.setTimestamp(2, Timestamp.valueOf(now),tz);
+				pstmt.setTimestamp(2, Timestamp.valueOf(now),ILTimeZone);
 				pstmt.execute();
 			}
 			
 			LocalDateTime notification = LocalDateTime.of(newDueDate.minusDays(1), LocalTime.now());
 			pstmt = conn.prepareStatement("UPDATE commands SET time_of_execution=? WHERE command = ? AND identifyer = ?");
-			pstmt.setTimestamp(1, Timestamp.valueOf(notification),tz);
+			pstmt.setTimestamp(1, Timestamp.valueOf(notification),ILTimeZone);
 			pstmt.setString(2, "sendMessage");
 			pstmt.setString(3, "%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));
 			
@@ -659,7 +773,9 @@ public class BLibDBC {
 			pstmt = conn.prepareStatement("SELECT num_of_orders>0 FROM titles WHERE title_id = ?;");
 			pstmt.setInt(1, titleID);
 			ResultSet rs = pstmt.executeQuery();
-			return rs.next();
+			if(rs.next())
+				return rs.getBoolean(1);
+			return false;
 		} catch (SQLException e) {
 			return null;
 		}
@@ -683,10 +799,10 @@ public class BLibDBC {
 
 			pstmt = conn.prepareStatement(
 					"UPDATE borrows SET date_of_return = ? WHERE subscriber_id = ? AND copy_id =? AND date_of_borrow = ?;");
-			pstmt.setDate(1, Date.valueOf(today),tz);
+			pstmt.setDate(1, Date.valueOf(today),ILTimeZone);
 			pstmt.setInt(2, borrow.getSubscriber().getId());
 			pstmt.setInt(3, book.getCopyID());
-			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()),tz);
+			pstmt.setDate(4, Date.valueOf(borrow.getDateOfBorrow()),ILTimeZone);
 			pstmt.execute();
 
 			pstmt = conn.prepareStatement("UPDATE copies SET is_borrowed = ? WHERE copy_id = ?;");
@@ -709,7 +825,7 @@ public class BLibDBC {
 						borrow.getSubscriber().getName(), today, Math.abs(late)));
 			}
 
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
 			// Commit the transaction
@@ -749,7 +865,7 @@ public class BLibDBC {
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "freeze");
 			pstmt.setString(3, "%s got frozen on %s until %s".formatted(sub.getName(), today, today.plusMonths(1)));
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 
 			LocalDateTime unfreezeTime = LocalDateTime.now().plusMonths(1);
@@ -794,7 +910,7 @@ public class BLibDBC {
 			pstmt.setString(2, "unfreeze");
 			pstmt.setString(3, "%s got unfrozen on %s ".formatted(sub.getName(), today));
 
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 			// Commit the transaction
 			conn.commit();
@@ -819,7 +935,7 @@ public class BLibDBC {
 			List<Activity> ret = new ArrayList<>();
 			while (rs.next()) {
 				Activity activity = new Activity(rs.getInt(1), rs.getString(3), rs.getString(4),
-						rs.getDate(5,tz).toLocalDate());
+						rs.getDate(5,ILTimeZone).toLocalDate());
 				ret.add(activity);
 			}
 			return ret;
@@ -841,7 +957,7 @@ public class BLibDBC {
 		LocalDateTime now = LocalDateTime.now();
 		try {
 			pstmt = conn.prepareStatement("SELECT * FROM commands WHERE time_of_execution < ?");
-			pstmt.setTimestamp(1, Timestamp.valueOf(now), tz);
+			pstmt.setTimestamp(1, Timestamp.valueOf(now), ILTimeZone);
 			ResultSet rs = pstmt.executeQuery();
 			List<Integer> commandIDs = new ArrayList<>();
 			List<Message> ret = new ArrayList<>();
@@ -886,7 +1002,7 @@ public class BLibDBC {
 					System.out.println("copy id " + rs.getInt(3) + " not found");
 					return null;
 				}
-				ret.add(new Borrow(sub, copy, rs.getDate(4,tz).toLocalDate(), rs.getDate(5,tz).toLocalDate(), null));
+				ret.add(new Borrow(sub, copy, rs.getDate(4,ILTimeZone).toLocalDate(), rs.getDate(5,ILTimeZone).toLocalDate(), null));
 			}
 			return ret;
 		} catch (SQLException e) {
@@ -938,12 +1054,13 @@ public class BLibDBC {
 				return false;
 			}
 			LocalDate today = LocalDate.now();
+			LocalDateTime now = LocalDateTime.now();
 
 			// orders
 			pstmt = conn.prepareStatement("INSERT INTO orders(subscriber_id, title_id, order_date) VALUE (?,?,?);");
 			pstmt.setInt(1, subID);
 			pstmt.setInt(2, titleID);
-			pstmt.setDate(3, Date.valueOf(today),tz);
+			pstmt.setTimestamp(3, Timestamp.valueOf(now),ILTimeZone);
 			pstmt.execute();
 
 			// titles
@@ -957,7 +1074,7 @@ public class BLibDBC {
 			pstmt.setInt(1, subID);
 			pstmt.setString(2, "order");
 			pstmt.setString(3, "%s ordered the book \"%s\" on %s".formatted(sub.getName(), title, today));
-			pstmt.setDate(4, Date.valueOf(today),tz);
+			pstmt.setDate(4, Date.valueOf(today),ILTimeZone);
 			pstmt.execute();
 			conn.commit();
 			return true;
@@ -1013,11 +1130,11 @@ public class BLibDBC {
 					System.out.println("title id " + rs.getInt(3) + " not found");
 					return null;
 				}
-				Order order = new Order(rs.getInt(1), sub, title, rs.getTimestamp(5,tz).toLocalDateTime());
+				Order order = new Order(rs.getInt(1), sub, title, rs.getTimestamp(5,ILTimeZone).toLocalDateTime());
 				if (rs.getInt(4) != 0) {
 					BookCopy copy = getCopyByID(rs.getInt(4));
 					order.setCopy(copy);
-					order.setAriveDate(rs.getDate(6,tz).toLocalDate());
+					order.setAriveDate(rs.getDate(6,ILTimeZone).toLocalDate());
 				}
 				ret.add(order);
 			}
@@ -1032,18 +1149,18 @@ public class BLibDBC {
 	
 	public Boolean updateOrder(BookCopy copy) {
 		try {
-			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE title_id = ? ORDER BY order_date;");
+			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE title_id = ? AND copy_id is null ORDER BY order_date;");
 			pstmt.setInt(1, copy.getTitle().getTitleID());
 			ResultSet rs = pstmt.executeQuery();
 			if (!rs.next()) {
-				return null;
+				return false;
 			}
 			int orderID = rs.getInt(1);
 
 			LocalDate today = LocalDate.now();
 			pstmt = conn.prepareStatement("UPDATE orders SET copy_id = ?, arive_date = ? WHERE order_id = ?;");
 			pstmt.setInt(1, copy.getCopyID());
-			pstmt.setDate(2, Date.valueOf(today),tz);
+			pstmt.setDate(2, Date.valueOf(today),ILTimeZone);
 			pstmt.setInt(3, orderID);
 			pstmt.execute();
 
@@ -1064,7 +1181,7 @@ public class BLibDBC {
 					"INSERT INTO commands(command, arguments, time_of_execution, identifyer) VALUE(?,?,?,?)");
 			pstmt.setString(1, command);
 			pstmt.setString(2, arguments);
-			pstmt.setTimestamp(3, Timestamp.valueOf(timeOfExe),tz);
+			pstmt.setTimestamp(3, Timestamp.valueOf(timeOfExe),ILTimeZone);
 			pstmt.setString(4, identifyer);
 			pstmt.execute();
 
@@ -1161,7 +1278,7 @@ public class BLibDBC {
 			pstmt.setInt(1, title.getTitleID());
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.next())
-				return rs.getDate(1,tz).toLocalDate();
+				return rs.getDate(1,ILTimeZone).toLocalDate();
 			
 			return null;
 		} catch (SQLException e) {
