@@ -125,21 +125,21 @@ public class BLibDBC {
 //		}
 		
 //order
-		Subscriber sub = BLibDBC.getInstance().getSubscriberByID(1111);
-		BookTitle title = db.getTitleByID(4);
-		String err = BLibServer.canOrder(sub, title);
-		if(err != null) {
-			System.out.println(new Message("Failed", err));
-			return;
-		}
-
-		Object ret = BLibDBC.getInstance().orderBook(sub.getId(),title.getTitleID());
-		if (ret != null) {
-			System.out.println(new Message("success"));
-		} else {
-			System.out.println(new Message("Failed","DB error")); // Send failure message
-		}
-		
+//		Subscriber sub = BLibDBC.getInstance().getSubscriberByID(1111);
+//		BookTitle title = db.getTitleByID(4);
+//		String err = BLibServer.canOrder(sub, title);
+//		if(err != null) {
+//			System.out.println(new Message("Failed", err));
+//			return;
+//		}
+//
+//		Object ret = BLibDBC.getInstance().orderBook(sub.getId(),title.getTitleID());
+//		if (ret != null) {
+//			System.out.println(new Message("success"));
+//		} else {
+//			System.out.println(new Message("Failed","DB error")); // Send failure message
+//		}
+//		
 ////extend
 //		if (BLibDBC.getInstance()
 //				.getTitleMagicNumber((borrow).getBook().getTitle()) < 0) {

@@ -476,7 +476,7 @@ public class BLibServer extends AbstractServer {
 	 * @param borrow the borrow object to check
 	 * @return true if the borrow can be extended, false otherwise
 	 */
-	public static String canExtend(Borrow borrow) { //TODO: change to private
+	private String canExtend(Borrow borrow) { 
 		// Check if the subscriber's status is "frozen". If yes, they can't extend the
 		// borrow period.
 		if (borrow.getSubscriber().getStatus().equals("frozen")) {
@@ -510,7 +510,7 @@ public class BLibServer extends AbstractServer {
 		return BLibDBC.getInstance().getCommands();
 	}
 	
-	public static String canOrder(Subscriber sub, BookTitle title) {//TODO: change to private
+	private String canOrder(Subscriber sub, BookTitle title) {
 		if(sub.getStatus().equals("frozen"))
 			return "The subscriber is frozen";
 		
@@ -537,7 +537,7 @@ public class BLibServer extends AbstractServer {
 	}
 	
 	
-	public static String canBorrow(Subscriber sub, BookCopy copy) {//TODO: change to private
+	private String canBorrow(Subscriber sub, BookCopy copy) {
 		if(sub.getStatus().equals("frozen"))
 			return "The subscriber is frozen";
 		
