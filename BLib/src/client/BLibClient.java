@@ -130,7 +130,9 @@ public class BLibClient extends AbstractClient {
 	// Borrow a book for a subscriber
 	public Message createBorrow(Integer subID, Integer bookID) {
 		msg = new Message("createBorrow",subID ,bookID); // Create borrow message
+		System.out.println("in");
 		handleMessageFromClientUI(msg); // Send to server
+		System.out.println("out"); // TODO: server not responding
 		return msg;
 	}
 
