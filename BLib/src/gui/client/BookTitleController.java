@@ -129,7 +129,7 @@ public class BookTitleController {
 		this.txtTitle.setText(String.valueOf(bt.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(bt.getAuthorName()); // Sets the subscriber's name.
 		this.txtDescription.setText(bt.getDescription()); // Sets the subscriber's phone.
-		//this.txtGenre.setText(bt.getGenre()); TODO -----------------------------------------------------
+		this.txtGenre.setText(bt.getGenre());
 	}
 	
 	public void loadOrderButton(String title) {

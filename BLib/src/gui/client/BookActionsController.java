@@ -9,10 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.BookCopy;
-import logic.Message;
-import logic.Subscriber; 
+import logic.Message; 
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -24,62 +24,55 @@ public class BookActionsController {
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.
 	@FXML
-	private TextField txtId; // TextField for user to enter their ID.
+	private TextField txtSubscriberId; // TextField for user to enter their ID.
 	@FXML
-	private TextField bookIDTXT;
+	private TextField txtBookId;
+	@FXML
+	private Button btnBack = null;
 	@FXML
 	private Button btnBorrow = null; 
-	@FXML
-	private Button btnExit = null;
 	@FXML
 	private Button btnReturn = null;
 	
 	
-	public void Borrow(ActionEvent event) {
-	    // Check if the ID text field is empty
-	    if (txtId.getText().isEmpty()) {
-	        display("No subscribers found in the database");
-	        return;
-	    }
-
+	public void borrowBtn(ActionEvent event) {
 	    Integer subID;
 	    try {
 	        // Attempt to parse the ID as an integer
-	        subID = Integer.valueOf(txtId.getText());
+	        subID = Integer.valueOf(txtSubscriberId.getText());
 	    } catch (NumberFormatException e) {
-	        // Handle invalid input gracefully
-	        display("Invalid subscriber ID. Please enter a valid number.");
+	        // Handle invalid input
+	        display("Invalid subscriber ID", Color.RED);
 	        return;
 	    }
-
-	    // Search for the subscriber using the provided ID
-	    Subscriber searchedSub = IPController.client.getSubscriber(subID);
 
 	    Integer bookID;
 	    try {
 	        // Attempt to parse the ID as an integer
-	    	bookID = Integer.valueOf(bookIDTXT.getText());
+	    	bookID = Integer.valueOf(txtBookId.getText());
 	    } catch (NumberFormatException e) {
-	        // Handle invalid input gracefully
-	        display("Invalid Book ID. Please enter a valid number.");
+	        // Handle invalid input
+	        display("Invalid Book ID", Color.RED);
 	        return;
 	    }
 
-	    // Search for the subscriber using the provided ID
-	    BookCopy searchedBook = IPController.client.getCopyByID(bookID);
-	    
-	    IPController.client.borrowBook(searchedBook.getTitle(), searchedSub);
+	    Message msg = IPController.client.createBorrow(subID, bookID);
+	    if(msg.getCommand().equals("failed")) {
+	    	display((String)msg.getArguments().get(0), Color.RED);
+	    	return;
+	    }
+	    display("Borrow succeeded", Color.GREEN);
 	}
 
 	
-	public void Return(ActionEvent event) throws Exception {
+	public void returnBtn(ActionEvent event) throws Exception {
 		Integer bookID;
 	    try {
 	        // Attempt to parse the ID as an integer
-	    	bookID = Integer.valueOf(bookIDTXT.getText());
+	    	bookID = Integer.valueOf(txtBookId.getText());
 	    } catch (NumberFormatException e) {
-	        // Handle invalid input gracefully
-	        display("Invalid Book ID. Please enter a valid number.");
+	        // Handle invalid input
+	        display("Invalid Book ID.", Color.RED);
 	        return;
 	    }
 
@@ -87,11 +80,16 @@ public class BookActionsController {
 	    BookCopy searchedBook = IPController.client.getCopyByID(bookID);
 	    
 	    Message msg = IPController.client.returnBook(searchedBook);
-	    System.out.println(msg.getCommand());
+	    
+	    if(msg.getCommand().equals("failed")) {
+	    	display((String)msg.getArguments().get(0), Color.RED);
+	    	return;
+	    }
+	    display((String)msg.getArguments().get(0), Color.GREEN);
 	}
 	
 		
-	public void getExitBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) throws Exception {
 		nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
 	}
 
@@ -100,7 +98,8 @@ public class BookActionsController {
 	 * 
 	 * @param message The message to display.
 	 */
-	public void display(String message) {
+	public void display(String message, Color color) {
+		lblError.setTextFill(color);
 		lblError.setText(message);
 	}
 	

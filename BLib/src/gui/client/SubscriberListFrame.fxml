@@ -7,19 +7,20 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="411.0" prefWidth="485.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
+<AnchorPane prefHeight="411.0" prefWidth="507.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
 	<children>
       <TextField id="txtSearch" fx:id="txtSearch" layoutX="14.0" layoutY="18.0" onKeyTyped="#searchBtn" promptText="Search" />
- 	  <Button id="btnBack" fx:id="btnBack" layoutX="430.0" layoutY="371.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
+ 	  <Button id="btnBack" fx:id="btnBack" layoutX="449.0" layoutY="372.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
       <Button id="btnSearch" fx:id="btnSearch" layoutX="174.0" layoutY="18.0" mnemonicParsing="false" onAction="#searchBtn" text="Search" />
-      <TableView id="subTable" fx:id="subTable" layoutX="13.0" layoutY="51.0" prefHeight="314.0" prefWidth="461.0">
+      <TableView id="subTable" fx:id="subTable" layoutX="13.0" layoutY="51.0" prefHeight="314.0" prefWidth="477.0">
         <columns>
           <TableColumn id="idColumn" fx:id="idColumn" prefWidth="64.79998588562012" text="ID" />
           <TableColumn id="nameColumn" fx:id="nameColumn" prefWidth="96.00000762939453" text="Name" />
             <TableColumn id="phoneColumn" fx:id="phoneColumn" prefWidth="103.99993896484375" text="Phone Number" />
             <TableColumn id="emailColumn" fx:id="emailColumn" prefWidth="108.79998779296875" text="Email" />
-            <TableColumn id="statusColumn" fx:id="statusColumn" prefWidth="86.4000183105469" text="Status" />
+            <TableColumn id="statusColumn" fx:id="statusColumn" prefWidth="101.0" text="Status" />
         </columns>
       </TableView>
       <Label fx:id="lblError" layoutX="240.0" layoutY="22.0" prefHeight="17.0" prefWidth="174.0" textFill="RED">
@@ -27,5 +28,6 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
+      <Text layoutX="240.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Double click on a row to open subscriber's info." />
 	</children>
 </AnchorPane>

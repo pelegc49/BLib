@@ -31,7 +31,7 @@ public class LibrarianClientGUIController {
 	@FXML
 	private Button btnSearch = null; // Button for submitting the login form.
 	@FXML
-	private Button signupSub = null;
+	private Button btnSignUp = null;
 	@FXML
 	private Button btnBookActions = null;
 	@FXML
@@ -45,15 +45,15 @@ public class LibrarianClientGUIController {
 	}
 	
 	public void signUpBtn(ActionEvent event) throws Exception {
-		//nextPage(event, "SignUpFrame", "Sign Up Subscriber");
+		nextPage(event, "SignUpFrame", "Sign Up Subscriber");
 	}
 	
 	public void extendTimeBtn(ActionEvent event) throws Exception {
 		nextPage(event, "SubscriberListFrame", "Extend Time");
 	}
 	
-	public void updateDetailsBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberListFrame", "Update Details");
+	public void subscribersBtn(ActionEvent event) throws Exception {
+		nextPage(event, "SubscriberListFrame", "List of Subscribers");
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {

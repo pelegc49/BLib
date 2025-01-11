@@ -1,9 +1,8 @@
 package gui.client;
 
-import java.util.List;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,10 +16,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -74,7 +73,18 @@ public class SubscriberReaderCardController {
 	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage;
 	@FXML
 	private CheckBox checkBoxSelectAll;
+	@FXML
+	private ChoiceBox<Integer> choiceBoxDays;
 
+	public void loadChoiceBox() {
+		choiceBoxDays.setValue(1);
+		ObservableList<Integer> data = FXCollections.observableArrayList();
+		for(Integer number = 1; number < 15; number++) {
+			data.add(number);
+		}
+		choiceBoxDays.setItems(data);
+	}
+	
 	public void loadSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
 		this.txtId.setText(String.valueOf(subscriber.getId()));
@@ -114,7 +124,7 @@ public class SubscriberReaderCardController {
 	    	Borrow borrow = entry.getValue();
 	    	BorrowPlus borrowPlus = entry.getKey();
 	        if (borrowPlus.getCheckBox().isSelected()) {
-	            Message msg = IPController.client.extendDuration(borrow, 7, AuthenticationController.librarianName);
+	            Message msg = IPController.client.extendDuration(borrow, choiceBoxDays.getValue(), AuthenticationController.librarianName);
 	            if (msg.getCommand().equals("failed")) {
                     if(((String) msg.getArguments().get(0)).equals("the subscriber is frozen")) {
                         display("Your account is suspended", Color.RED);
@@ -124,7 +134,7 @@ public class SubscriberReaderCardController {
                 }
 	            else {
 	            	borrowPlus.setErrorMessage("Extend succeed");
-	            	borrow.setDueDate(borrow.getDueDate().plusDays(7));
+	            	borrow.setDueDate(borrow.getDueDate().plusDays(choiceBoxDays.getValue()));
 	            }
             }
         }
@@ -171,7 +181,7 @@ public class SubscriberReaderCardController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberListFrame", "Librarian Main Menu");
+		nextPage(event, "SubscriberListFrame", "List of Subscribers");
 	}
 
 	/**

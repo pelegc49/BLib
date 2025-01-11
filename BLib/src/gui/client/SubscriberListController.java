@@ -116,6 +116,7 @@ public class SubscriberListController{
 	 						e.printStackTrace();
 	 					}
 	 					SubscriberReaderCardController subscriberReaderCardController = loader.getController();
+	 					subscriberReaderCardController.loadChoiceBox();
 	 					subscriberReaderCardController.loadSubscriber(rowData);
 	 					subscriberReaderCardController.loadBorrows(rowData);
 	 		    		// Set up and display the new scene.

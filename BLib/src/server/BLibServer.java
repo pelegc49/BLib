@@ -320,9 +320,9 @@ public class BLibServer extends AbstractServer {
 						if (borrow.getDueDate().plusWeeks(1).compareTo(today) <= 0) {
 							BLibDBC.getInstance().freezeSubscriber(borrow.getSubscriber().getId());
 							
-							client.sendToClient(new Message("success","Freeze")); // Send freeze success message
+							client.sendToClient(new Message("success","Freezing account")); // Send freeze success message
 						} else {
-							client.sendToClient(new Message("success","Late")); // Send late return success message
+							client.sendToClient(new Message("success","The return was late")); // Send late return success message
 						}
 					} else {
 						BLibDBC.getInstance().cancelCommand("sendMessage","%s;%s".formatted(borrow.getSubscriber().getId(), borrow.getBook().getCopyID()));

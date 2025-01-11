@@ -128,9 +128,10 @@ public class BLibClient extends AbstractClient {
 	}
 	
 	// Borrow a book for a subscriber
-	public void borrowBook(BookTitle book, Subscriber sub) {
-		msg = new Message("createBorrow",sub ,book); // Create borrow message
+	public Message createBorrow(Integer subID, Integer bookID) {
+		msg = new Message("createBorrow",subID ,bookID); // Create borrow message
 		handleMessageFromClientUI(msg); // Send to server
+		return msg;
 	}
 
 	// Extend the borrowing duration for a book
@@ -247,6 +248,14 @@ public class BLibClient extends AbstractClient {
 		handleMessageFromClientUI(msg); 
 		if (msg.getCommand().equals("success")) 
 			return (LocalDate) msg.getArguments().get(0); 
+		return null; 
+	}
+	
+	public String registerSubscriber(Subscriber subscriber) {
+		msg = new Message("registerSubscriber", subscriber); 
+		handleMessageFromClientUI(msg); 
+		if (msg.getCommand().equals("success"))
+			return (String) msg.getArguments().get(0); 
 		return null; 
 	}
 }
