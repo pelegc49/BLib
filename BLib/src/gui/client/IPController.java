@@ -82,10 +82,11 @@ public class IPController {
 				Stage primaryStage = new Stage();
 				Pane root = loader.load(getClass().getResource("/gui/client/AuthenticationFrame.fxml").openStream());
 				Scene scene = new Scene(root);
-				scene.getStylesheets()
-						.add(getClass().getResource("/gui/client/AuthenticationFrame.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/gui/client/AuthenticationFrame.css").toExternalForm());
 				primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
 				primaryStage.setTitle("Authentication");
+				AuthenticationController authenticationController = loader.getController();
+				authenticationController.loadImage();
 				primaryStage.setScene(scene);
 				primaryStage.show();
 			} catch (Exception e) {

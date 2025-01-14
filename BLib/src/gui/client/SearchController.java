@@ -118,7 +118,22 @@ public class SearchController{
 	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
 	    }
 	    else {
-	    	nextPage(event, "AuthenticationFrame", "Authentication");
+			// FXMLLoader for loading the main GUI.
+			FXMLLoader loader = new FXMLLoader(); 
+			// Hide the current window.
+			((Node) event.getSource()).getScene().getWindow().hide();
+			// Load the main application interface.
+			Stage primaryStage = new Stage();
+			Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
+			AuthenticationController authenticationController = loader.getController();
+			authenticationController.loadImage();
+			// Set up and display the new scene.
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".css").toExternalForm());
+			primaryStage.setOnCloseRequest((E) -> System.exit(0));
+			primaryStage.setTitle("Authentication");
+			primaryStage.setScene(scene);
+			primaryStage.show();
 	    }
 	}
 

@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -37,8 +39,14 @@ public class AuthenticationController {
 	@FXML
 	private Button btnSend = null; // Button for submitting the login form.
 	@FXML
-	private Button loginGuest = null; // Button for searching a book as a guest.
-
+	private Button btnGuest = null; // Button for searching a book as a guest.
+	@FXML
+	private ImageView img; // Button for searching a book as a guest.
+	
+	
+	public void loadImage() {
+		img.setImage(new Image("/images/logoBackground.png"));
+	}
 	/**
 	 * Handles the login process when the user clicks the "Send" button.
 	 * Validates the input fields and checks the user's credentials.
@@ -90,17 +98,6 @@ public class AuthenticationController {
 		}
 	}
 
-	/**
-	 * Handles the "Exit" button action. Terminates the application.
-	 * 
-	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during termination.
-	 */
-	public void exitBtn(ActionEvent event) throws Exception {
-		System.out.println("Exit Successfully");
-		System.exit(0);
-	}
-
 	// Enables the enter key to activate the OK button
 	public void handleKey(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)) {
@@ -140,7 +137,7 @@ public class AuthenticationController {
 		primaryStage.show();
 	}
 	
-	public void loginGuest(ActionEvent event) throws Exception {
+	public void guestBtn(ActionEvent event) throws Exception {
 		nextPage(event, "SearchFrame", "Guest - Search");
 	}
 }

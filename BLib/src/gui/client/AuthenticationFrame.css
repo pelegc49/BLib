@@ -1,15 +1,53 @@
-/* JavaFX CSS - Leave this comment until you have at least created one rule which uses -fx-Property */
+/* styles.css */
 
-/* Style for buttons */
-.button {
-    -fx-background-color: rgba(255.0, 255.0, 255.0, 0.8); /* Sets the background color with transparency (80% opacity). */
-    -fx-text-fill: black; /* Sets the text color to black. */
-    -fx-padding: 6.0 6.0 6.0 6.0; /* Sets padding on all sides of the button (top, right, bottom, left). */
-    -fx-border-radius: 8.0; /* Sets rounded corners for the button with a radius of 8 pixels. */
-    -fx-font-weight: bold; /* Makes the font bold. */
+/* רקע של החלון */
+.root-container {
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #80deea);
 }
 
-/* Style for the root container */
-.root {
-    -fx-background-color: #deb887; /* Sets the background color to a light brown (BurlyWood). */
+/* הקופסה המרכזית */
+.auth-container {
+    -fx-padding: 20;
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 0 50 50 0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 0);
+}
+
+/* תיבת טקסט */
+.text-field {
+    -fx-pref-width: 200;
+    -fx-padding: 5;
+    -fx-font-size: 12px;
+}
+
+/* כפתורים */
+.button {
+    -fx-background-color: #0078d4;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-border-width: 0;
+}
+
+.button:hover {
+    -fx-background-color: #005fa3;
+}
+
+.button-secondary {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333333;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #bdbdbd;
 }
