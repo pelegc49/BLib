@@ -1223,8 +1223,6 @@ public class BLibDBC {
 
 			// Iterate through the result set to process each command
 			while (rs.next()) {
-//				if(rs.getTimestamp(4,tz).toLocalDateTime().compareTo(now)> 0 )
-//					continue;
 				commandIDs.add(rs.getInt(1));
 				// Create a new Message object for each command
 				Message msg = new Message(rs.getString(2));
@@ -1251,7 +1249,7 @@ public class BLibDBC {
 
 		} catch (SQLException e) {
 			rollback(); // Rollback transaction if any error occurs
-			return null; // Return false if an error occurs
+			return null; // Return null if an error occurs
 		}
 	}
 
