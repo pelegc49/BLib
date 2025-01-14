@@ -166,6 +166,23 @@ public class BLibClient extends AbstractClient {
 	}
 
 	// Retrieve all subscriber reader cards
+	public List<String> getLibrarianMessages() {
+		msg = new Message("getLibrarianMessages"); // Create message
+		handleMessageFromClientUI(msg); // Send to server
+		if(msg.getCommand().equals("success")){
+			return (List<String>) msg.getArguments().get(0);
+		}
+		return null; // Placeholder return value
+	}
+
+	// Clear all messages
+	public String clearLibrarianMessages() {
+		msg = new Message("clearLibrarianMessages"); // Create message
+		handleMessageFromClientUI(msg); // Send to server
+		return (String) msg.getCommand();
+	}
+
+	// Retrieve all subscriber reader cards
 	public List<Subscriber> getSubscriberReaderCards() {
 		msg = new Message("getSubscriberReaderCards"); // Create message
 		handleMessageFromClientUI(msg); // Send to server

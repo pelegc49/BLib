@@ -6,9 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import logic.Subscriber; 
+import logic.Subscriber;
+
+import java.util.List;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -38,7 +41,42 @@ public class LibrarianClientGUIController {
 	private Button btnSubReprt = null;
 	@FXML
 	private Button btnBorrowRep = null;
-	
+	@FXML
+	private Button messagesBtn = null;
+	@FXML
+	private Label lblNumMessages; // Label for displaying error messages to the user.
+
+	public void updateMessageCount() {
+		List<String> messages = IPController.client.getLibrarianMessages();
+		int totalCount = messages.size();
+		lblNumMessages.setText(String.valueOf(totalCount));
+	}
+
+
+	public void initialize() {
+		updateMessageCount();
+	}
+
+
+	public void messagesBtn(ActionEvent event) throws Exception {
+		// FXMLLoader for loading the main GUI.
+		FXMLLoader loader = new FXMLLoader();
+		// Hide the current window.
+		((Node) event.getSource()).getScene().getWindow().hide();
+
+		// Load the main application interface.
+		Stage primaryStage = new Stage();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml").openStream());
+		ViewMessagesController viewMessagesController = loader.getController();
+		viewMessagesController.loadMessages();
+		// Set up and display the new scene.
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle("View Messages");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
 
 	public void backBtn(ActionEvent event) throws Exception {
 		nextPage(event, "AuthenticationFrame", "Authentication");
