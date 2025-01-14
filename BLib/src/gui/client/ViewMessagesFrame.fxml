@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="411.0" prefWidth="427.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ViewMessagesController">
+	<children>
+ 	  <Button id="btnBack" fx:id="btnBack" layoutX="371.0" layoutY="372.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
+      <TableView id="messageTable" fx:id="messageTable" layoutX="13.0" layoutY="14.0" prefHeight="350.0" prefWidth="401.0">
+        <columns>
+          <TableColumn id="messageColumn" fx:id="messageColumn" prefWidth="400.0" text="message" />
+        </columns>
+      </TableView>
+      <Button id="btnClear" fx:id="btnClear" layoutX="25.0" layoutY="372.0" mnemonicParsing="false" onAction="#clearAllMessages" text="Clear All Messages" />
+	</children>
+</AnchorPane>
