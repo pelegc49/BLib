@@ -33,6 +33,7 @@ public class ServerTimer implements Runnable{
 			List<Message> list = server.getCommands();
 			
 			//execute one by one
+			if(list!=null)
 			for(Message msg: list) {
 				server.execute(msg);
 			}

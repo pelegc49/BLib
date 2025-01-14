@@ -469,7 +469,7 @@ public class BLibServer extends AbstractServer {
 			break;
 		
 		case "gegerateGraphs":
-			LocalDate today = LocalDate.now().minusMonths(2);
+			LocalDate today = LocalDate.now().plusMonths(1);
 			System.out.println(today);
 			reportGenerator.GenerateReport(today);
 			
@@ -518,6 +518,12 @@ public class BLibServer extends AbstractServer {
 	}
 	
 	private String canOrder(Subscriber sub, BookTitle title) {
+		if (sub==null) {
+			return "The subscriber is not found";
+		}
+		if (title==null) {
+			return "The book is not found";
+		}
 		if(sub.getStatus().equals("frozen"))
 			return "The subscriber is frozen";
 		
@@ -545,12 +551,21 @@ public class BLibServer extends AbstractServer {
 	
 	
 	private String canBorrow(Subscriber sub, BookCopy copy) {
+		if (copy==null) {
+			return "The book is not found";
+		}
+		if (sub==null) {
+			return "The subscriber is not found";
+		}
 		if(sub.getStatus().equals("frozen"))
 			return "The subscriber is frozen";
 		
 		for(Borrow b : BLibDBC.getInstance().getSubscriberActiveBorrows(sub)) {
 			if(b.getBook().getTitle().equals(copy.getTitle())) 
-				return "This Book is already Borrowed";
+				return "This Book is already Borrowed by the subscriber";
+		}
+		if (BLibDBC.getInstance().getCopyActiveBorrow(copy) != null) {
+			return "This copy is already Borrowed, return it first";
 		}
 		return null;
 		

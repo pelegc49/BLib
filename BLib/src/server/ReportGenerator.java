@@ -13,13 +13,14 @@ import javax.imageio.ImageIO;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
@@ -41,13 +42,14 @@ public class ReportGenerator extends Application {
 	
 	public void start(Stage primaryStage) throws Exception {
 
+		
+		
 		CategoryAxis xAxis = new CategoryAxis();
 		NumberAxis yAxis = new NumberAxis();
 		xAxis.setLabel("Date");
 		yAxis.setLabel("Number of Members");
-		StackedBarChart<String, Number> stackedBarChart = new StackedBarChart<>(xAxis, yAxis);
+		BarChart<String, Number> stackedBarChart = new BarChart<>(xAxis, yAxis);
 		stackedBarChart.setTitle("Frozen and Active Members Over Time");
-
 
 		XYChart.Series<String, Number> frozenSeries = new XYChart.Series<>();
 		frozenSeries.setName("Frozen");
@@ -73,8 +75,8 @@ public class ReportGenerator extends Application {
 		            lastKnownStatus = status;
 
 		            // Add the new data to the chart
-		            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), status[0])); // Frozen members
-		            activeSeries.getData().add(new XYChart.Data<>(date.format(f), status[1])); // Active members
+		            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), status[1])); // Frozen members
+		            activeSeries.getData().add(new XYChart.Data<>(date.format(f), status[0])); // Active members
 		        }
 
 		        // Remove the processed date from the set
@@ -82,8 +84,8 @@ public class ReportGenerator extends Application {
 		    } else {
 		        // If no data for this date, use the last known status
 		       
-	            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[0]));
-	            activeSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[1]));
+	            frozenSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[1]));
+	            activeSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[0]));
 		       
 		    }
 		    
@@ -92,24 +94,51 @@ public class ReportGenerator extends Application {
 		}
 
 		stackedBarChart.getData().addAll(activeSeries, frozenSeries);
-
-		Scene scene = new Scene(stackedBarChart, 800, 600);
+		VBox vbox = new VBox(stackedBarChart);
+		vbox.setPrefSize(800, 600);
+		VBox.setVgrow(stackedBarChart, Priority.ALWAYS);
+		Scene scene = new Scene(vbox, 800, 600);
 		
         scene.getStylesheets().add(getClass().getResource("../gui/server/Server.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((E) -> System.exit(0));
+        primaryStage.setFullScreen(true);
         primaryStage.show();
-        WritableImage image = stackedBarChart.snapshot(null, null);
-        
-        File file = new File("chart.png");
-        
-        try {
-			ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-			System.out.println("Chart saved as image: " + file.getAbsolutePath());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        primaryStage.setOnShown(event -> {
+            Platform.runLater(() -> {
+                WritableImage image = vbox.snapshot(null, null);
+
+                File file = new File("chart.png");
+
+                try {
+                    ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+                    System.out.println("Chart saved as image: " + file.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+//        Platform.runLater(()->{
+//        	vbox.applyCss();
+//            vbox.layout();
+//            WritableImage image = vbox.snapshot(null, null);
+//            File file = new File("chart.png");
+//            try {
+//            	ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+//            	System.out.println("Chart saved as image: " + file.getAbsolutePath());
+//            } catch (IOException e) {
+//            	// TODO Auto-generated catch block
+//            	e.printStackTrace();
+//            }
+////        	Thread capturer = new Thread(()->{
+////        		try {
+////					Thread.sleep(500);
+////				} catch (Exception e) {
+////					// TODO: handle exception
+////				}
+////        	});
+////        	capturer.start();
+//        });
 	}
 	
 }

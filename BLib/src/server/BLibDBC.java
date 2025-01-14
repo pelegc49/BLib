@@ -35,12 +35,14 @@ import logic.Subscriber;
  * management for the database.
  */
 public class BLibDBC {
-	private String pass; // Password used for connecting to the database
+	private static String pass = null; // Password used for connecting to the database
 	private static Calendar ILTimeZone; // Timezone for the database connection
-	private static BLibDBC instance;
+	private static volatile BLibDBC instance;
 
 	private static Connection conn; // Connection object to interact with the database
 	private static PreparedStatement pstmt; // Statement object for executing SQL queries
+	private static boolean timerRunning = false;
+	private static Thread timerThread;
 
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
@@ -222,6 +224,36 @@ public class BLibDBC {
 		}
 	}
 
+    /**
+     * Resets the inactivity timer. If a timer thread is already running, it
+     * interrupts the previous thread and starts a new one.
+     */
+    private synchronized static void resetTimer() {
+   
+            if (timerRunning  && timerThread != null) {
+                timerThread.interrupt(); // Interrupt the existing thread
+            }
+            timerThread = new Thread(() -> {
+                try {
+                    timerRunning = true;
+                    Thread.sleep((long)(0.25 * 60 * 1000)); //TODO: Change sleep to 5 minutes
+                    synchronized (BLibDBC.class) {
+                        if (instance != null) {
+                            instance.disconnect();
+                            instance = null;
+                            System.out.println("DB connection has been closed due to inactivity.");
+                        }
+                        timerRunning = false;
+                    }
+                } catch (InterruptedException e) {
+                    // Timer reset or instance reused
+                }
+            });
+            timerThread.setDaemon(true); // Make the thread a daemon thread
+            timerThread.start();
+        
+    }
+	
 	/**
 	 * Connects to the BLibDB database with the given password.
 	 * 
@@ -254,18 +286,36 @@ public class BLibDBC {
 		}
 	}
 
-	/**
-	 * Returns the singleton instance of BLibDBC. If the instance does not exist, it
-	 * creates a new one.
-	 * 
-	 * @return the singleton instance of BLibDBC.
-	 */
-	public static BLibDBC getInstance() {
-		if (!(instance instanceof BLibDBC)) {
-			instance = new BLibDBC();
-		}
-		return instance;
-	}
+//	/**
+//	 * Returns the singleton instance of BLibDBC. If the instance does not exist, it
+//	 * creates a new one.
+//	 * 
+//	 * @return the singleton instance of BLibDBC.
+//	 */
+//	public static BLibDBC getInstance() {
+//		if (!(instance instanceof BLibDBC)) {
+//			instance = new BLibDBC();
+//		}
+//		return instance;
+//	}
+	 /**
+     * Returns the singleton instance of BLibDBC. If the instance does not exist, it
+     * creates a new one. Resets the inactivity timer.
+     *
+     * @return the singleton instance of BLibDBC.
+     */
+    public static BLibDBC getInstance() {
+    	if (instance == null)
+	        synchronized (BLibDBC.class) {
+	        	if (instance == null) {
+	                instance = new BLibDBC();
+	                if (pass != null)
+	                	instance.connect(pass);
+	            }
+	        }
+        resetTimer();
+        return instance;
+    }
 
 	/**
 	 * Retrieves a BookTitle object from the database based on the given title ID.
@@ -382,23 +432,24 @@ public class BLibDBC {
 	 */
 	public Order getOrderByCopy(int copyID) {
 		try {
+			
+			// Fetch the book copy details using the provided copy ID
+			BookCopy copy = getCopyByID(copyID);
+			if (copy == null)
+				return null; // Return null if no book copy is found for the order
+			
 			// Prepare a SQL statement to fetch the order by the given copy ID
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE copy_id = ?");
 			pstmt.setInt(1, copyID);
 			ResultSet rs = pstmt.executeQuery(); // Execute the query and get the result set
 			// If a result is found in the database, process the order details
 			if (rs.next()) {
-
+				
 				// Fetch the subscriber associated with the order using the subscriber ID from
 				// the result
 				Subscriber sub = getSubscriberByID(rs.getInt(2));
 				if (sub == null)
 					return null; // Return null if no subscriber is found for the order
-
-				// Fetch the book copy details using the provided copy ID
-				BookCopy copy = getCopyByID(copyID);
-				if (copy == null)
-					return null; // Return null if no book copy is found for the order
 
 				// Create a new Order object based on the retrieved details from the database
 				Order order = new Order(rs.getInt(1), sub, copy.getTitle(),
@@ -1575,8 +1626,9 @@ public class BLibDBC {
 
 	/**
 	 * Cancels a command by deleting it from the database with automatic commit.
+	 * Meant for use as a whole transaction.
 	 * 
-	 * @param command    The command to be deleted.
+	 * @param command    The command type to be deleted.
 	 * @param identifyer The unique identifier of the command to be deleted.
 	 * @return {@code true} if the command was successfully deleted, {@code false}
 	 *         if there was an error.
@@ -1598,7 +1650,7 @@ public class BLibDBC {
 	 * @param command    The command to be deleted.
 	 * @param identifyer The unique identifier of the command to be deleted.
 	 * @param commit     If {@code true}, the transaction will be committed;
-	 *                   otherwise, it will be rolled back in case of error.
+	 *                   otherwise, the method call is a part of a larger transaction.
 	 * @return {@code true} if the command was successfully deleted, {@code false}
 	 *         if an error occurred or rollback was triggered.
 	 * @throws SQLException if there is a database access error.
