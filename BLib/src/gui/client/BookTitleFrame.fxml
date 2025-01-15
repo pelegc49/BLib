@@ -5,44 +5,63 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="392.0" prefWidth="501.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookTitleController">
-   <children>
-      <Button id="btnBack" fx:id="btnBack" focusTraversable="false" layoutX="437.0" layoutY="332.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
-      <Button id="btnOrder" fx:id="btnOrder" focusTraversable="false" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" onAction="#orderBtn" text="Order" />
-      <Label id="lblTitle" fx:id="lblTitle" layoutX="38.0" layoutY="36.0" text="Title:" />
-      <Label id="lblAuthorName" fx:id="lblAuthorName" layoutX="38.0" layoutY="62.0" text="Author Name:" />
-      <Label id="lblDescription" fx:id="lblDescription" layoutX="35.0" layoutY="119.0" text="Description:" />
-      <Text id="txtTitle" fx:id="txtTitle" layoutX="131.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <Text id="txtAuthorName" fx:id="txtAuthorName" layoutX="131.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <Label id="lblError" fx:id="lblError" layoutX="82.0" layoutY="336.0" prefHeight="17.0" prefWidth="340.0" textFill="RED">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Label>
-      <VBox layoutX="16.0" layoutY="119.0" prefHeight="207.0" prefWidth="463.0">
-         <children>
-            <Text id="txtDescription" fx:id="txtDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="350.0">
-               <VBox.margin>
-                  <Insets bottom="20.0" left="115.0" />
-               </VBox.margin>
-            </Text>
-            <TableView id="bookTable" fx:id="bookTable" prefHeight="159.0" prefWidth="463.0">
-            	<placeholder>
-        			<Label id="lblDueDate" fx:id="lblDueDate" text="" />
-    			</placeholder>
-              	<columns>
-                	<TableColumn id="columnBookId" fx:id="columnBookId" prefWidth="222.0" text="book id" />
-                	<TableColumn id="columnShelf" fx:id="columnShelf" prefWidth="242.0" text="shelf" />
-              	</columns>
-            </TableView>
-         </children>
-      </VBox>
-      <Label id="lblDescription" fx:id="lblDescription1" layoutX="33.0" layoutY="91.0" text="Genre:" />
-      <Text id="txtGenre" fx:id="txtGenre" layoutX="131.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-   </children>
-</AnchorPane>
+<VBox alignment="TOP_LEFT" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookTitleController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+    <children>
+        <!-- Title and Author -->
+        <VBox spacing="10" styleClass="section-container">
+            <children>
+                <HBox spacing="10" styleClass="info-row">
+                    <children>
+                        <Label styleClass="info-label" text="Title:" />
+                        <Text fx:id="txtTitle" styleClass="info-text" text="Text" />
+                    </children>
+                </HBox>
+                <HBox spacing="10" styleClass="info-row">
+                    <children>
+                        <Label styleClass="info-label" text="Author Name:" />
+                        <Text fx:id="txtAuthorName" styleClass="info-text" text="Text" />
+                    </children>
+                </HBox>
+                <HBox spacing="10" styleClass="info-row">
+                    <children>
+                        <Label styleClass="info-label" text="Genre:" />
+                        <Text fx:id="txtGenre" styleClass="info-text" text="Text" />
+                    </children>
+                </HBox>
+            <HBox spacing="10" styleClass="info-row">
+               <children>
+                      <Label styleClass="info-label" text="Description:" />
+                      <Text fx:id="txtDescription" styleClass="info-text" text="Text" wrappingWidth="350" />
+               </children>
+            </HBox>
+            </children>
+        </VBox>
+
+        <!-- Book Table -->
+        <TableView fx:id="bookTable" prefHeight="159.0" prefWidth="463.0" styleClass="table-view">
+            <placeholder>
+                <Label fx:id="lblDueDate" styleClass="placeholder-label" text="" />
+            </placeholder>
+            <columns>
+                <TableColumn fx:id="columnBookId" prefWidth="222.0" styleClass="table-column" text="Book ID" />
+                <TableColumn fx:id="columnShelf" prefWidth="242.0" styleClass="table-column" text="Shelf" />
+            </columns>
+        </TableView>
+
+        <!-- Buttons and Error Label -->
+        <HBox alignment="CENTER_RIGHT" spacing="20" styleClass="action-container">
+            <children>
+                <Label fx:id="lblError" styleClass="error-label" textFill="RED" />
+                <Button fx:id="btnOrder" onAction="#orderBtn" styleClass="primary-button" text="Order" />
+                <Button fx:id="btnBack" onAction="#backBtn" styleClass="secondary-button" text="Back" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

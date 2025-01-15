@@ -63,7 +63,45 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.5, 0, 0);
 }
 
+.info-text {
+    -fx-font-size: 14px;
+    -fx-fill: #555555;
+    -fx-font-style: italic;
+}
+
 .info-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #666666;
+    -fx-text-fill: #444444;
+}
+
+.table-view {
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 20;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-column{
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-border-color: transparent;
+    -fx-border-radius: 20 20 0 0;
+    -fx-background-radius: 20 20 0 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent; /* ביטול רקע פנימי */
+    -fx-border-color: transparent; /* ביטול גבול פנימי */
+}
+
+.table-view .row-cell:selected {
+    -fx-background-color: black; /* צבע רקע לשורה שנבחרה */
+    -fx-text-fill: black; /* צבע טקסט */
+}
+
+.error-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
 }

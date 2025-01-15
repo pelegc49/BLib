@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="411.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ExtendTimeController">
-	<children>
- 	  <Button id="btnBack" fx:id="btnBack" layoutX="617.0" layoutY="372.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
-      <Button id="btnExtend" fx:id="btnExtend" layoutX="14.0" layoutY="372.0" mnemonicParsing="false" onAction="#extendBtn" text="Extend" />
-      <TableView id="tableBook" fx:id="tableBook" layoutX="13.0" layoutY="12.0" prefHeight="352.0" prefWidth="651.0">
-        <columns>
-          <TableColumn id="columnCheckBox" fx:id="columnCheckBox" minWidth="0.0" text="Select All">
-             <graphic>
-                <CheckBox id="checkBoxSelectAll" fx:id="checkBoxSelectAll" mnemonicParsing="false" onMouseClicked="#selectAllBtn" />
-             </graphic>
-          </TableColumn>
-          <TableColumn id="columnAuthor" fx:id="columnAuthor" minWidth="8.0" prefWidth="110.0" text="author" />
-          <TableColumn id="columnTitle" fx:id="columnTitle" prefWidth="114.0" text="title" />
-          <TableColumn id="columnDueDate" fx:id="columnDueDate" prefWidth="108.0" text="due date" />
-          <TableColumn id="columnErrorMessage" fx:id="columnErrorMessage" prefWidth="238.0" text="message" />
-        </columns>
-      </TableView>
-      <Label fx:id="lblError" layoutX="79.0" layoutY="376.0" prefHeight="17.0" prefWidth="174.0" textFill="#009600">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Label>
-	</children>
-</AnchorPane>
+<VBox alignment="CENTER" prefHeight="624.0" prefWidth="1157.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ExtendTimeController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+    <children>
+        <!-- Table Section -->
+        <TableView fx:id="tableBook" prefHeight="352.0" prefWidth="651.0" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="columnCheckBox" minWidth="0.0" prefWidth="92.0" styleClass="table-column" text="Select All">
+                    <graphic>
+                        <CheckBox fx:id="checkBoxSelectAll" mnemonicParsing="false" onMouseClicked="#selectAllBtn" styleClass="select-all-checkbox" />
+                    </graphic>
+                </TableColumn>
+                <TableColumn fx:id="columnAuthor" minWidth="8.0" prefWidth="137.0" styleClass="table-column" text="Author" />
+                <TableColumn fx:id="columnTitle" prefWidth="183.0" styleClass="table-column" text="Title" />
+                <TableColumn fx:id="columnDueDate" prefWidth="147.0" styleClass="table-column" text="Due Date" />
+                <TableColumn fx:id="columnErrorMessage" prefWidth="556.0" styleClass="table-column" text="Message" />
+            </columns>
+        </TableView>
+
+        <!-- Buttons and Error Label -->
+        <HBox alignment="CENTER_RIGHT" spacing="20" styleClass="action-container">
+            <children>
+                <Label fx:id="lblError" styleClass="error-label" textFill="#009600" />
+                <Button fx:id="btnExtend" onAction="#extendBtn" styleClass="primary-button" text="Extend" />
+                <Button fx:id="btnBack" onAction="#backBtn" styleClass="secondary-button" text="Back" />
+            </children>
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+        </HBox>
+    </children>
+</VBox>

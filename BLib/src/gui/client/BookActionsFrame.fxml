@@ -1,19 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="281.0" prefWidth="284.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
-	<children>
-		<Button id="btnBack" fx:id="btnBack" layoutX="218.0" layoutY="229.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
-		<Button id="btnBorrow" fx:id="btnBorrow" layoutX="53.0" layoutY="163.0" mnemonicParsing="false" onAction="#borrowBtn" text="Borrow" />
-		<Label layoutX="16.0" layoutY="87.0" text="Subscriber ID:" />
-		<TextField id="txtSubscriberId" fx:id="txtSubscriberId" layoutX="109.0" layoutY="83.0" />
-      <Label layoutX="16.0" layoutY="44.0" text="Book ID:" />
-      <TextField id="txtBookId" fx:id="txtBookId" layoutX="110.0" layoutY="40.0" />
-      <Button id="btnReturn" fx:id="btnReturn" layoutX="172.0" layoutY="163.0" mnemonicParsing="false" onAction="#returnBtn" text="Return" />
-      <Label id="lblError" fx:id="lblError" layoutX="39.0" layoutY="233.0" />
-	</children>
-</AnchorPane>
+<VBox alignment="CENTER" prefHeight="281.0" prefWidth="284.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+    <children>
+        <!-- Book ID -->
+        <HBox alignment="CENTER" spacing="10" styleClass="row-container">
+            <children>
+                <TextField fx:id="txtBookId" promptText="Enter Book ID" styleClass="text-field" />
+            </children>
+        </HBox>
+
+        <!-- Subscriber ID -->
+        <HBox alignment="CENTER" spacing="10" styleClass="row-container">
+            <children>
+                <TextField fx:id="txtSubscriberId" promptText="Enter Subscriber ID" styleClass="text-field" />
+            </children>
+        </HBox>
+
+        <!-- Borrow and Return Buttons -->
+        <HBox alignment="CENTER" spacing="20" styleClass="button-container">
+            <children>
+                <Button fx:id="btnBorrow" onAction="#borrowBtn" styleClass="button-primary" text="Borrow" />
+                <Button fx:id="btnReturn" onAction="#returnBtn" styleClass="button-primary" text="Return" />
+            </children>
+        </HBox>
+
+        <!-- Back Button -->
+        <HBox alignment="CENTER_RIGHT" styleClass="back-button-container">
+            <children>
+      
+              <!-- Error Label -->
+              <Label fx:id="lblError" styleClass="error-label" textFill="red">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Label>
+                <Button fx:id="btnBack" onAction="#backBtn" styleClass="button-secondary" text="Back" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
