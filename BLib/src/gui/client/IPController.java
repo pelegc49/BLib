@@ -82,7 +82,7 @@ public class IPController {
 				Stage primaryStage = new Stage();
 				Pane root = loader.load(getClass().getResource("/gui/client/AuthenticationFrame.fxml").openStream());
 				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("/gui/client/AuthenticationFrame.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 				primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
 				primaryStage.setTitle("Authentication");
 				AuthenticationController authenticationController = loader.getController();
@@ -91,7 +91,8 @@ public class IPController {
 				primaryStage.show();
 			} catch (Exception e) {
 				// Handles connection errors.
-				System.out.println("Error: Can't setup connection!" + " Terminating client.");
+				e.printStackTrace();
+				System.out.println("Error: Can't setup connection! Terminating client.");
 				display("Can't setup connection"); // Displays an error message.
 			}
 		}

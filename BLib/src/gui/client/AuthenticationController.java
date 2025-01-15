@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,7 +34,7 @@ public class AuthenticationController {
 	@FXML
 	private TextField txtId; // TextField for user to enter their ID.
 	@FXML
-	private TextField txtPassword; // TextField for user to enter their password.
+	private PasswordField txtPassword; // TextField for user to enter their password.
 	@FXML
 	private Button btnExit = null; // Button for exiting the application.
 	@FXML

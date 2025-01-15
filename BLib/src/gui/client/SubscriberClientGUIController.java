@@ -41,7 +41,7 @@ public class SubscriberClientGUIController {
 		authenticationController.loadImage();
 		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "stylesheet" +".css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle("Authentication");
 		primaryStage.setScene(scene);

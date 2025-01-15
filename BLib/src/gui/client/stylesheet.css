@@ -1,5 +1,5 @@
 .root-container {
-    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #80deea);
+    -fx-background-color: linear-gradient(to left bottom, #e0f7fa, #80deea);
 }
 
 .auth-container {
@@ -13,8 +13,10 @@
 
 .text-field {
     -fx-pref-width: 200;
-    -fx-padding: 5;
+    -fx-padding: 5 10 5;
     -fx-font-size: 12px;
+    -fx-background-radius: 50;
+    -fx-border-radius:50 ;
 }
 
 .button {
