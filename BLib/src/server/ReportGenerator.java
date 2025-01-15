@@ -15,12 +15,17 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class ReportGenerator extends Application {
@@ -87,20 +92,36 @@ public class ReportGenerator extends Application {
 			// Move to the next day
 			date = date.plusDays(1);
 		}
+		
+		
 
 		stackedBarChart.getData().addAll(activeSeries, frozenSeries);
-//		VBox vbox = new VBox(stackedBarChart);
-//		vbox.setPrefSize(800, 600);
-//		VBox.setVgrow(stackedBarChart, Priority.ALWAYS);
-		Scene scene = new Scene(stackedBarChart, 1400, 800);
+		
+		
+		int sum = BLibServer.getInstance().SumNewSubscriber(LocalDate.now());
+		
+		
+		Label label = new Label("The total new subscribers this month is :%d".formatted(sum));
+		label.setFont(new Font("Arial", 24)); // Set font and size
+		label.setAlignment(Pos.CENTER);
+		
+		VBox.setVgrow(stackedBarChart, Priority.ALWAYS);
+		
+		VBox vbox = new VBox(stackedBarChart, label);
+		vbox.setPrefSize(800, 600);
+		vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
+		vbox.setSpacing(20);
+		vbox.setPadding(new Insets(10, 20, 50, 20));
+		Scene scene = new Scene(vbox, 1400, 800);
+
 		
 //		stackedBarChart.setPadding(new Insets(10, 20, 50, 20)); // Top, Right, Bottom, Left
 		stackedBarChart.setCategoryGap(2);
 		stackedBarChart.setBarGap(5);
 
-//        scene.getStylesheets().add(getClass().getResource("../gui/server/Server.css").toExternalForm());
+//		scene.getStylesheets().add(getClass().getResource("../gui/server/Graph.css").toExternalForm());
 		primaryStage.setScene(scene);
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+//		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setFullScreen(true);
 
 //		primaryStage.setOnShown(event -> {
@@ -123,7 +144,7 @@ public class ReportGenerator extends Application {
 			timeline.play();
 //		});
 
-//		primaryStage.show();
+		primaryStage.show();
 
 //        Platform.runLater(()->{
 //        	vbox.applyCss();
