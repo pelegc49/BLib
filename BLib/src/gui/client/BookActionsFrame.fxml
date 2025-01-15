@@ -6,8 +6,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="281.0" prefWidth="284.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
+<VBox alignment="CENTER" prefHeight="281.0" prefWidth="284.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
@@ -25,6 +26,11 @@
                 <TextField fx:id="txtSubscriberId" promptText="Enter Subscriber ID" styleClass="text-field" />
             </children>
         </HBox>
+      <Label opacity="0.8" text="*Subscriber ID is only required for Borrow.">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Label>
 
         <!-- Borrow and Return Buttons -->
         <HBox alignment="CENTER" spacing="20" styleClass="button-container">
