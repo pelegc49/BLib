@@ -62,7 +62,6 @@ public class LibrarianClientGUIController {
 		updateMessageCount();
 	}
 
-
 	public void messagesBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml").openStream());

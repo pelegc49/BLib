@@ -11,13 +11,10 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefWidth="832.0" spacing="10" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
-    <padding>
-        <Insets bottom="10" left="10" right="10" top="10" />
-    </padding>
+<VBox alignment="CENTER" prefHeight="674.0" prefWidth="883.0" spacing="10" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
     <children>
         <!-- Search Row -->
-        <HBox spacing="10" styleClass="search-row">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-row">
             <children>
                 <TextField fx:id="txtSearch" onKeyTyped="#searchBtn" promptText="Search" styleClass="search-field" />
                 <Button fx:id="btnSearch" onAction="#searchBtn" styleClass="primary-button" text="Search" />
@@ -26,26 +23,35 @@
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
+                <Text styleClass="info-text" text="Double click on a row to open subscriber's info." />
             </children>
+         <VBox.margin>
+            <Insets left="30.0" />
+         </VBox.margin>
         </HBox>
 
         <!-- Table -->
         <TableView fx:id="subTable" styleClass="subscriber-table">
             <columns>
-                <TableColumn fx:id="idColumn" prefWidth="65.0" text="ID" />
-                <TableColumn fx:id="nameColumn" prefWidth="96.0" text="Name" />
-                <TableColumn fx:id="phoneColumn" prefWidth="104.0" text="Phone Number" />
-                <TableColumn fx:id="emailColumn" prefWidth="109.0" text="Email" />
-                <TableColumn fx:id="statusColumn" prefWidth="101.0" text="Status" />
+                <TableColumn fx:id="idColumn" prefWidth="91.0" text="ID" />
+                <TableColumn fx:id="nameColumn" prefWidth="110.0" text="Name" />
+                <TableColumn fx:id="phoneColumn" prefWidth="170.0" text="Phone Number" />
+                <TableColumn fx:id="emailColumn" prefWidth="304.0" text="Email" />
+                <TableColumn fx:id="statusColumn" prefWidth="146.0" text="Status" />
             </columns>
+         <VBox.margin>
+            <Insets left="30.0" right="30.0" />
+         </VBox.margin>
         </TableView>
 
         <!-- Footer -->
         <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="footer">
             <children>
-                <Text styleClass="info-text" text="Double click on a row to open subscriber's info." />
                 <Button fx:id="btnBack" onAction="#backBtn" styleClass="secondary-button" text="Back" />
             </children>
+         <VBox.margin>
+            <Insets right="30.0" />
+         </VBox.margin>
         </HBox>
     </children>
 </VBox>
