@@ -110,6 +110,7 @@ public class SubscriberReaderCardController {
 		}
 		
         columnCheckBox.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue().getKey().getCheckBox()));
+        columnBookId.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getCopyId()));
         columnAuthor.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getAuthor()));
         columnTitle.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getTitleName()));
         columnDueDate.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getDueDate().toString()));

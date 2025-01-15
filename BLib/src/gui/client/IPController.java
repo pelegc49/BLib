@@ -78,7 +78,7 @@ public class IPController {
 				Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
 				AuthenticationController authenticationController = loader.getController();
 				authenticationController.loadImage();
-				nextPage(loader, root, event, "Guest - Search");
+				nextPage(loader, root, event, "Authentication");
 				
 			} catch (Exception e) {
 				// Handles connection errors.
