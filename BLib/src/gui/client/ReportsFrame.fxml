@@ -14,6 +14,6 @@
       <ChoiceBox id="choiceBoxYear" fx:id="choiceBoxYear" layoutX="161.0" layoutY="142.0" prefWidth="150.0" />
       <Label layoutX="43.0" layoutY="44.0" text="choose a graph:" />
       <ChoiceBox id="choiceBoxGraph" fx:id="choiceBoxGraph" layoutX="161.0" layoutY="40.0" prefWidth="150.0" />
-      <Button id="btnGenerateGraph" fx:id="btnGenerateGraph" layoutX="327.0" layoutY="236.0" mnemonicParsing="false" text="Generate Graph" />
+      <Button id="btnGenerateGraph" fx:id="btnGenerateGraph" layoutX="327.0" layoutY="236.0" mnemonicParsing="false" onAction="#GenerateGraphBtn" text="Generate Graph" />
 	</children>
 </AnchorPane>
