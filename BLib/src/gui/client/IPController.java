@@ -100,8 +100,7 @@ public class IPController {
 		primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
 		Parent root = FXMLLoader.load(getClass().getResource("/gui/client/IPFrame.fxml")); // Loads the FXML file.
 		Scene scene = new Scene(root); // Creates the scene with the loaded FXML.
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm()); // Adds the
-																										// stylesheet.
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm()); // Adds the stylesheet
 		primaryStage.setTitle("IP"); // Sets the window title.
 		primaryStage.setScene(scene);
 		primaryStage.show(); // Displays the primary stage.
