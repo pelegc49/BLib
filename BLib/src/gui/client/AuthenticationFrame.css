@@ -1,11 +1,7 @@
-/* styles.css */
-
-/* רקע של החלון */
 .root-container {
     -fx-background-color: linear-gradient(to bottom, #e0f7fa, #80deea);
 }
 
-/* הקופסה המרכזית */
 .auth-container {
     -fx-padding: 20;
     -fx-background-color: white;
@@ -15,14 +11,12 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 0, 0);
 }
 
-/* תיבת טקסט */
 .text-field {
     -fx-pref-width: 200;
     -fx-padding: 5;
     -fx-font-size: 12px;
 }
 
-/* כפתורים */
 .button {
     -fx-background-color: #0078d4;
     -fx-text-fill: white;
