@@ -93,6 +93,9 @@ public class BookActionsController {
 	public void backBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		LibrarianClientGUIController librarianClientGUIController = loader.getController();
+		librarianClientGUIController.loadLibrarian();
+		librarianClientGUIController.updateMessageCount();
 		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
