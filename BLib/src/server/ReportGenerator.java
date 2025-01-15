@@ -1,6 +1,6 @@
 package server;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,11 +31,14 @@ import javafx.stage.Stage;
 
 public class ReportGenerator extends Application {
 	private static LocalDate date;
+	private static byte[] data;
 	private DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");
 
-	public void GenerateReport(LocalDate date) {
+	public byte[] GenerateReport(LocalDate date) {
 		ReportGenerator.date = date;
+		data = null;
 		launch();
+		return data;
 	}
 
 	@Override
@@ -92,21 +96,17 @@ public class ReportGenerator extends Application {
 			// Move to the next day
 			date = date.plusDays(1);
 		}
-		
-		
 
 		stackedBarChart.getData().addAll(activeSeries, frozenSeries);
-		
-		
+
 		int sum = BLibServer.getInstance().SumNewSubscriber(LocalDate.now());
-		
-		
+
 		Label label = new Label("The total new subscribers this month is :%d".formatted(sum));
 		label.setFont(new Font("Arial", 24)); // Set font and size
 		label.setAlignment(Pos.CENTER);
-		
+
 		VBox.setVgrow(stackedBarChart, Priority.ALWAYS);
-		
+
 		VBox vbox = new VBox(stackedBarChart, label);
 		vbox.setPrefSize(800, 600);
 		vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
@@ -114,59 +114,31 @@ public class ReportGenerator extends Application {
 		vbox.setPadding(new Insets(10, 20, 50, 20));
 		Scene scene = new Scene(vbox, 1400, 800);
 
-		
-//		stackedBarChart.setPadding(new Insets(10, 20, 50, 20)); // Top, Right, Bottom, Left
 		stackedBarChart.setCategoryGap(2);
 		stackedBarChart.setBarGap(5);
 
-//		scene.getStylesheets().add(getClass().getResource("../gui/server/Graph.css").toExternalForm());
 		primaryStage.setScene(scene);
-//		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setFullScreen(true);
 
-//		primaryStage.setOnShown(event -> {
+		Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(2000), e -> {
 
-			Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(2000), // זמן ההמתנה (200ms)
-					e -> {
+			WritableImage image = scene.snapshot(null);
 
-						WritableImage image = scene.snapshot(null);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-						File file = new File("chart.png");
+			try {
+				ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out);
+				data = out.toByteArray();
 
-						try {
-							ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-							System.out.println("Chart saved as image: " + file.getAbsolutePath());
-						} catch (IOException ex) {
-							ex.printStackTrace();
-						}
-					}));
-			timeline.setCycleCount(1); // הפעלה פעם אחת
-			timeline.play();
-//		});
+				Platform.exit();
 
-		primaryStage.show();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}));
+		timeline.setCycleCount(1);
+		timeline.play();
 
-//        Platform.runLater(()->{
-//        	vbox.applyCss();
-//            vbox.layout();
-//            WritableImage image = vbox.snapshot(null, null);
-//            File file = new File("chart.png");
-//            try {
-//            	ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-//            	System.out.println("Chart saved as image: " + file.getAbsolutePath());
-//            } catch (IOException e) {
-//            	// TODO Auto-generated catch block
-//            	e.printStackTrace();
-//            }
-////        	Thread capturer = new Thread(()->{
-////        		try {
-////					Thread.sleep(500);
-////				} catch (Exception e) {
-////					// TODO: handle exception
-////				}
-////        	});
-////        	capturer.start();
-//        });
 	}
 
 }

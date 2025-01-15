@@ -1,5 +1,6 @@
 package server;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -424,6 +425,20 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("failed"));
 					}
 					break;
+					
+					
+				case "getGraph":
+					ret = BLibDBC.getInstance().getGraph((Integer) args.get(0) ,(Integer) args.get(1) ,(String) args.get(2));
+					
+					if (ret != null) {
+						client.sendToClient(new Message("success",(DataInputStream)ret));
+					} else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
+					
+					
 				default:
 					client.sendToClient(new Message("unknownCommand: "+((Message) msg).getCommand()));
 					
@@ -469,12 +484,17 @@ public class BLibServer extends AbstractServer {
 			break;
 		
 		case "gegerateGraphs":
-			LocalDate today = LocalDate.now().plusMonths(1);
+			LocalDate today = LocalDate.now().plusMonths(1); // TODO: no plusMonths 
 			System.out.println(today);
-			reportGenerator.GenerateReport(today);
+			byte[] data =  reportGenerator.GenerateReport(today);
+			BLibDBC.getInstance().saveGraph(today, "subscriber status", data);
+			
 		}
 	}
 
+	
+	
+	
 	/**
 	 * Checks if a borrow can be extended based on the borrower's status and the
 	 * borrow date.
@@ -503,6 +523,12 @@ public class BLibServer extends AbstractServer {
 		return null;
 	}
 
+	
+	
+	
+	
+	
+	
 	private String generatePassword(int length) {
 		StringBuilder str = new StringBuilder();
 		Random rand = new Random();

@@ -1,5 +1,7 @@
 package server;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -1837,6 +1839,50 @@ public class BLibDBC {
 			return null;
 		}
 		
+	}
+
+	
+	
+	public Boolean saveGraph(LocalDate day, String graph_type, byte[] data) {
+		
+		try {
+			pstmt = conn.prepareStatement("INSERT INTO graphs (graph_type, graph_month, graph_year, graph) VALUE ( ?, ?, ?, ?);");
+			pstmt.setString(1,graph_type);
+			pstmt.setInt(2,day.getMonthValue());
+			pstmt.setInt(3,day.getYear());
+			
+			ByteArrayInputStream in = new ByteArrayInputStream(data);
+			pstmt.setBlob(4, in);	
+			
+			pstmt.execute();			
+			conn.commit();
+			return true;
+		
+		} catch (SQLException e) {
+			rollback();
+			return false;
+		}
+		
+	}
+	
+	public DataInputStream getGraph(int year, int month, String graphType) {
+		try {
+			pstmt = conn.prepareStatement("SELECT graph FROM graphs WHERE graph_type = ? AND graph_month = ? AND graph_year = ?;");
+			pstmt.setString(1, graphType);
+			pstmt.setInt(2, month);
+			pstmt.setInt(3, year);
+		
+			ResultSet rs = pstmt.executeQuery();
+		
+			if(rs.next()) {
+				return new DataInputStream(rs.getBinaryStream(1)) ;
+			}
+			
+			return null;	
+		} catch (SQLException e) {
+			return null;	
+		}
+	
 	}
 	
 }
