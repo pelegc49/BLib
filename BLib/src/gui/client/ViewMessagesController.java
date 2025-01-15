@@ -61,6 +61,9 @@ public class ViewMessagesController {
 	public void backBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		LibrarianClientGUIController librarianClientGUIController = loader.getController();
+		librarianClientGUIController.updateMessageCount();
+		librarianClientGUIController.loadLibrarian();
 		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 

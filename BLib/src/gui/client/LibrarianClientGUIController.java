@@ -58,9 +58,6 @@ public class LibrarianClientGUIController {
 		lblNumMessages.setText(String.valueOf(totalCount));
 	}
 
-	public void initialize() {
-		updateMessageCount();
-	}
 
 	public void messagesBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();

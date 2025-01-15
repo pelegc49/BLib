@@ -101,6 +101,7 @@ public class AuthenticationController {
 					Pane root2 = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
 					LibrarianClientGUIController librarianClientGUIController = loader.getController();
 					librarianClientGUIController.loadLibrarian();
+					librarianClientGUIController.updateMessageCount();
 					nextPage(loader, root2, event, "Librarian Main Menu");
 					break;
 			}
