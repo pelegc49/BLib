@@ -52,7 +52,6 @@ public class IPController {
 		String ip; // Holds the entered IP address.
 		String port; // Holds the entered Port.
 		int digit_port;
-		FXMLLoader loader = new FXMLLoader(); // Used to load the next scene.
 		ip = txtIp.getText(); // Retrieves the entered IP address.
 		port = txtPort.getText(); // Retrieves the entered Port.
 
@@ -75,20 +74,12 @@ public class IPController {
 				client = new BLibClient(ip, digit_port);
 				System.out.println("IP Entered Successfully");
 
-				// Hides the current window.
-				((Node) event.getSource()).getScene().getWindow().hide();
-
-				// Sets up and displays the AuthenticationFrame.
-				Stage primaryStage = new Stage();
-				Pane root = loader.load(getClass().getResource("/gui/client/AuthenticationFrame.fxml").openStream());
-				Scene scene = new Scene(root);
-				scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-				primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
-				primaryStage.setTitle("Authentication");
+				FXMLLoader loader = new FXMLLoader();
+				Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
 				AuthenticationController authenticationController = loader.getController();
 				authenticationController.loadImage();
-				primaryStage.setScene(scene);
-				primaryStage.show();
+				nextPage(loader, root, event, "Guest - Search");
+				
 			} catch (Exception e) {
 				// Handles connection errors.
 				e.printStackTrace();
@@ -109,7 +100,7 @@ public class IPController {
 		primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
 		Parent root = FXMLLoader.load(getClass().getResource("/gui/client/IPFrame.fxml")); // Loads the FXML file.
 		Scene scene = new Scene(root); // Creates the scene with the loaded FXML.
-		scene.getStylesheets().add(getClass().getResource("/gui/client/IPFrame.css").toExternalForm()); // Adds the
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm()); // Adds the
 																										// stylesheet.
 		primaryStage.setTitle("IP"); // Sets the window title.
 		primaryStage.setScene(scene);
@@ -141,5 +132,16 @@ public class IPController {
 	 */
 	public void display(String message) {
 		lblError.setText(message); // Sets the text of the error label.
+	}
+	
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
+		((Node) event.getSource()).getScene().getWindow().hide();
+		Stage primaryStage = new Stage();
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle(title);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 }

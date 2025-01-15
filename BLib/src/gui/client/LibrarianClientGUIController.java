@@ -1,6 +1,7 @@
 package gui.client;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,8 +20,9 @@ import java.util.List;
  * and transitions the user to the main application interface upon successful login.
  */
 public class LibrarianClientGUIController {
-	private UpdateDetailsController udc; // Reference to the main GUI controller.
 
+	@FXML
+	private Label lblTitle; // Button for exiting the application.
 	@FXML
 	private Button btnBack = null; // Button for exiting the application.
 	@FXML
@@ -46,12 +48,15 @@ public class LibrarianClientGUIController {
 	@FXML
 	private Label lblNumMessages; // Label for displaying error messages to the user.
 
+	public void loadLibrarian() {
+		this.lblTitle.setText("Welcome, "+AuthenticationController.librarianName+"!");
+	}
+	
 	public void updateMessageCount() {
 		List<String> messages = IPController.client.getLibrarianMessages();
 		int totalCount = messages.size();
 		lblNumMessages.setText(String.valueOf(totalCount));
 	}
-
 
 	public void initialize() {
 		updateMessageCount();
@@ -59,66 +64,49 @@ public class LibrarianClientGUIController {
 
 
 	public void messagesBtn(ActionEvent event) throws Exception {
-		// FXMLLoader for loading the main GUI.
 		FXMLLoader loader = new FXMLLoader();
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml").openStream());
 		ViewMessagesController viewMessagesController = loader.getController();
 		viewMessagesController.loadMessages();
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle("View Messages");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		nextPage(loader, root, event, "View Messages");
 	}
 
 	public void backBtn(ActionEvent event) throws Exception {
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
 		AuthenticationController authenticationController = loader.getController();
 		authenticationController.loadImage();
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "stylesheet" +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle("Authentication");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		nextPage(loader, root, event, "Authentication");
 	}
 	
 	public void signUpBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SignUpFrame", "Sign Up Subscriber");
-	}
-	
-	public void extendTimeBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberListFrame", "Extend Time");
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SignUpFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "Sign Up Subscriber");
 	}
 	
 	public void subscribersBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberListFrame", "List of Subscribers");
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "List of Subscribers");
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberListFrame", "View History");
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "View History");
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SearchFrame", "Librarian - Search");
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "Librarian - Search");
 	}
 	
 	public void bookActionsBtn(ActionEvent event) throws Exception {
-		nextPage(event, "BookActionsFrame", "Book Actions");
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "BookActionsFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "Book Actions");
 	}
 	
 	public void subReport(ActionEvent event) throws Exception {
@@ -129,31 +117,14 @@ public class LibrarianClientGUIController {
 		//nextPage(event, "BorrowReportFrame", "Borrow Report");
 	}
 	
-	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		// Hide the current window.
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-		
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-	}
-	
-	/**
-	 * Loads the subscriber's data into the main GUI controller.
-	 * 
-	 * @param s1 The authenticated subscriber.
-	 */
-	public void loadSubscriber(Subscriber s1) {
-		this.udc.loadSubscriber(s1);
 	}
 }

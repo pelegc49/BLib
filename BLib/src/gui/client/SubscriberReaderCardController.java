@@ -155,23 +155,11 @@ public class SubscriberReaderCardController {
 	}
 	
 	public void historyBtn(ActionEvent event) throws Exception {
-		// FXMLLoader for loading the main GUI.
 		FXMLLoader loader = new FXMLLoader();
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml").openStream());
 		ViewHistoryController viewHistoryController = loader.getController();
 		viewHistoryController.loadHistory(subscriber);
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle("Librarian - View History");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		nextPage(loader, root, event, "Librarian - View History");
 	}
 
 	/**
@@ -181,36 +169,20 @@ public class SubscriberReaderCardController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SubscriberListFrame", "List of Subscribers");
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "List of Subscribers");
 	}
 
-	/**
-	 * Displays an error or informational message to the user.
-	 * 
-	 * @param message The message to display.
-	 */
-//	public void display(String message) {
-//		lblError.setText(message);
-//	}
 	
-	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
-	
 }

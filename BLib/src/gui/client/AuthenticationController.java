@@ -54,9 +54,10 @@ public class AuthenticationController {
 	 * If successful, loads the main application interface.
 	 * 
 	 * @param event The action event triggered by clicking the button.
+	 * @throws IOException 
 	 * @throws Exception If an error occurs during the login process.
 	 */
-	public void sendBtn(Event event) {
+	public void sendBtn(Event event) throws IOException {
 		String id; // String to store the entered ID.
 		//FXMLLoader loader = new FXMLLoader(); // FXMLLoader for loading the main GUI.
 		int digit_id = 0; // Variable to hold the numeric value of the ID.
@@ -82,10 +83,14 @@ public class AuthenticationController {
 		// If both fields are valid, attempt to log in.
 		else {
 			String name = IPController.client.login(digit_id, password);
+			FXMLLoader loader = new FXMLLoader();
 			switch(name) {
 				case "subscriber":
 					subscriber = IPController.client.getSubscriber(digit_id);
-					nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+					Pane root1 = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+					SubscriberClientGUIController subscriberClientGUIController = loader.getController();
+					subscriberClientGUIController.loadSubscriber();
+					nextPage(loader, root1, event, "Subscriber Main Menu");
 					break;
 				case "fail":
 					display("ID or password are incorrect");
@@ -93,14 +98,17 @@ public class AuthenticationController {
 				// case for the librarian with her name
 				default:
 					librarianName = name;
-					nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+					Pane root2 = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+					LibrarianClientGUIController librarianClientGUIController = loader.getController();
+					librarianClientGUIController.loadLibrarian();
+					nextPage(loader, root2, event, "Librarian Main Menu");
 					break;
 			}
 		}
 	}
 
 	// Enables the enter key to activate the OK button
-	public void handleKey(KeyEvent event) {
+	public void handleKey(KeyEvent event) throws IOException {
 		if(event.getCode().equals(KeyCode.ENTER)) {
 			sendBtn(event);
 		}
@@ -115,30 +123,20 @@ public class AuthenticationController {
 		lblError.setText(message);
 	}
 	
-	public void nextPage(Event event, String fileName, String title){
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
+	public void guestBtn(ActionEvent event) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "Guest - Search");
+	}
+	
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = null;
-		try {
-			root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-		} catch (IOException e) {}
-
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-	}
-	
-	public void guestBtn(ActionEvent event) throws Exception {
-		nextPage(event, "SearchFrame", "Guest - Search");
 	}
 }

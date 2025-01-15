@@ -61,52 +61,29 @@ public class ViewHistoryController{
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
-	    String title;
 	    if(currentTitle.split(" ")[0].equals("Subscriber")) {
-	    	title = "Subscriber Main Menu";
-	    	nextPage(event, "SubscriberClientGUIFrame", title);
+	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
+	    	subscriberClientGUIController.loadSubscriber();
+	    	nextPage(loader, root, event, "Subscriber Main Menu");
 	    }
 	    else{
-    		// FXMLLoader for loading the main GUI.
-    		FXMLLoader loader = new FXMLLoader(); 
-    		// Hide the current window.
-    		((Node) event.getSource()).getScene().getWindow().hide();
-
-    		// Load the main application interface.
-    		Stage primaryStage = new Stage();
-    		Pane root = null;
-			try {
-				root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
-			} catch (IOException e) {}
+	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
 			SubscriberReaderCardController subscriberReaderCardController = loader.getController();
 			subscriberReaderCardController.loadSubscriber(subscriber);
 			subscriberReaderCardController.loadBorrows(subscriber);
-    		// Set up and display the new scene.
-    		Scene scene = new Scene(root);
-    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".css").toExternalForm());
-    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-    		primaryStage.setTitle("Subscriber's Reader Card");
-    		primaryStage.setScene(scene);
-    		primaryStage.show();
+	    	nextPage(loader, root, event, "Subscriber's Reader Card");
 	    }
 	}
 
-	public void nextPage(Event event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);

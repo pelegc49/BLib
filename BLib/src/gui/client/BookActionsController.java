@@ -1,6 +1,7 @@
 package gui.client;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -90,23 +91,9 @@ public class BookActionsController {
 	
 		
 	public void backBtn(ActionEvent event) throws Exception {
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
-
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle("Librarian Main Menu");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
 	/**
@@ -117,5 +104,16 @@ public class BookActionsController {
 	public void display(String message, Color color) {
 		lblError.setTextFill(color);
 		lblError.setText(message);
+	}
+	
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
+		((Node) event.getSource()).getScene().getWindow().hide();
+		Stage primaryStage = new Stage();
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle(title);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 }

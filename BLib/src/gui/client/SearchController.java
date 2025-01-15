@@ -35,7 +35,6 @@ import logic.BookTitle;
  * and transitions the user to the main application interface upon successful login.
  */
 public class SearchController{
-	private BookTitleController btc;
 	
 	@FXML
 	private TextField txtSearch;
@@ -75,27 +74,15 @@ public class SearchController{
 		    	    String currentTitle = currentStage.getTitle();
 		    	    String[] title = currentTitle.split(" ");
 		    	    
-		    		// FXMLLoader for loading the main GUI.
-		    		FXMLLoader loader = new FXMLLoader(); 
-		    		// Hide the current window.
-		    		((Node) event.getSource()).getScene().getWindow().hide();
-
-		    		// Load the main application interface.
-		    		Stage primaryStage = new Stage();
-		    		Pane root = null;
+			    	FXMLLoader loader = new FXMLLoader();
+			    	Pane root = null;
 					try {
 						root = loader.load(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".fxml").openStream());
-					} catch (IOException e) {}
+					} catch (IOException e) {e.printStackTrace();}
 		    		BookTitleController bookTitleController = loader.getController();
 		    		bookTitleController.loadBookTitle(rowData);
 		    		bookTitleController.loadOrderButton(title[0]);
-		    		// Set up and display the new scene.
-		    		Scene scene = new Scene(root);
-		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "BookTitleFrame" +".css").toExternalForm());
-		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		    		primaryStage.setTitle(title[0] +" - "+ rowData.getTitleName());
-		    		primaryStage.setScene(scene);
-		    		primaryStage.show();
+			    	nextPage(loader, root, event, title[0] +" - "+ rowData.getTitleName());
 		        }
 		    });
 	    return rowa ;
@@ -112,28 +99,23 @@ public class SearchController{
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
 	    if(currentTitle.equals("Subscriber - Search")) {
-	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
+	    	FXMLLoader loader = new FXMLLoader();
+	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
+	    	subscriberClientGUIController.loadSubscriber();
+	    	nextPage(loader, root, event, "Subscriber Main Menu");
 	    }
 	    else if(currentTitle.equals("Librarian - Search")) {
-	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
+	    	FXMLLoader loader = new FXMLLoader();
+	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+	    	nextPage(loader, root, event, "Librarian Main Menu");
 	    }
 	    else {
-			// FXMLLoader for loading the main GUI.
-			FXMLLoader loader = new FXMLLoader(); 
-			// Hide the current window.
-			((Node) event.getSource()).getScene().getWindow().hide();
-			// Load the main application interface.
-			Stage primaryStage = new Stage();
-			Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
+	    	FXMLLoader loader = new FXMLLoader();
+	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
 			AuthenticationController authenticationController = loader.getController();
 			authenticationController.loadImage();
-			// Set up and display the new scene.
-			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "stylesheet" +".css").toExternalForm());
-			primaryStage.setOnCloseRequest((E) -> System.exit(0));
-			primaryStage.setTitle("Authentication");
-			primaryStage.setScene(scene);
-			primaryStage.show();
+	    	nextPage(loader, root, event, "Authentication");
 	    }
 	}
 
@@ -146,20 +128,11 @@ public class SearchController{
 		lblError.setText(message);
 	}
 	
-	public void nextPage(Event event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);

@@ -6,12 +6,21 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="447.0" prefWidth="439.0" spacing="20" styleClass="root-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.LibrarianClientGUIController">
+<VBox alignment="CENTER" prefHeight="447.0" prefWidth="439.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.LibrarianClientGUIController">
     <children>
         <VBox alignment="CENTER" maxWidth="500.0" prefHeight="100.0" prefWidth="335.0" spacing="10" style="-fx-border-radius: 0; -fx-background-radius: 0;" styleClass="info-box">
             <children>
                 <Label fx:id="lblTitle" styleClass="title-label" text="Welcome, Librarian!" />
             </children>
+        </VBox>
+       	<VBox alignment="CENTER" maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="439.0" spacing="10" styleClass="info-box">
+            <children>
+                <Label fx:id="lblName" styleClass="info-label" text="Name: John Doe" />
+                <Label fx:id="lblId" styleClass="info-label" text="Subscriber ID: 123456" />
+            </children>
+         <VBox.margin>
+            <Insets left="50.0" right="50.0" />
+         </VBox.margin>
         </VBox>
         <VBox alignment="CENTER" maxWidth="500.0" minWidth="300.0" spacing="15" styleClass="info-box">
             <children>
@@ -45,7 +54,7 @@
               </HBox>
             </children>
          <VBox.margin>
-            <Insets bottom="30.0" left="50.0" right="50.0" top="30.0" />
+            <Insets bottom="30.0" left="50.0" right="50.0" />
          </VBox.margin>
         </VBox>
     </children>

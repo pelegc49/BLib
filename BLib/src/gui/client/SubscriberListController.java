@@ -102,30 +102,16 @@ public class SubscriberListController{
 	 		        if (eventa.getClickCount() == 2 && !rowa.isEmpty()) {
 	 		        	Subscriber rowData = rowa.getItem();
 	 		    	    
-	 		    		// FXMLLoader for loading the main GUI.
-	 		    		FXMLLoader loader = new FXMLLoader(); 
-	 		    		// Hide the current window.
-	 		    		((Node) event.getSource()).getScene().getWindow().hide();
-
-	 		    		// Load the main application interface.
-	 		    		Stage primaryStage = new Stage();
+	 		    		FXMLLoader loader = new FXMLLoader();
 	 		    		Pane root = null;
-	 					try {
-	 						root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
-	 					} catch (IOException e) {
-	 						e.printStackTrace();
-	 					}
-	 					SubscriberReaderCardController subscriberReaderCardController = loader.getController();
-	 					subscriberReaderCardController.loadChoiceBox();
-	 					subscriberReaderCardController.loadSubscriber(rowData);
-	 					subscriberReaderCardController.loadBorrows(rowData);
-	 		    		// Set up and display the new scene.
-	 		    		Scene scene = new Scene(root);
-	 		    		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".css").toExternalForm());
-	 		    		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-	 		    		primaryStage.setTitle("Subscriber's Reader Card");
-	 		    		primaryStage.setScene(scene);
-	 		    		primaryStage.show();
+	 		    		try {
+	 		    			root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
+	 		    		} catch (IOException e) {e.printStackTrace();}
+	 		    		SubscriberReaderCardController subscriberReaderCardController = loader.getController();
+	 		    		subscriberReaderCardController.loadChoiceBox();
+	 		    		subscriberReaderCardController.loadSubscriber(rowData);
+	 		    		subscriberReaderCardController.loadBorrows(rowData);
+		 				nextPage(loader, root, event, "Subscriber's Reader Card");
 	 		        }
 	 		    });
 	 	    return rowa ;
@@ -140,8 +126,10 @@ public class SubscriberListController{
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
-		}
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		nextPage(loader, root, event, "Librarian Main Menu");
+	}
 
 	/**
 	 * Displays an error or informational message to the user.
@@ -152,20 +140,11 @@ public class SubscriberListController{
 		lblError.setText(message);
 	}
 	
-	public void nextPage(ActionEvent event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);

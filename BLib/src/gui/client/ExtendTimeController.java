@@ -66,14 +66,11 @@ public class ExtendTimeController{
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    String currentTitle = currentStage.getTitle();
-	    if(currentTitle.equals("Subscriber - Extend Time")) {
-	    	nextPage(event, "SubscriberClientGUIFrame", "Subscriber Main Menu");
-	    }
-	    else {
-	    	nextPage(event, "LibrarianClientGUIFrame", "Librarian Main Menu");
-	    }
+    	FXMLLoader loader = new FXMLLoader();
+    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
+    	subscriberClientGUIController.loadSubscriber();
+    	nextPage(loader, root, event, "Subscriber Main Menu");
 	}
 
 	public void extendBtn(ActionEvent event) {
@@ -134,20 +131,11 @@ public class ExtendTimeController{
 		lblError.setText(message); // Sets the text of the error label.
 	}
 	
-	public void nextPage(Event event, String fileName, String title) throws Exception{
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
 		Stage primaryStage = new Stage();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ fileName +".fxml").openStream());
-
-		// Set up and display the new scene.
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ fileName +".css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
 		primaryStage.setOnCloseRequest((E) -> System.exit(0));
 		primaryStage.setTitle(title);
 		primaryStage.setScene(scene);

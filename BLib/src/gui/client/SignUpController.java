@@ -138,23 +138,9 @@ public class SignUpController {
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		// FXMLLoader for loading the main GUI.
-		FXMLLoader loader = new FXMLLoader(); 
-		
-		// Hide the current window.
-		((Node) event.getSource()).getScene().getWindow().hide();
-
-		// Load the main application interface.
-		Stage primaryStage = new Stage();
+		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
-
-		// Set up and display the new scene.
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle("Librarian Main Menu");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 	
 	// Enables the enter key to activate the OK button
@@ -173,5 +159,16 @@ public class SignUpController {
 	public void display(String message, Color color) {
 		lblError.setTextFill(color); // Sets the color of the error label.
 		lblError.setText(message); // Sets the text of the error label.
+	}
+	
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
+		((Node) event.getSource()).getScene().getWindow().hide();
+		Stage primaryStage = new Stage();
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle(title);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 }
