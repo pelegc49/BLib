@@ -49,6 +49,7 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
+		
 //		LocalDate today = LocalDate.now();
 //		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");		
 //		System.out.println(today.format(f));
@@ -170,6 +171,8 @@ public class BLibDBC {
 //		}	
 
 		try {
+			
+			
 			BLibServer.getInstance(5555).execute(new Message("gegerateGraphs"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -224,36 +227,36 @@ public class BLibDBC {
 		}
 	}
 
-    /**
-     * Resets the inactivity timer. If a timer thread is already running, it
-     * interrupts the previous thread and starts a new one.
-     */
-    private synchronized static void resetTimer() {
-   
-            if (timerRunning  && timerThread != null) {
-                timerThread.interrupt(); // Interrupt the existing thread
-            }
-            timerThread = new Thread(() -> {
-                try {
-                    timerRunning = true;
-                    Thread.sleep((long)(0.25 * 60 * 1000)); //TODO: Change sleep to 5 minutes
-                    synchronized (BLibDBC.class) {
-                        if (instance != null) {
-                            instance.disconnect();
-                            instance = null;
-                            System.out.println("DB connection has been closed due to inactivity.");
-                        }
-                        timerRunning = false;
-                    }
-                } catch (InterruptedException e) {
-                    // Timer reset or instance reused
-                }
-            });
-            timerThread.setDaemon(true); // Make the thread a daemon thread
-            timerThread.start();
-        
-    }
-	
+	/**
+	 * Resets the inactivity timer. If a timer thread is already running, it
+	 * interrupts the previous thread and starts a new one.
+	 */
+	private synchronized static void resetTimer() {
+
+		if (timerRunning && timerThread != null) {
+			timerThread.interrupt(); // Interrupt the existing thread
+		}
+		timerThread = new Thread(() -> {
+			try {
+				timerRunning = true;
+				Thread.sleep((long) (0.25 * 60 * 1000)); // TODO: Change sleep to 5 minutes
+				synchronized (BLibDBC.class) {
+					if (instance != null) {
+						instance.disconnect();
+						instance = null;
+						System.out.println("DB connection has been closed due to inactivity.");
+					}
+					timerRunning = false;
+				}
+			} catch (InterruptedException e) {
+				// Timer reset or instance reused
+			}
+		});
+		timerThread.setDaemon(true); // Make the thread a daemon thread
+		timerThread.start();
+
+	}
+
 	/**
 	 * Connects to the BLibDB database with the given password.
 	 * 
@@ -298,24 +301,24 @@ public class BLibDBC {
 //		}
 //		return instance;
 //	}
-	 /**
-     * Returns the singleton instance of BLibDBC. If the instance does not exist, it
-     * creates a new one. Resets the inactivity timer.
-     *
-     * @return the singleton instance of BLibDBC.
-     */
-    public static BLibDBC getInstance() {
-    	if (instance == null)
-	        synchronized (BLibDBC.class) {
-	        	if (instance == null) {
-	                instance = new BLibDBC();
-	                if (pass != null)
-	                	instance.connect(pass);
-	            }
-	        }
-        resetTimer();
-        return instance;
-    }
+	/**
+	 * Returns the singleton instance of BLibDBC. If the instance does not exist, it
+	 * creates a new one. Resets the inactivity timer.
+	 *
+	 * @return the singleton instance of BLibDBC.
+	 */
+	public static BLibDBC getInstance() {
+		if (instance == null)
+			synchronized (BLibDBC.class) {
+				if (instance == null) {
+					instance = new BLibDBC();
+					if (pass != null)
+						instance.connect(pass);
+				}
+			}
+		resetTimer();
+		return instance;
+	}
 
 	/**
 	 * Retrieves a BookTitle object from the database based on the given title ID.
@@ -432,19 +435,19 @@ public class BLibDBC {
 	 */
 	public Order getOrderByCopy(int copyID) {
 		try {
-			
+
 			// Fetch the book copy details using the provided copy ID
 			BookCopy copy = getCopyByID(copyID);
 			if (copy == null)
 				return null; // Return null if no book copy is found for the order
-			
+
 			// Prepare a SQL statement to fetch the order by the given copy ID
 			pstmt = conn.prepareStatement("SELECT * FROM orders WHERE copy_id = ?");
 			pstmt.setInt(1, copyID);
 			ResultSet rs = pstmt.executeQuery(); // Execute the query and get the result set
 			// If a result is found in the database, process the order details
 			if (rs.next()) {
-				
+
 				// Fetch the subscriber associated with the order using the subscriber ID from
 				// the result
 				Subscriber sub = getSubscriberByID(rs.getInt(2));
@@ -1648,7 +1651,8 @@ public class BLibDBC {
 	 * @param command    The command to be deleted.
 	 * @param identifyer The unique identifier of the command to be deleted.
 	 * @param commit     If {@code true}, the transaction will be committed;
-	 *                   otherwise, the method call is a part of a larger transaction.
+	 *                   otherwise, the method call is a part of a larger
+	 *                   transaction.
 	 * @return {@code true} if the command was successfully deleted, {@code false}
 	 *         if an error occurred or rollback was triggered.
 	 * @throws SQLException if there is a database access error.
@@ -1814,4 +1818,205 @@ public class BLibDBC {
 		}
 	}
 
+	
+	public Integer SumNewSubscriber(LocalDate date) {
+		
+		String dateWildCard= "%04d-%02d-%%".formatted(date.getYear() , date.getMonth().getValue());
+		try {
+			pstmt = conn.prepareStatement("SELECT count(*) FROM history where activity_date like ? and activity_type = 'new subscriber';");
+		
+			pstmt.setString(1,dateWildCard);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next())
+				return rs.getInt(1);
+			
+			return 0;
+		
+		} catch (SQLException e) {
+			return null;
+		}
+		
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

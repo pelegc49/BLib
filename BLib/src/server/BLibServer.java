@@ -472,7 +472,6 @@ public class BLibServer extends AbstractServer {
 			LocalDate today = LocalDate.now().plusMonths(1);
 			System.out.println(today);
 			reportGenerator.GenerateReport(today);
-			
 		}
 	}
 
@@ -574,6 +573,13 @@ public class BLibServer extends AbstractServer {
 	public Map<LocalDate, Integer[]> getSubscribersStatusOnMonth(LocalDate date) {
 		// TODO Auto-generated method stub
 		return BLibDBC.getInstance().getSubscribersStatusOnMonth(date);
+	}
+
+	public int SumNewSubscriber(LocalDate now) {
+		Integer ret =  BLibDBC.getInstance().SumNewSubscriber(now);
+		if(ret != null)
+			return ret;
+		return 0;
 	}
 	
 	
