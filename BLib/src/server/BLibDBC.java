@@ -51,7 +51,8 @@ public class BLibDBC {
 		BLibDBC db = getInstance();
 		if (!db.connect("1234"))
 			return;
-		
+		LocalDateTime.of(LocalDate.now(),LocalTime.of(0, 1));
+		System.out.println(4325423);
 //		LocalDate today = LocalDate.now();
 //		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");		
 //		System.out.println(today.format(f));
@@ -172,14 +173,14 @@ public class BLibDBC {
 //			System.out.println(new Message("failed","DB error")); // Send failure message
 //		}	
 
-		try {
-			
-			
-			BLibServer.getInstance(5555).execute(new Message("gegerateGraphs"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			
+//			
+//			BLibServer.getInstance(5555).execute(new Message("gegerateGraphs"));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		db.disconnect();
 	}
 
