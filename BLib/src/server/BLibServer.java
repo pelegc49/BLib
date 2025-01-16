@@ -1,8 +1,10 @@
 package server;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -424,6 +426,20 @@ public class BLibServer extends AbstractServer {
 						client.sendToClient(new Message("failed"));
 					}
 					break;
+					
+					
+				case "getGraph":
+					ret = BLibDBC.getInstance().getGraph((Integer) args.get(0) ,(Integer) args.get(1) ,(String) args.get(2));
+					
+					if (ret != null) {
+						client.sendToClient(new Message("success",((DataInputStream)ret).readAllBytes()));
+					} else {
+						client.sendToClient(new Message("failed"));
+					}
+					break;
+					
+					
+					
 				default:
 					client.sendToClient(new Message("unknownCommand: "+((Message) msg).getCommand()));
 					
@@ -468,13 +484,21 @@ public class BLibServer extends AbstractServer {
 			BLibDBC.getInstance().cancelOrder(Integer.parseInt((String)args.get(0)));
 			break;
 		
-		case "gegerateGraphs":
-			LocalDate today = LocalDate.now().plusMonths(1);
-			System.out.println(today);
-			reportGenerator.GenerateReport(today);
+		case "generateGraphs":
+			LocalDate date = LocalDate.of(Integer.parseInt((String)args.get(0)), Integer.parseInt((String)args.get(1)),1); // TODO: no plusMonths 
+			System.out.println(date);
+			byte[] data =  reportGenerator.generateReport1(date);
+			BLibDBC.getInstance().saveGraph(date, "subscriber status", data);
+			LocalDate today = LocalDate.now();
+			LocalDate nextMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1).plusMonths(1);
+			LocalDate timeOfNextExecution = nextMonth.plusMonths(1).minusDays(1);
+			BLibDBC.getInstance().createCommand("generateGraphs", "%04d;%02d".formatted(nextMonth.getYear(),nextMonth.getMonthValue()), LocalDateTime.of(timeOfNextExecution,LocalTime.of(0, 1)) , "");
 		}
 	}
 
+	
+	
+	
 	/**
 	 * Checks if a borrow can be extended based on the borrower's status and the
 	 * borrow date.
@@ -503,6 +527,12 @@ public class BLibServer extends AbstractServer {
 		return null;
 	}
 
+	
+	
+	
+	
+	
+	
 	private String generatePassword(int length) {
 		StringBuilder str = new StringBuilder();
 		Random rand = new Random();

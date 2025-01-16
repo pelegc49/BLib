@@ -110,6 +110,10 @@ public class SearchController{
 	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
 			LibrarianClientGUIController librarianClientGUIController = loader.getController();
 			librarianClientGUIController.loadLibrarian();
+<<<<<<< HEAD
+=======
+			librarianClientGUIController.updateMessageCount();
+>>>>>>> branch 'master' of https://github.com/pelegc49/BLib.git
 	    	nextPage(loader, root, event, "Librarian Main Menu");
 	    }
 	    else {

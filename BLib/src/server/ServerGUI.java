@@ -3,12 +3,11 @@ package server;
 import gui.server.SQLPassController;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 public class ServerGUI extends Application {
 
 	// Static reference to the SQLPassController frame for managing SQL connection
 	public static SQLPassController aFrame;
-
+	public static Stage primaryStage;
 	// Static reference to the BLibServer for managing the server
 	public static BLibServer server;
 
@@ -39,7 +38,7 @@ public class ServerGUI extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// Initialize the SQLPassController frame, which manages the SQL password
 		aFrame = new SQLPassController();
-
+		ServerGUI.primaryStage=primaryStage;
 		// Start the SQLPassController frame and display it in the primary stage
 		aFrame.start(primaryStage);
 	}

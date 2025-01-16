@@ -60,7 +60,7 @@ public class SubscriberListController{
 	private TableColumn<Subscriber, String> emailColumn;
 	@FXML
 	private TableColumn<Subscriber, String> statusColumn;
-	
+
 	
 	public void searchBtn(Event event) {
 		String id, phone, name, email;
@@ -130,6 +130,7 @@ public class SubscriberListController{
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
+		librarianClientGUIController.updateMessageCount();
 		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 

@@ -40,7 +40,7 @@ public class LibrarianClientGUIController {
 	@FXML
 	private Button btnBookActions = null;
 	@FXML
-	private Button btnSubReprt = null;
+	private Button btnReports = null;
 	@FXML
 	private Button btnBorrowRep = null;
 	@FXML
@@ -105,13 +105,14 @@ public class LibrarianClientGUIController {
 		nextPage(loader, root, event, "Book Actions");
 	}
 	
-	public void subReport(ActionEvent event) throws Exception {
-		//nextPage(event, "SubscriberReportFrame", "Subscribers Report");
+	public void ReportsBtn(ActionEvent event) throws Exception {
+		FXMLLoader loader = new FXMLLoader();
+		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ReportsFrame" +".fxml").openStream());
+		ReportsController reportsController = loader.getController();
+		reportsController.loadChoiceBoxs();
+		nextPage(loader, root, event, "Choose Report");
 	}
-	
-	public void borrowReport(ActionEvent event) throws Exception {
-		//nextPage(event, "BorrowReportFrame", "Borrow Report");
-	}
+
 	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();

@@ -1,5 +1,6 @@
 package client;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
@@ -276,5 +277,14 @@ public class BLibClient extends AbstractClient {
 		if (msg.getCommand().equals("success"))
 			return (String) msg.getArguments().get(0); 
 		return null; 
+	}
+
+	public Message getGraph(Integer year, Integer month, String name) {
+		System.out.println("in");
+		msg = new Message("getGraph", year, month, name);
+		System.out.println("out");
+		handleMessageFromClientUI(msg);
+		System.out.println("out2");
+		return msg;
 	}
 }
