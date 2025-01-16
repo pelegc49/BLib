@@ -38,7 +38,7 @@
                   <HBox spacing="10" styleClass="info-row">
                      <children>
                             <Label prefHeight="20.0" prefWidth="90.0" styleClass="info-label" text="Description:" />
-                            <Text fx:id="txtDescription" styleClass="info-text" text="Text" wrappingWidth="36.0" />
+                            <Text fx:id="txtDescription" styleClass="info-text" text="Text" wrappingWidth="315.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   </children>
