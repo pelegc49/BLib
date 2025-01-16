@@ -33,25 +33,17 @@ public class ShowReportsController {
 	private Text txtMonth;
 
 
-	public void loadGraphDetails() {
-		txtName.setText("Borrowing Report");
-		txtYear.setText("2024");
-		txtMonth.setText("1");
+	public void loadGraphDetails(String name, int year, int month) {
+		txtName.setText(name);
+		txtYear.setText(Integer.toString(year));
+		txtMonth.setText(Integer.toString(month));
 	}
 
-//	public void loadChoiceBoxs() {
-//		choiceBoxMonth.setValue(1);
-//		choiceBoxYear.setValue(2024);
-//		choiceBoxGraph.setValue("Borrowing Report");
-//		ObservableList<Integer> dataMonth = FXCollections.observableArrayList();
-//		for(Integer number = 1; number < 13; number++) {
-//			dataMonth.add(number);
-//		}
-//		choiceBoxMonth.setItems(dataMonth);
-//		choiceBoxYear.getItems().addAll(2024, 2025);
-//		choiceBoxGraph.getItems().addAll("Borrowing Report", "Subscriber Status Report");
-//
-//	}
+	public void loadGraph() {
+
+	}
+
+
 
 //	public void display(String message, Color color) {
 //		lblError.setTextFill(color); // Sets the color of the error label.
@@ -66,24 +58,10 @@ public class ShowReportsController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ReportsFrame" +".fxml").openStream());
-//		LibrarianClientGUIController librarianClientGUIController = loader.getController();
-//		librarianClientGUIController.updateMessageCount();
-//		librarianClientGUIController.loadLibrarian();
-		nextPage(loader, root, event, "Choose Report");
+		((Node) event.getSource()).getScene().getWindow().hide();
 	}
 
-	public void GenerateGraphBtn(ActionEvent event) throws Exception {
-//		FXMLLoader loader = new FXMLLoader();
-//		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
-//		LibrarianClientGUIController librarianClientGUIController = loader.getController();
-//		librarianClientGUIController.updateMessageCount();
-//		librarianClientGUIController.loadLibrarian();
-//		nextPage(loader, root, event, "Librarian Main Menu");
-	}
 
-	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
 		Stage primaryStage = new Stage();

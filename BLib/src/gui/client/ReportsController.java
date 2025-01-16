@@ -20,6 +20,7 @@ import logic.BorrowPlus;
 import logic.Message;
 import logic.Subscriber;
 
+import java.io.DataInputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map.Entry;
@@ -83,17 +84,15 @@ public class ReportsController {
 		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
 		ShowReportsController showReportsController = loader.getController();
-//		showReportsController.loadChoiceBoxs();
+		showReportsController.loadGraphDetails(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
+		DataInputStream get = IPController.client.getGraph(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
 		nextPage(loader, root, event, "Show Reports");
-//		LibrarianClientGUIController librarianClientGUIController = loader.getController();
-//		librarianClientGUIController.updateMessageCount();
-//		librarianClientGUIController.loadLibrarian();
 
 	}
 
-	
+
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
+//		((Node) event.getSource()).getScene().getWindow().hide();
 		Stage primaryStage = new Stage();
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
@@ -102,4 +101,16 @@ public class ReportsController {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+
+	public void nextPage(FXMLLoader loader, Pane root, Event event, String title, String name, int year, int month){
+//		((Node) event.getSource()).getScene().getWindow().hide();
+		Stage primaryStage = new Stage();
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+		primaryStage.setOnCloseRequest((E) -> System.exit(0));
+		primaryStage.setTitle(title);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+
 }
