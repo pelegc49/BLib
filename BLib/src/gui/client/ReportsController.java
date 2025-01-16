@@ -20,6 +20,7 @@ import logic.BorrowPlus;
 import logic.Message;
 import logic.Subscriber;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
@@ -78,6 +79,7 @@ public class ReportsController {
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.updateMessageCount();
 		librarianClientGUIController.loadLibrarian();
+		((Node) event.getSource()).getScene().getWindow().hide();
 		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
@@ -89,16 +91,17 @@ public class ReportsController {
 //		System.out.println("ok");
 		if (msg.getCommand().equals("failed")) {
 			display("Failed to generate graph", Color.RED);
+			return;
 		}
 		else{
 			FXMLLoader loader = new FXMLLoader();
-			System.out.println("check");
 			Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
-			System.out.println("check2");
 			ShowReportsController showReportsController = loader.getController();
 			showReportsController.loadGraphDetails(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
-			showReportsController.loadGraph((DataInputStream)(msg.getArguments().get(0)));
-			System.out.println("check3");
+//			System.out.println(msg.getArguments().get(0) instanceof byte[]);
+			showReportsController.loadGraph((byte[]) msg.getArguments().get(0));
+
+
 			nextPage(loader, root, event, "Show Reports");
 		}
 	}
@@ -115,15 +118,5 @@ public class ReportsController {
 		primaryStage.show();
 	}
 
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title, String name, int year, int month){
-//		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
 
 }
