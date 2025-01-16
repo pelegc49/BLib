@@ -26,6 +26,7 @@ import logic.Message;
 public class BookTitleController {
 	private BookTitle bt;
 	// UI elements defined in the FXML file.
+	
 	@FXML
 	private Label lblTitle; // Label to display error messages.
 	@FXML
@@ -116,6 +117,7 @@ public class BookTitleController {
 			bookTable.getSortOrder().add(columnBookId);
 		}
 		this.bt = bt1; // Assigns the subscriber to the controller.
+		this.lblTitle.setText(String.valueOf(bt.getTitleName()));
 		this.txtTitle.setText(String.valueOf(bt.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(bt.getAuthorName()); // Sets the subscriber's name.
 		this.txtDescription.setText(bt.getDescription()); // Sets the subscriber's phone.
