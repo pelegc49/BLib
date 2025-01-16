@@ -279,11 +279,12 @@ public class BLibClient extends AbstractClient {
 		return null; 
 	}
 
-	public DataInputStream getGraph(String name, int year, int month) {
-		msg = new Message("getGraph", name, year, month);
+	public Message getGraph(Integer year, Integer month, String name) {
+		System.out.println("in");
+		msg = new Message("getGraph", year, month, name);
+		System.out.println("out");
 		handleMessageFromClientUI(msg);
-		if (msg.getCommand().equals("success"))
-			return (DataInputStream) msg.getArguments().get(0);
-		return null;
+		System.out.println("out2");
+		return msg;
 	}
 }

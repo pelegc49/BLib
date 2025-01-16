@@ -42,7 +42,8 @@ public class ReportsController {
 	private ChoiceBox<Integer> choiceBoxYear;
 	@FXML
 	private ChoiceBox<String> choiceBoxGraph;
-
+	@FXML
+	private Label lblError;
 
 
 	public void loadChoiceBoxs() {
@@ -55,14 +56,14 @@ public class ReportsController {
 		}
 		choiceBoxMonth.setItems(dataMonth);
 		choiceBoxYear.getItems().addAll(2024, 2025);
-		choiceBoxGraph.getItems().addAll("Borrowing Report", "Subscriber Status Report");
+		choiceBoxGraph.getItems().addAll("Borrowing Report", "subscriber status");
 
 	}
 
-//	public void display(String message, Color color) {
-//		lblError.setTextFill(color); // Sets the color of the error label.
-//		lblError.setText(message); // Sets the text of the error label.
-//	}
+	public void display(String message, Color color) {
+		lblError.setTextFill(color); // Sets the color of the error label.
+		lblError.setText(message); // Sets the text of the error label.
+	}
 
 
 	/**
@@ -80,14 +81,26 @@ public class ReportsController {
 		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
-	public void GenerateGraphBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
-		ShowReportsController showReportsController = loader.getController();
-		showReportsController.loadGraphDetails(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
-		DataInputStream get = IPController.client.getGraph(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
-		nextPage(loader, root, event, "Show Reports");
 
+
+
+	public void GenerateGraphBtn(ActionEvent event) throws Exception {
+		Message msg = IPController.client.getGraph(choiceBoxYear.getValue(), choiceBoxMonth.getValue(), choiceBoxGraph.getValue());
+//		System.out.println("ok");
+		if (msg.getCommand().equals("failed")) {
+			display("Failed to generate graph", Color.RED);
+		}
+		else{
+			FXMLLoader loader = new FXMLLoader();
+			System.out.println("check");
+			Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
+			System.out.println("check2");
+			ShowReportsController showReportsController = loader.getController();
+			showReportsController.loadGraphDetails(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
+			showReportsController.loadGraph((DataInputStream)(msg.getArguments().get(0)));
+			System.out.println("check3");
+			nextPage(loader, root, event, "Show Reports");
+		}
 	}
 
 

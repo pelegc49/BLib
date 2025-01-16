@@ -11,10 +11,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.Subscriber;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -31,6 +37,8 @@ public class ShowReportsController {
 	private Text txtYear;
 	@FXML
 	private Text txtMonth;
+	@FXML
+	private ImageView imageView;
 
 
 	public void loadGraphDetails(String name, int year, int month) {
@@ -39,8 +47,21 @@ public class ShowReportsController {
 		txtMonth.setText(Integer.toString(month));
 	}
 
-	public void loadGraph() {
+	public void loadGraph(DataInputStream dataInputStream) {
+		try {
+			int imageSize = dataInputStream.readInt();
 
+			byte[] imageData = new byte[imageSize];
+
+			dataInputStream.readFully(imageData);
+
+			ByteArrayInputStream byteStream = new ByteArrayInputStream(imageData);
+			Image image = new Image(byteStream);
+
+			imageView.setImage(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
