@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="411.0" prefWidth="427.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ViewHistoryController">
-	<children>
- 	  <Button id="btnBack" fx:id="btnBack" layoutX="371.0" layoutY="372.0" mnemonicParsing="false" onAction="#backBtn" text="Back" />
-      <TableView id="historyTable" fx:id="historyTable" layoutX="13.0" layoutY="14.0" prefHeight="350.0" prefWidth="401.0">
-        <columns>
-          <TableColumn id="typeColumn" fx:id="typeColumn" prefWidth="110.0" text="type" />
-          <TableColumn id="descriptionColumn" fx:id="descriptionColumn" prefWidth="130.0" text="description" />
-          <TableColumn id="dateColumn" fx:id="dateColumn" prefWidth="160.0" sortType="DESCENDING" text="date" />
-        </columns>
-      </TableView>
-	</children>
-</AnchorPane>
+<VBox alignment="CENTER" prefHeight="712.0" prefWidth="1107.0" spacing="10.0" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ViewHistoryController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="805.0" prefWidth="896.0">
+         <children>
+            <!-- History Table -->
+            <TableView fx:id="historyTable" prefHeight="538.0" prefWidth="1203.0" styleClass="history-table" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="typeColumn" prefWidth="152.0" text="Type" />
+                  <TableColumn fx:id="descriptionColumn" prefWidth="741.0" text="Description" />
+                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="153.0" sortType="DESCENDING" text="Date" />
+               </columns>
+            </TableView>
+      
+            <!-- Back Button -->
+            <HBox alignment="CENTER_RIGHT" styleClass="button-container">
+               <Button fx:id="btnBack" mnemonicParsing="false" onAction="#backBtn" text="Back" />
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+         </VBox.margin>
+      </VBox>
+   </children>
+</VBox>

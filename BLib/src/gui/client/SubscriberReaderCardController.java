@@ -38,6 +38,8 @@ public class SubscriberReaderCardController {
 	private Subscriber subscriber; // Static reference to the currently authenticated subscriber.
 
 	@FXML
+	private Label lblTitle; // Text field to input the server IP address.
+	@FXML
 	private Label lblTable; // Text field to input the server IP address.
 	@FXML
 	private Label lblError; // Text field to input the server IP address.
@@ -87,6 +89,7 @@ public class SubscriberReaderCardController {
 	
 	public void loadSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
+		this.lblTitle.setText("Subscriber " + subscriber.getName());
 		this.txtId.setText(String.valueOf(subscriber.getId()));
 		this.txtName.setText(subscriber.getName()); // Sets the subscriber's ID.
 		this.txtPhone.setText(subscriber.getPhone()); // Sets the subscriber's name.
