@@ -280,11 +280,8 @@ public class BLibClient extends AbstractClient {
 	}
 
 	public Message getGraph(Integer year, Integer month, String name) {
-		System.out.println("in");
 		msg = new Message("getGraph", year, month, name);
-		System.out.println("out");
 		handleMessageFromClientUI(msg);
-		System.out.println("out2");
 		return msg;
 	}
 }
