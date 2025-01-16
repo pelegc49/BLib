@@ -487,7 +487,7 @@ public class BLibServer extends AbstractServer {
 		case "generateGraphs":
 			LocalDate date = LocalDate.of(Integer.parseInt((String)args.get(0)), Integer.parseInt((String)args.get(1)),1); // TODO: no plusMonths 
 			System.out.println(date);
-			byte[] data =  reportGenerator.GenerateReport(date);
+			byte[] data =  reportGenerator.generateReport1(date);
 			BLibDBC.getInstance().saveGraph(date, "subscriber status", data);
 			LocalDate today = LocalDate.now();
 			LocalDate nextMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1).plusMonths(1);

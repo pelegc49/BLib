@@ -35,7 +35,21 @@ public class ReportGenerator {
 	private static byte[] data;
 	private DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");
 
-	public byte[] GenerateReport(LocalDate date) {
+	public byte[] generateReport1(LocalDate date) {
+		ReportGenerator.date = date;
+		data = null;
+		start(ServerGUI.primaryStage);
+		while(data==null)
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return data;
+	}
+	
+	public byte[] generateReport2(LocalDate date) {
 		ReportGenerator.date = date;
 		data = null;
 		start(ServerGUI.primaryStage);
