@@ -1,72 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<VBox spacing="20" styleClass="root-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SignUpController" onKeyPressed="#handleKey">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20" />
-    </padding>
-    <children>
-        <!-- ID Section -->
-        <HBox spacing="10" styleClass="input-row">
-            <children>
-                <Label text="ID:" styleClass="input-label" />
-                <TextField fx:id="txtId" styleClass="input-field" />
-            </children>
-        </HBox>
-
-        <!-- Name Section -->
-        <HBox spacing="10" styleClass="input-row">
-            <children>
-                <Label text="Name:" styleClass="input-label" />
-                <TextField fx:id="txtName" styleClass="input-field" />
-            </children>
-        </HBox>
-
-        <!-- Phone Section -->
-        <HBox spacing="10" styleClass="input-row">
-            <children>
-                <Label text="Phone:" styleClass="input-label" />
-                <TextField fx:id="txtPhone" styleClass="input-field" />
-            </children>
-        </HBox>
-
-        <!-- Email Section -->
-        <HBox spacing="10" styleClass="input-row">
-            <children>
-                <Label text="Email:" styleClass="input-label" />
-                <TextField fx:id="txtEmail" styleClass="input-field" />
-            </children>
-        </HBox>
-
-        <!-- Password Section -->
-        <HBox spacing="10" styleClass="input-row" visible="false">
-            <children>
-                <Label fx:id="lblPassword" text="Password:" styleClass="input-label" />
-                <Text fx:id="txtPassword" styleClass="password-text" />
-            </children>
-        </HBox>
-
-        <!-- Error Label -->
-        <Label fx:id="lblError" textFill="#3ad302" styleClass="error-label">
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.UpdateDetailsController" 
+      prefHeight="349.0" prefWidth="312.0" spacing="10.0" alignment="TOP_CENTER" styleClass="root-container">
+   <children>
+      <!-- Status Section -->
+      <HBox spacing="5.0" alignment="CENTER_LEFT" styleClass="status-container">
+         <Label id="lblId" text="Status:" />
+         <Label id="lblStatus" fx:id="lblStatus" text="Active" styleClass="status-label">
             <font>
-                <Font name="System Bold" size="12.0" />
+               <Font name="System Bold" size="12.0" />
             </font>
-        </Label>
+         </Label>
+      </HBox>
 
-        <!-- Buttons -->
-        <HBox spacing="20" alignment="CENTER" styleClass="button-container">
-            <children>
-                <Button fx:id="btnSignUp" text="Sign Up" onAction="#signUpBtn" styleClass="primary-button" />
-                <Button fx:id="btnBack" text="Back" onAction="#backBtn" styleClass="secondary-button" />
-            </children>
-        </HBox>
-    </children>
+      <!-- Form Fields -->
+      <VBox spacing="10.0" alignment="CENTER" styleClass="form-container">
+         <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="form-row">
+            <Label id="lblId" text="ID:" />
+            <TextField id="txtId" fx:id="txtId" editable="false" />
+         </HBox>
+         <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="form-row">
+            <Label id="lblName" text="Name:" />
+            <TextField id="txtName" fx:id="txtName" editable="false" />
+         </HBox>
+         <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="form-row">
+            <Label id="lblPhone" text="Phone:" />
+            <TextField id="txtPhone" fx:id="txtPhone" />
+         </HBox>
+         <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="form-row">
+            <Label id="lblEmail" text="Email:" />
+            <TextField id="txtEmail" fx:id="txtEmail" />
+         </HBox>
+      </VBox>
+
+      <!-- Error Label -->
+      <Label fx:id="lblError" textFill="#3ad302" styleClass="error-label">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+
+      <!-- Buttons -->
+      <HBox spacing="20.0" alignment="CENTER" styleClass="button-container">
+         <Button id="btnSave" fx:id="btnSave" mnemonicParsing="false" onAction="#saveBtn" text="Save" />
+         <Button id="btnBack" fx:id="btnBack" mnemonicParsing="false" onAction="#backBtn" text="Back" />
+      </HBox>
+   </children>
 </VBox>
