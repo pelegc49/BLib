@@ -17,7 +17,7 @@
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
             <children>
-                <TextField fx:id="txtSearch" onKeyTyped="#searchBtn" promptText="Search by author, title, genre, etc..." styleClass="text-field" />
+                <TextField fx:id="txtSearch" focusTraversable="false" onKeyTyped="#searchBtn" promptText="Search by author, title, genre, etc..." styleClass="text-field" />
                 <Button fx:id="btnSearch" onAction="#searchBtn" styleClass="button" text="Search" />
             </children>
         </HBox>

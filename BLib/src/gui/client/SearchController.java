@@ -25,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import logic.BookTitle; 
@@ -122,15 +123,6 @@ public class SearchController{
 	    }
 	}
 
-	/**
-	 * Displays an error or informational message to the user.
-	 * 
-	 * @param message The message to display.
-	 */
-	public void display(String message) {
-		lblError.setText(message);
-	}
-	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
 		Stage primaryStage = new Stage();

@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.Subscriber; 
 
@@ -28,7 +29,8 @@ import logic.Subscriber;
 public class AuthenticationController {
 	public static Subscriber subscriber; // Static reference to the currently authenticated subscriber.
 	public static String librarianName;
-
+	//public static List<String> librarianMessages;
+	
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.
 	@FXML
@@ -69,16 +71,16 @@ public class AuthenticationController {
 			digit_id = Integer.parseInt(id);
 		} catch (Exception e) {
 			// Display an error message if the ID is not numeric.
-			display("bad username - only digits");
+			display("bad username - only digits", Color.RED);
 		}
 
 		// Validate that the ID field is not empty.
 		if (id.trim().isEmpty()) {
-			display("You must enter an id number");
+			display("You must enter an id number", Color.RED);
 		} 
 		// Validate that the password field is not empty.
 		else if (txtPassword.getText().isEmpty()) {
-			display("You must enter a password");
+			display("You must enter a password", Color.RED);
 		} 
 		// If both fields are valid, attempt to log in.
 		else {
@@ -93,7 +95,7 @@ public class AuthenticationController {
 					nextPage(loader, root1, event, "Subscriber Main Menu");
 					break;
 				case "fail":
-					display("ID or password are incorrect");
+					display("ID or password are incorrect", Color.RED);
 					break;
 				// case for the librarian with her name
 				default:
@@ -120,8 +122,9 @@ public class AuthenticationController {
 	 * 
 	 * @param message The message to display.
 	 */
-	public void display(String message) {
+	public void display(String message, Color color) {
 		lblError.setText(message);
+		lblError.setTextFill(color);
 	}
 	
 	public void guestBtn(ActionEvent event) throws Exception {

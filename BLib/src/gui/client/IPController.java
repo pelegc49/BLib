@@ -57,16 +57,16 @@ public class IPController {
 
 		// Validates the IP address input.
 		if (ip.trim().isEmpty()) {
-			display("You must enter an IP Address"); // Displays an error message if the input is empty.
+			display("You must enter an IP Address", Color.RED); // Displays an error message if the input is empty.
 		}
 		else if (port.trim().isEmpty()) {
-			display("You must enter Port"); // Displays an error message if the input is empty.
+			display("You must enter Port", Color.RED); // Displays an error message if the input is empty.
 		}
 		else {
 			try {
 				digit_port = Integer.parseInt(txtPort.getText()); // Validates that the ID contains only digits.
 			} catch (Exception e) {
-				display("Port must have only digits"); // Displays an error message for invalid ID.
+				display("Port must have only digits", Color.RED); // Displays an error message for invalid ID.
 				return;
 			}
 			try {
@@ -84,7 +84,7 @@ public class IPController {
 				// Handles connection errors.
 				e.printStackTrace();
 				System.out.println("Error: Can't setup connection! Terminating client.");
-				display("Can't setup connection"); // Displays an error message.
+				display("Can't setup connection", Color.RED); // Displays an error message.
 			}
 		}
 	}
@@ -129,8 +129,9 @@ public class IPController {
 	 * 
 	 * @param message The message to display.
 	 */
-	public void display(String message) {
-		lblError.setText(message); // Sets the text of the error label.
+	public void display(String message, Color color) {
+		lblError.setText(message);
+		lblError.setTextFill(color);
 	}
 	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){

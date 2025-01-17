@@ -1,7 +1,7 @@
 package gui.client;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.io.ByteArrayInputStream;
+
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -9,19 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import logic.Subscriber;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -33,35 +28,33 @@ public class ShowReportsController {
 	@FXML
 	private Button btnBack = null; // Button to exit the application.
 	@FXML
-	private Text txtName;
+	private Label lblTitle;
 	@FXML
 	private Text txtYear;
 	@FXML
 	private Text txtMonth;
 	@FXML
-	private ImageView imageView;
-
-
+	private ImageView imgGraph;
+	@FXML
+	private HBox hboxCenter;
+	@FXML
+	private VBox vboxCenter;
+	
 	public void loadGraphDetails(String name, int year, int month) {
-		txtName.setText(name);
-		txtYear.setText(Integer.toString(year));
-		txtMonth.setText(Integer.toString(month));
+		lblTitle.setText(name+" "+month+"/"+year);
 	}
 
 	public void loadGraph(byte[] image) {
 		ByteArrayInputStream byteStream = new ByteArrayInputStream(image);
 		Image fxImage = new Image(byteStream);
-		imageView.setImage(fxImage);
+		imgGraph.setImage(fxImage);
+		imgGraph.fitWidthProperty().bind(hboxCenter.widthProperty());
+		imgGraph.fitHeightProperty().bind(hboxCenter.heightProperty());
+		imgGraph.setPreserveRatio(true);
+		imgGraph.setSmooth(true);
+	    hboxCenter.prefWidthProperty().bind(vboxCenter.widthProperty());
+	    hboxCenter.prefHeightProperty().bind(vboxCenter.heightProperty().subtract(100));
 	}
-
-
-
-
-//	public void display(String message, Color color) {
-//		lblError.setTextFill(color); // Sets the color of the error label.
-//		lblError.setText(message); // Sets the text of the error label.
-//	}
-
 
 	/**
 	 * Handles the "Exit" button action. Terminates the application.
@@ -72,7 +65,6 @@ public class ShowReportsController {
 	public void backBtn(ActionEvent event) throws Exception {
 		((Node) event.getSource()).getScene().getWindow().hide();
 	}
-
 
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();

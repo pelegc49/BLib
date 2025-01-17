@@ -16,7 +16,7 @@
         <!-- Search Row -->
         <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-row">
             <children>
-                <TextField fx:id="txtSearch" onKeyTyped="#searchBtn" promptText="Search by ID, name, email, etc..." styleClass="search-field" />
+                <TextField fx:id="txtSearch" focusTraversable="false" onKeyTyped="#searchBtn" promptText="Search by ID, name, email, etc..." styleClass="search-field" />
                 <Button fx:id="btnSearch" onAction="#searchBtn" styleClass="primary-button" text="Search" />
                 <Label fx:id="lblError" styleClass="error-label" textFill="RED">
                     <font>

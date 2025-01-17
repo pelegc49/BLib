@@ -19,7 +19,7 @@
     <children>
       <HBox alignment="CENTER" prefHeight="2.0" prefWidth="1232.0">
          <children>
-            <Label fx:id="lblTitle" text="Subscriber Jhon Smith" styleClass="title-label">
+            <Label fx:id="lblTitle" styleClass="title-label" text="Subscriber Jhon Smith">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font>
@@ -72,7 +72,7 @@
         </VBox>
 
         <!-- Table Section -->
-        <TableView fx:id="tableBook" styleClass="subscriber-table">
+        <TableView fx:id="tableBook" styleClass="subscriber-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="columnCheckBox" prefWidth="91.0" text="Select All">
                     <graphic>

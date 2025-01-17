@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.BookCopy;
@@ -92,7 +93,7 @@ public class BookTitleController {
 			nextPage(loader, root, event, "Subscriber - Search");
 		}
 		else {
-			display((String)msg.getArguments().get(0));
+			display((String)msg.getArguments().get(0), Color.RED);
 		}
 		
 	}
@@ -133,8 +134,9 @@ public class BookTitleController {
 		}
 	}
 	
-	public void display(String message) {
+	public void display(String message, Color color) {
 		lblError.setText(message);
+		lblError.setTextFill(color);
 	}
 	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){

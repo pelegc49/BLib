@@ -83,12 +83,8 @@ public class ReportsController {
 		nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
-
-
-
 	public void GenerateGraphBtn(ActionEvent event) throws Exception {
 		Message msg = IPController.client.getGraph(choiceBoxYear.getValue(), choiceBoxMonth.getValue(), choiceBoxGraph.getValue());
-//		System.out.println("ok");
 		if (msg.getCommand().equals("failed")) {
 			display("Failed to generate graph", Color.RED);
 			return;
@@ -98,17 +94,20 @@ public class ReportsController {
 			Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
 			ShowReportsController showReportsController = loader.getController();
 			showReportsController.loadGraphDetails(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
-//			System.out.println(msg.getArguments().get(0) instanceof byte[]);
 			showReportsController.loadGraph((byte[]) msg.getArguments().get(0));
 
-
-			nextPage(loader, root, event, "Show Reports");
+			Stage primaryStage = new Stage();
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+			primaryStage.setTitle("Show Reports");
+			primaryStage.setScene(scene);
+			primaryStage.show();
 		}
 	}
 
 
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-//		((Node) event.getSource()).getScene().getWindow().hide();
+		((Node) event.getSource()).getScene().getWindow().hide();
 		Stage primaryStage = new Stage();
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
