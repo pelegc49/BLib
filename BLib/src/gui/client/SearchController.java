@@ -123,6 +123,11 @@ public class SearchController{
 	    }
 	}
 
+	public void display(String message, Color color) {
+		lblError.setText(message);
+		lblError.setTextFill(color);
+	}
+	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
 		Stage primaryStage = new Stage();

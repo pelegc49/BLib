@@ -89,7 +89,7 @@ public class BookTitleController {
 			FXMLLoader loader = new FXMLLoader();
 			Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
     		SearchController searchController = loader.getController();
-    		searchController.display("Order succeed.");
+    		searchController.display("Order succeed.", Color.GREEN);
 			nextPage(loader, root, event, "Subscriber - Search");
 		}
 		else {
