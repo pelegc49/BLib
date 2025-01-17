@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.util.List;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,19 +10,13 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import logic.Activity;
-import logic.Subscriber;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -59,12 +55,12 @@ public class ViewMessagesController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
+		Parent root = loader.load();
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.updateMessageCount();
 		librarianClientGUIController.loadLibrarian();
-		nextPage(loader, root, event, "Librarian Main Menu");
+		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){

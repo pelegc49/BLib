@@ -7,6 +7,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -85,14 +86,15 @@ public class AuthenticationController {
 		// If both fields are valid, attempt to log in.
 		else {
 			String name = IPController.client.login(digit_id, password);
-			FXMLLoader loader = new FXMLLoader();
+			
 			switch(name) {
 				case "subscriber":
 					subscriber = IPController.client.getSubscriber(digit_id);
-					Pane root1 = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
-					SubscriberClientGUIController subscriberClientGUIController = loader.getController();
+					FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
+					Parent root1 = loader1.load();
+					SubscriberClientGUIController subscriberClientGUIController = loader1.getController();
 					subscriberClientGUIController.loadSubscriber();
-					nextPage(loader, root1, event, "Subscriber Main Menu");
+					IPController.client.nextPage(loader1, root1, event, "Subscriber Main Menu");
 					break;
 				case "fail":
 					display("ID or password are incorrect", Color.RED);
@@ -100,11 +102,12 @@ public class AuthenticationController {
 				// case for the librarian with her name
 				default:
 					librarianName = name;
-					Pane root2 = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
-					LibrarianClientGUIController librarianClientGUIController = loader.getController();
+					FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
+					Parent root2 = loader2.load();
+					LibrarianClientGUIController librarianClientGUIController = loader2.getController();
 					librarianClientGUIController.loadLibrarian();
 					librarianClientGUIController.updateMessageCount();
-					nextPage(loader, root2, event, "Librarian Main Menu");
+					IPController.client.nextPage(loader2, root2, event, "Librarian Main Menu");
 					break;
 			}
 		}
@@ -130,7 +133,7 @@ public class AuthenticationController {
 	public void guestBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "Guest - Search");
+		IPController.client.nextPage(loader, root, event, "Guest - Search");
 	}
 	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){

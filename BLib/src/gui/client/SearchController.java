@@ -1,19 +1,16 @@
 package gui.client;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.Set;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,12 +19,9 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import logic.BookTitle; 
 
 /**
@@ -83,7 +77,9 @@ public class SearchController{
 		    		BookTitleController bookTitleController = loader.getController();
 		    		bookTitleController.loadBookTitle(rowData);
 		    		bookTitleController.loadOrderButton(title[0]);
-			    	nextPage(loader, root, event, title[0] +" - "+ rowData.getTitleName());
+		    		try {
+						IPController.client.nextPage(loader, root, event, title[0] +" - "+ rowData.getTitleName());
+					} catch (IOException e) {e.printStackTrace();}
 		        }
 		    });
 	    return rowa ;
@@ -100,26 +96,26 @@ public class SearchController{
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
 	    if(currentTitle.equals("Subscriber - Search")) {
-	    	FXMLLoader loader = new FXMLLoader();
-	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
+	    	Parent root = loader.load();
 	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
 	    	subscriberClientGUIController.loadSubscriber();
-	    	nextPage(loader, root, event, "Subscriber Main Menu");
+	    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	    }
 	    else if(currentTitle.equals("Librarian - Search")) {
-	    	FXMLLoader loader = new FXMLLoader();
-	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
+	    	Parent root = loader.load();
 			LibrarianClientGUIController librarianClientGUIController = loader.getController();
 			librarianClientGUIController.loadLibrarian();
 			librarianClientGUIController.updateMessageCount();
-	    	nextPage(loader, root, event, "Librarian Main Menu");
+			IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	    }
 	    else {
-	    	FXMLLoader loader = new FXMLLoader();
-	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
+	    	Parent root = loader.load();
 			AuthenticationController authenticationController = loader.getController();
 			authenticationController.loadImage();
-	    	nextPage(loader, root, event, "Authentication");
+			IPController.client.nextPage(loader, root, event, "Authentication");
 	    }
 	}
 

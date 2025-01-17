@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -91,12 +92,12 @@ public class BookActionsController {
 	
 		
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
+		Parent root = loader.load();
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
 		librarianClientGUIController.updateMessageCount();
-		nextPage(loader, root, event, "Librarian Main Menu");
+		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
 	/**

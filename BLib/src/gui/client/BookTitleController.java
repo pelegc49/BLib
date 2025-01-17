@@ -10,6 +10,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -77,20 +78,20 @@ public class BookTitleController {
 	    else {
 	    	title = "Guest - Search";
 	    }
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
-		nextPage(loader, root, event, title);
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, title);
 	}
 
 	public void orderBtn(ActionEvent event) throws Exception {
 		Message msg = IPController.client.orderTitle(AuthenticationController.subscriber, bt);
 		if(msg.getCommand().equals("success")) {
 			
-			FXMLLoader loader = new FXMLLoader();
-			Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
+			Parent root = loader.load();
     		SearchController searchController = loader.getController();
     		searchController.display("Order succeed.", Color.GREEN);
-			nextPage(loader, root, event, "Subscriber - Search");
+    		IPController.client.nextPage(loader, root, event, "Subscriber - Search");
 		}
 		else {
 			display((String)msg.getArguments().get(0), Color.RED);

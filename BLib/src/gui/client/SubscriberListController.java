@@ -1,20 +1,16 @@
 package gui.client;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,13 +19,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import logic.BookTitle;
 import logic.Subscriber; 
 
 /**
@@ -103,16 +94,18 @@ public class SubscriberListController{
 	 		        if (eventa.getClickCount() == 2 && !rowa.isEmpty()) {
 	 		        	Subscriber rowData = rowa.getItem();
 	 		    	    
-	 		    		FXMLLoader loader = new FXMLLoader();
-	 		    		Pane root = null;
-	 		    		try {
-	 		    			root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
-	 		    		} catch (IOException e) {e.printStackTrace();}
+	 		    		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml"));
+	 		    		Parent root = null;
+						try {
+							root = loader.load();
+						} catch (IOException e) {e.printStackTrace();}
 	 		    		SubscriberReaderCardController subscriberReaderCardController = loader.getController();
 	 		    		subscriberReaderCardController.loadChoiceBox();
 	 		    		subscriberReaderCardController.loadSubscriber(rowData);
 	 		    		subscriberReaderCardController.loadBorrows(rowData);
-		 				nextPage(loader, root, event, "Subscriber's Reader Card");
+	 		    		try {
+	 		    			IPController.client.nextPage(loader, root, event, "Subscriber's Reader Card");
+						} catch (IOException e) {e.printStackTrace();}
 	 		        }
 	 		    });
 	 	    return rowa ;
@@ -131,7 +124,7 @@ public class SubscriberListController{
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
 		librarianClientGUIController.updateMessageCount();
-		nextPage(loader, root, event, "Librarian Main Menu");
+		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){

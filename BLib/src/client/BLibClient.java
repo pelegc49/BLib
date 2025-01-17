@@ -7,6 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import logic.Activity;
 import logic.BookCopy;
 import logic.BookTitle;
@@ -283,5 +289,15 @@ public class BLibClient extends AbstractClient {
 		msg = new Message("getGraph", year, month, name);
 		handleMessageFromClientUI(msg);
 		return msg;
+	}
+	
+	public void nextPage(FXMLLoader loader, Parent parent, Event event, String title) throws IOException{
+        Stage appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(parent);
+        scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+        appStage.setOnCloseRequest(e -> System.exit(0));
+        appStage.setTitle(title);
+        appStage.setScene(scene);
+        appStage.show();
 	}
 }

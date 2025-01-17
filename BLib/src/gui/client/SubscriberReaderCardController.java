@@ -13,6 +13,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -159,11 +160,11 @@ public class SubscriberReaderCardController {
 	}
 	
 	public void historyBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml"));
+		Parent root = loader.load();
 		ViewHistoryController viewHistoryController = loader.getController();
 		viewHistoryController.loadHistory(subscriber);
-		nextPage(loader, root, event, "Librarian - View History");
+		IPController.client.nextPage(loader, root, event, "Librarian - View History");
 	}
 
 	/**
@@ -173,9 +174,9 @@ public class SubscriberReaderCardController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "List of Subscribers");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "List of Subscribers");
 	}
 
 	

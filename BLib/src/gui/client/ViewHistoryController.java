@@ -1,6 +1,5 @@
 package gui.client;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -61,21 +61,23 @@ public class ViewHistoryController{
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
+		
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
 	    if(currentTitle.split(" ")[0].equals("Subscriber")) {
-	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
+	    	Parent root = loader.load();
 	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
 	    	subscriberClientGUIController.loadSubscriber();
-	    	nextPage(loader, root, event, "Subscriber Main Menu");
+	    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	    }
 	    else{
-	    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml").openStream());
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml"));
+	    	Parent root = loader.load();
 			SubscriberReaderCardController subscriberReaderCardController = loader.getController();
 			subscriberReaderCardController.loadSubscriber(subscriber);
 			subscriberReaderCardController.loadBorrows(subscriber);
-	    	nextPage(loader, root, event, "Subscriber's Reader Card");
+			IPController.client.nextPage(loader, root, event, "Subscriber's Reader Card");
 	    }
 	}
 

@@ -1,18 +1,18 @@
 package gui.client;
 
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import logic.Subscriber;
-
-import java.util.List;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -60,57 +60,57 @@ public class LibrarianClientGUIController {
 
 
 	public void messagesBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml"));
+		Parent root = loader.load();
 		ViewMessagesController viewMessagesController = loader.getController();
 		viewMessagesController.loadMessages();
-		nextPage(loader, root, event, "View Messages");
+		IPController.client.nextPage(loader, root, event, "View Messages");
 	}
 
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
+		Parent root = loader.load();
 		AuthenticationController authenticationController = loader.getController();
 		authenticationController.loadImage();
-		nextPage(loader, root, event, "Authentication");
+		IPController.client.nextPage(loader, root, event, "Authentication");
 	}
 	
 	public void signUpBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SignUpFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "Sign Up Subscriber");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SignUpFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "Sign Up Subscriber");
 	}
 	
 	public void subscribersBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "List of Subscribers");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "List of Subscribers");
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "View History");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "View History");
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "Librarian - Search");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "Librarian - Search");
 	}
 	
 	public void bookActionsBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "BookActionsFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "Book Actions");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "BookActionsFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "Book Actions");
 	}
 	
 	public void ReportsBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ReportsFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ReportsFrame" +".fxml"));
+		Parent root = loader.load();
 		ReportsController reportsController = loader.getController();
 		reportsController.loadChoiceBoxs();
-		nextPage(loader, root, event, "Choose Report");
+		IPController.client.nextPage(loader, root, event, "Choose Report");
 	}
 
 	

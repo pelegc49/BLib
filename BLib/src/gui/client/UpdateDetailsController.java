@@ -8,6 +8,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -132,11 +133,11 @@ public class UpdateDetailsController {
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-    	FXMLLoader loader = new FXMLLoader();
-    	Pane root = loader.load(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml").openStream());
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
+    	Parent root = loader.load();
     	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
     	subscriberClientGUIController.loadSubscriber();
-    	nextPage(loader, root, event, "Subscriber Main Menu");
+    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	}
 	
 	// Enables the enter key to activate the OK button

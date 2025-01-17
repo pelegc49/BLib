@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -42,41 +43,41 @@ public class SubscriberClientGUIController {
 	}
 	
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader(); 
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml")); 
+		Parent root = loader.load();
 		AuthenticationController authenticationController = loader.getController();
 		authenticationController.loadImage();
-		nextPage(loader, root, event, "Authentication");
+		IPController.client.nextPage(loader, root, event, "Authentication");
 	}
 	
 	public void extendTimeBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader(); 
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".fxml")); 
+		Parent root = loader.load();
 		ExtendTimeController extendTimeController = loader.getController();
 		extendTimeController.loadBorrows(AuthenticationController.subscriber);
-		nextPage(loader, root, event, "Subscriber - Extend Time");
+		IPController.client.nextPage(loader, root, event, "Subscriber - Extend Time");
 	}
 	
 	public void updateDetailsBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader(); 
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "UpdateDetailsFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "UpdateDetailsFrame" +".fxml")); 
+		Parent root = loader.load();
 		UpdateDetailsController updateDetailsController = loader.getController();
 		updateDetailsController.loadSubscriber(AuthenticationController.subscriber);
-		nextPage(loader, root, event, "Update Details");
+		IPController.client.nextPage(loader, root, event, "Update Details");
 	}
 	
 	public void viewHistoryBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml"));
+		Parent root = loader.load();
 		ViewHistoryController viewHistoryController = loader.getController();
 		viewHistoryController.loadHistory(AuthenticationController.subscriber);
-		nextPage(loader, root, event, "Subscriber - View History");
+		IPController.client.nextPage(loader, root, event, "Subscriber - View History");
 	}
 	
 	public void searchBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());
-		nextPage(loader, root, event, "Subscriber - Search");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
+		Parent root = loader.load();
+		IPController.client.nextPage(loader, root, event, "Subscriber - Search");
 	}
 	
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){

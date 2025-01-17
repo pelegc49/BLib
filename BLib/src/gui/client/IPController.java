@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.io.IOException;
+
 import client.BLibClient;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -74,11 +76,11 @@ public class IPController {
 				client = new BLibClient(ip, digit_port);
 				System.out.println("IP Entered Successfully");
 
-				FXMLLoader loader = new FXMLLoader();
-				Pane root = loader.load(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml").openStream());
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
+				Parent root = loader.load();
 				AuthenticationController authenticationController = loader.getController();
 				authenticationController.loadImage();
-				nextPage(loader, root, event, "Authentication");
+				IPController.client.nextPage(loader, root, event, "Authentication");
 				
 			} catch (Exception e) {
 				// Handles connection errors.
@@ -134,14 +136,13 @@ public class IPController {
 		lblError.setTextFill(color);
 	}
 	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
+	public void nextPage(FXMLLoader loader, Parent parent, Event event, String title) throws IOException{
+        Stage appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(parent);
+        scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
+        appStage.setOnCloseRequest(e -> System.exit(0));
+        appStage.setTitle(title);
+        appStage.setScene(scene);
+        appStage.show();
 	}
 }

@@ -1,7 +1,5 @@
 package gui.client;
 
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,22 +7,16 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import logic.Borrow;
-import logic.BorrowPlus;
 import logic.Message;
 import logic.Subscriber;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -74,13 +66,12 @@ public class ReportsController {
 	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
+		Parent root = loader.load();
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.updateMessageCount();
 		librarianClientGUIController.loadLibrarian();
-		((Node) event.getSource()).getScene().getWindow().hide();
-		nextPage(loader, root, event, "Librarian Main Menu");
+		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
 
 	public void GenerateGraphBtn(ActionEvent event) throws Exception {
@@ -104,7 +95,6 @@ public class ReportsController {
 			primaryStage.show();
 		}
 	}
-
 
 	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
 		((Node) event.getSource()).getScene().getWindow().hide();
