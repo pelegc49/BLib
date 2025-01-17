@@ -49,14 +49,9 @@ public class ShowReportsController {
 	}
 
 	public void loadGraph(byte[] image) {
-		try {
-			ByteArrayInputStream byteStream = new ByteArrayInputStream(image);
-			Image fxImage = new Image(byteStream);
-			imageView.setImage(fxImage);
-		} catch (Exception e) {
-			e.printStackTrace();
-//			display("Failed to load image", Color.RED);
-		}
+		ByteArrayInputStream byteStream = new ByteArrayInputStream(image);
+		Image fxImage = new Image(byteStream);
+		imageView.setImage(fxImage);
 	}
 
 
