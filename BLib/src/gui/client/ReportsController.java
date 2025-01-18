@@ -3,10 +3,8 @@ package gui.client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.Message;
-import logic.Subscriber;
 
 /**
  * The AuthenticationController class handles user authentication. 
@@ -24,7 +21,6 @@ import logic.Subscriber;
  * and transitions the user to the main application interface upon successful login.
  */
 public class ReportsController {
-	private Subscriber subscriber; // Static reference to the currently authenticated subscriber.
 	@FXML
 	private Button btnBack = null; // Button to exit the application.
 	@FXML

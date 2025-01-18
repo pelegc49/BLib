@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -117,6 +116,11 @@ public class SearchController{
 			authenticationController.loadImage();
 			IPController.client.nextPage(loader, root, event, "Authentication");
 	    }
+	}
+	
+	public void display(String message, Color color) {
+		lblError.setText(message);
+		lblError.setTextFill(color);
 	}
 
 }
