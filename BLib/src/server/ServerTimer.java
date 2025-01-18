@@ -8,7 +8,7 @@ public class ServerTimer implements Runnable{
 	private Thread t;
 	private BLibServer server;
 	private static ServerTimer instance = null;
-	private int delayMinutes = 1; // TODO :  chnage to 30
+	private int delayMinutes = 30; 
 	
 	public static void start(BLibServer server) {
 		if(!(instance instanceof ServerTimer)) {

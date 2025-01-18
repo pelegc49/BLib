@@ -49,10 +49,10 @@ public class BLibDBC {
 	// TODO: main for testing ONLY!!! delete before production!!!
 	public static void main(String[] args) {
 		BLibDBC db = getInstance();
-		if (!db.connect("1234"))
+		if (!db.connect("12341234"))
 			return;
-		LocalDateTime.of(LocalDate.now(),LocalTime.of(0, 1));
-		System.out.println(4325423);
+//		LocalDateTime.of(LocalDate.now(),LocalTime.of(0, 1));
+//		System.out.println(4325423);
 //		LocalDate today = LocalDate.now();
 //		DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");		
 //		System.out.println(today.format(f));
@@ -173,15 +173,15 @@ public class BLibDBC {
 //			System.out.println(new Message("failed","DB error")); // Send failure message
 //		}	
 
-//		try {
-//			
-//			
-//			BLibServer.getInstance(5555).execute(new Message("gegerateGraphs"));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		db.disconnect();
+		try {
+			
+			BLibServer.getInstance(5555).execute(new Message("generateGraphs","2025","02"));
+			System.out.println("11111111111111111");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		db.disconnect();
 	}
 
 	/**
@@ -242,7 +242,7 @@ public class BLibDBC {
 		timerThread = new Thread(() -> {
 			try {
 				timerRunning = true;
-				Thread.sleep((long) (0.25 * 60 * 1000)); // TODO: Change sleep to 5 minutes
+				Thread.sleep((long) (5 * 60 * 1000)); // TODO: Change sleep to 5 minutes
 				synchronized (BLibDBC.class) {
 					if (instance != null) {
 						instance.disconnect();
@@ -1886,6 +1886,26 @@ public class BLibDBC {
 	
 	}
 	
+	public Map<String, Double[]> getBorrowTimeOnMonth(LocalDate date) {
+		String dateWildCard= "%04d-%02d-%%".formatted(date.getYear() , date.getMonth().getValue());
+		try {
+			Map<String, Double[]> ret = new HashMap<>();
+			pstmt = conn.prepareStatement("SELECT genre, AVG(DATEDIFF(date_of_return, date_of_borrow)), SUM(CASE WHEN date_of_return > due_date THEN 1 ELSE 0 END)/COUNT(*)*100 FROM (titles NATURAL JOIN copies) NATURAL JOIN borrows WHERE date_of_return LIKE ? GROUP BY genre;");
+			pstmt.setString(1, dateWildCard);
+			ResultSet rs = pstmt.executeQuery();
+			
+			Double[] lst = new Double[2];
+			while (rs.next()) {
+				lst[0] = rs.getDouble(2);
+				lst[1] = rs.getDouble(3);
+				ret.put(rs.getString(1), lst.clone());
+			}
+			return ret;
+		} catch (NumberFormatException | SQLException e) {
+			return null;
+		}
+	}
+
 }
 
 

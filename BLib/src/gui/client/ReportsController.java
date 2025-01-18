@@ -41,15 +41,15 @@ public class ReportsController {
 
 	public void loadChoiceBoxs() {
 		choiceBoxMonth.setValue(1);
-		choiceBoxYear.setValue(2024);
-		choiceBoxGraph.setValue("Borrowing Report");
+		choiceBoxYear.setValue(2025);
+		choiceBoxGraph.setValue("borrowing report");
 		ObservableList<Integer> dataMonth = FXCollections.observableArrayList();
 		for(Integer number = 1; number < 13; number++) {
 			dataMonth.add(number);
 		}
 		choiceBoxMonth.setItems(dataMonth);
 		choiceBoxYear.getItems().addAll(2024, 2025);
-		choiceBoxGraph.getItems().addAll("Borrowing Report", "subscriber status");
+		choiceBoxGraph.getItems().addAll("borrowing report", "subscriber status");
 
 	}
 

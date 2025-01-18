@@ -29,16 +29,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class ReportGenerator {
 	private static LocalDate date;
 	private static byte[] data;
 	private DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM");
 
-	public byte[] generateReport1(LocalDate date) {
+	public byte[] generateSubscriberStatusReport(LocalDate date) {
 		ReportGenerator.date = date;
 		data = null;
-		start(ServerGUI.primaryStage);
+		subscriberStatus(ServerGUI.primaryStage);
 		while(data==null)
 			try {
 				Thread.sleep(100);
@@ -49,10 +50,10 @@ public class ReportGenerator {
 		return data;
 	}
 	
-	public byte[] generateReport2(LocalDate date) {
+	public byte[] generateBorrowTimeReport(LocalDate date) {
 		ReportGenerator.date = date;
 		data = null;
-		start(ServerGUI.primaryStage);
+		borrowTime(ServerGUI.primaryStage);
 		while(data==null)
 			try {
 				Thread.sleep(100);
@@ -64,8 +65,7 @@ public class ReportGenerator {
 	}
 
 	@SuppressWarnings("unchecked")
-
-	public void start(Stage primaryStage) {
+	public void subscriberStatus(Stage primaryStage) {
 		try {
 
 			CategoryAxis xAxis = new CategoryAxis();
@@ -74,8 +74,8 @@ public class ReportGenerator {
 			xAxis.setLabel("Date");
 			yAxis.setLabel("Number of Members");
 
-			BarChart<String, Number> stackedBarChart = new BarChart<>(xAxis, yAxis);
-			stackedBarChart.setTitle("Frozen and Active Members Over Time");
+			BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+			barChart.setTitle("Frozen and Active Members Over Time");
 
 			XYChart.Series<String, Number> frozenSeries = new XYChart.Series<>();
 			frozenSeries.setName("Frozen");
@@ -120,7 +120,7 @@ public class ReportGenerator {
 				date = date.plusDays(1);
 			}
 
-			stackedBarChart.getData().addAll(activeSeries, frozenSeries);
+			barChart.getData().addAll(activeSeries, frozenSeries);
 
 			int sum = BLibServer.getInstance().SumNewSubscriber(LocalDate.now());
 
@@ -128,38 +128,115 @@ public class ReportGenerator {
 			label.setFont(new Font("Arial", 24)); // Set font and size
 			label.setAlignment(Pos.CENTER);
 
-			VBox.setVgrow(stackedBarChart, Priority.ALWAYS);
+			VBox.setVgrow(barChart, Priority.ALWAYS);
 
-			VBox vbox = new VBox(stackedBarChart, label);
+			VBox vbox = new VBox(barChart, label);
 			vbox.setPrefSize(800, 600);
 			vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
 			vbox.setSpacing(20);
 			vbox.setPadding(new Insets(10, 20, 50, 20));
 			Scene scene = new Scene(vbox, 1400, 800);
 
-			stackedBarChart.setCategoryGap(2);
-			stackedBarChart.setBarGap(5);
+			barChart.setCategoryGap(2);
+			barChart.setBarGap(5);
 
 //			primaryStage.setScene(scene);
 //			primaryStage.setFullScreen(true);
 
-			Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(2000), e -> {
-
+			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
+				
 				WritableImage image = scene.snapshot(null);
-				System.out.println("image: "+image);
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				System.out.println("out: "+out);
 
 				try {
 					System.out.println(ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out));
 					data = out.toByteArray();
 
-					System.out.println("data: "+data);
+					System.out.println("subscriber status graph generated");
 					//Platform.exit();
 
 				} catch (IOException ex) {
 					ex.printStackTrace();
-				}
+				} 
+			}));
+			timeline.setCycleCount(1);
+			timeline.play();
+
+		} catch (InstanceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public void borrowTime(Stage primaryStage) {
+		try {
+			CategoryAxis xAxis = new CategoryAxis();
+			NumberAxis yAxis = new NumberAxis();
+
+			xAxis.setLabel("Genre");
+			yAxis.setLabel("Value");
+
+			BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+			barChart.setTitle("Borrow Statistics per Genre");
+
+			XYChart.Series<String, Number> borrowDuration = new XYChart.Series<>();
+			borrowDuration.setName("Average Borrow Duration (Days)");
+			XYChart.Series<String, Number> lateReturns = new XYChart.Series<>();
+			lateReturns.setName("Late Returns (%)");
+			date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+			Map<String,Double[]> map = BLibServer.getInstance().getBorrowTimeOnMonth(date);
+			double sum =0;
+
+			
+			for(String genre : map.keySet()){
+				Double[] status = map.get(genre);
+				borrowDuration.getData().add(new XYChart.Data<>(genre, status[0])); 
+				lateReturns.getData().add(new XYChart.Data<>(genre, status[1]));
+				
+			}
+
+			barChart.getData().addAll(lateReturns, borrowDuration);
+			
+			
+			// average borrow duration
+//			double sum = BLibServer.getInstance().SumNewSubscriber(LocalDate.now());
+
+			Label label = new Label("The average borrow duration this month is :%.2f".formatted(sum));
+			label.setFont(new Font("Arial", 24)); // Set font and size
+			label.setAlignment(Pos.CENTER);
+
+			VBox.setVgrow(barChart, Priority.ALWAYS);
+
+			VBox vbox = new VBox(barChart, label);
+			vbox.setPrefSize(800, 600);
+			vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
+			vbox.setSpacing(20);
+			vbox.setPadding(new Insets(10, 20, 50, 20));
+			Scene scene = new Scene(vbox, 1400, 800);
+
+			barChart.setCategoryGap(2);
+			barChart.setBarGap(5);
+
+//			primaryStage.setScene(scene);
+//			primaryStage.setFullScreen(true);
+
+			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
+				
+				WritableImage image = scene.snapshot(null);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+				try {
+					System.out.println(ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out));
+					data = out.toByteArray();
+
+					System.out.println("borrow time graph generated");
+					//Platform.exit();
+
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				} 
 			}));
 			timeline.setCycleCount(1);
 			timeline.play();
