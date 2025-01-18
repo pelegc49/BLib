@@ -40,7 +40,7 @@ public class ReportGenerator {
 		ReportGenerator.date = date;
 		data = null;
 		subscriberStatus(ServerGUI.primaryStage);
-		while(data==null)
+		while (data == null)
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -49,12 +49,12 @@ public class ReportGenerator {
 			}
 		return data;
 	}
-	
+
 	public byte[] generateBorrowTimeReport(LocalDate date) {
 		ReportGenerator.date = date;
 		data = null;
 		borrowTime(ServerGUI.primaryStage);
-		while(data==null)
+		while (data == null)
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -66,183 +66,170 @@ public class ReportGenerator {
 
 	@SuppressWarnings("unchecked")
 	public void subscriberStatus(Stage primaryStage) {
-		try {
+		CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis yAxis = new NumberAxis();
 
-			CategoryAxis xAxis = new CategoryAxis();
-			NumberAxis yAxis = new NumberAxis();
+		xAxis.setLabel("Date");
+		yAxis.setLabel("Number of Members");
 
-			xAxis.setLabel("Date");
-			yAxis.setLabel("Number of Members");
+		BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+		barChart.setTitle("Frozen and Active Members Over Time");
 
-			BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-			barChart.setTitle("Frozen and Active Members Over Time");
+		XYChart.Series<String, Number> frozenSeries = new XYChart.Series<>();
+		frozenSeries.setName("Frozen");
+		XYChart.Series<String, Number> activeSeries = new XYChart.Series<>();
+		activeSeries.setName("Active");
+		date = LocalDate.of(date.getYear(), date.getMonth(), 1);
 
-			XYChart.Series<String, Number> frozenSeries = new XYChart.Series<>();
-			frozenSeries.setName("Frozen");
-			XYChart.Series<String, Number> activeSeries = new XYChart.Series<>();
-			activeSeries.setName("Active");
-			date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+		Map<LocalDate, Integer[]> map = null;
+		map = ServerGUI.server.getSubscribersStatusOnMonth(date);
 
-			Map<LocalDate, Integer[]> map = null;
-			map = BLibServer.getInstance().getSubscribersStatusOnMonth(date);
+		TreeSet<LocalDate> dates = new TreeSet<>();
+		dates.addAll(map.keySet());
 
-			TreeSet<LocalDate> dates = new TreeSet<>();
-			dates.addAll(map.keySet());
+		Integer[] lastKnownStatus = { 0, 0 }; // To track the last known status
+		Month curMonth = date.getMonth();
+		while (date.getMonth().equals(curMonth)) {
+			LocalDate min = dates.isEmpty() ? null : dates.first(); // Get the earliest date from the TreeSet
+			if (min != null && min.compareTo(date) <= 0) {
+				// Found data for this date
+				Integer[] status = map.get(min); // Get the status for the current date
 
-			Integer[] lastKnownStatus = { 0, 0 }; // To track the last known status
-			Month curMonth = date.getMonth();
-			while (date.getMonth().equals(curMonth)) {
-				LocalDate min = dates.isEmpty() ? null : dates.first(); // Get the earliest date from the TreeSet
-				if (min != null && min.compareTo(date) <= 0) {
-					// Found data for this date
-					Integer[] status = map.get(min); // Get the status for the current date
+				if (status != null) {
+					// Update last known status
+					lastKnownStatus = status;
 
-					if (status != null) {
-						// Update last known status
-						lastKnownStatus = status;
-
-						// Add the new data to the chart
-						frozenSeries.getData().add(new XYChart.Data<>(date.format(f), status[1])); // Frozen members
-						activeSeries.getData().add(new XYChart.Data<>(date.format(f), status[0])); // Active members
-					}
-
-					// Remove the processed date from the set
-					dates.remove(min);
-				} else {
-					// If no data for this date, use the last known status
-
-					frozenSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[1]));
-					activeSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[0]));
-
+					// Add the new data to the chart
+					frozenSeries.getData().add(new XYChart.Data<>(date.format(f), status[1])); // Frozen members
+					activeSeries.getData().add(new XYChart.Data<>(date.format(f), status[0])); // Active members
 				}
 
-				// Move to the next day
-				date = date.plusDays(1);
+				// Remove the processed date from the set
+				dates.remove(min);
+			} else {
+				// If no data for this date, use the last known status
+
+				frozenSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[1]));
+				activeSeries.getData().add(new XYChart.Data<>(date.format(f), lastKnownStatus[0]));
+
 			}
 
-			barChart.getData().addAll(activeSeries, frozenSeries);
+			// Move to the next day
+			date = date.plusDays(1);
+		}
 
-			int sum = BLibServer.getInstance().SumNewSubscriber(LocalDate.now());
+		barChart.getData().addAll(activeSeries, frozenSeries);
 
-			Label label = new Label("The total new subscribers this month is :%d".formatted(sum));
-			label.setFont(new Font("Arial", 24)); // Set font and size
-			label.setAlignment(Pos.CENTER);
+		int sum = ServerGUI.server.SumNewSubscriber(LocalDate.now());
 
-			VBox.setVgrow(barChart, Priority.ALWAYS);
+		Label label = new Label("The total new subscribers this month is :%d".formatted(sum));
+		label.setFont(new Font("Arial", 24)); // Set font and size
+		label.setAlignment(Pos.CENTER);
 
-			VBox vbox = new VBox(barChart, label);
-			vbox.setPrefSize(800, 600);
-			vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
-			vbox.setSpacing(20);
-			vbox.setPadding(new Insets(10, 20, 50, 20));
-			Scene scene = new Scene(vbox, 1400, 800);
+		VBox.setVgrow(barChart, Priority.ALWAYS);
 
-			barChart.setCategoryGap(2);
-			barChart.setBarGap(5);
+		VBox vbox = new VBox(barChart, label);
+		vbox.setPrefSize(800, 600);
+		vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
+		vbox.setSpacing(20);
+		vbox.setPadding(new Insets(10, 20, 50, 20));
+		Scene scene = new Scene(vbox, 1400, 800);
+
+		barChart.setCategoryGap(2);
+		barChart.setBarGap(5);
 
 //			primaryStage.setScene(scene);
 //			primaryStage.setFullScreen(true);
 
-			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
-				
-				WritableImage image = scene.snapshot(null);
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
 
-				try {
-					System.out.println(ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out));
-					data = out.toByteArray();
+			WritableImage image = scene.snapshot(null);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-					System.out.println("subscriber status graph generated");
-					//Platform.exit();
+			try {
+				System.out.println(ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out));
+				data = out.toByteArray();
 
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				} 
-			}));
-			timeline.setCycleCount(1);
-			timeline.play();
+				System.out.println("subscriber status graph generated");
+				// Platform.exit();
 
-		} catch (InstanceNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}));
+		timeline.setCycleCount(1);
+		timeline.play();
+
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	public void borrowTime(Stage primaryStage) {
-		try {
-			CategoryAxis xAxis = new CategoryAxis();
-			NumberAxis yAxis = new NumberAxis();
 
-			xAxis.setLabel("Genre");
-			yAxis.setLabel("Value");
+		CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis yAxis = new NumberAxis();
 
-			BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-			barChart.setTitle("Borrow Statistics per Genre");
+		xAxis.setLabel("Genre");
+		yAxis.setLabel("Value");
 
-			XYChart.Series<String, Number> borrowDuration = new XYChart.Series<>();
-			borrowDuration.setName("Average Borrow Duration (Days)");
-			XYChart.Series<String, Number> lateReturns = new XYChart.Series<>();
-			lateReturns.setName("Late Returns (%)");
-			date = LocalDate.of(date.getYear(), date.getMonth(), 1);
-			Map<String,Double[]> map = BLibServer.getInstance().getBorrowTimeOnMonth(date);
-			
-			for(String genre : map.keySet()){
-				Double[] status = map.get(genre);
-				borrowDuration.getData().add(new XYChart.Data<>(genre, status[0])); 
-				lateReturns.getData().add(new XYChart.Data<>(genre, status[1]));
-				
-			}
+		BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+		barChart.setTitle("Borrow Statistics per Genre");
 
-			barChart.getData().addAll(lateReturns, borrowDuration);
-			
-			
+		XYChart.Series<String, Number> borrowDuration = new XYChart.Series<>();
+		borrowDuration.setName("Average Borrow Duration (Days)");
+		XYChart.Series<String, Number> lateReturns = new XYChart.Series<>();
+		lateReturns.setName("Late Returns (%)");
+		date = LocalDate.of(date.getYear(), date.getMonth(), 1);
+		Map<String, Double[]> map = ServerGUI.server.getBorrowTimeOnMonth(date);
 
-			double avg = BLibServer.getInstance().getAvgBorrowTimeOnMonth(LocalDate.now());
+		for (String genre : map.keySet()) {
+			Double[] status = map.get(genre);
+			borrowDuration.getData().add(new XYChart.Data<>(genre, status[0]));
+			lateReturns.getData().add(new XYChart.Data<>(genre, status[1]));
 
-			Label label = new Label("The average borrow duration this month is :%.2f".formatted(avg));
-			label.setFont(new Font("Arial", 24)); // Set font and size
-			label.setAlignment(Pos.CENTER);
+		}
 
-			VBox.setVgrow(barChart, Priority.ALWAYS);
+		barChart.getData().addAll(lateReturns, borrowDuration);
 
-			VBox vbox = new VBox(barChart, label);
-			vbox.setPrefSize(800, 600);
-			vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
-			vbox.setSpacing(20);
-			vbox.setPadding(new Insets(10, 20, 50, 20));
-			Scene scene = new Scene(vbox, 1400, 800);
+		double avg = ServerGUI.server.getAvgBorrowTimeOnMonth(LocalDate.now());
 
-			barChart.setCategoryGap(20);
-			barChart.setBarGap(5);
+		Label label = new Label("The average borrow duration this month is :%.2f".formatted(avg));
+		label.setFont(new Font("Arial", 24)); // Set font and size
+		label.setAlignment(Pos.CENTER);
+
+		VBox.setVgrow(barChart, Priority.ALWAYS);
+
+		VBox vbox = new VBox(barChart, label);
+		vbox.setPrefSize(800, 600);
+		vbox.setAlignment(Pos.BOTTOM_CENTER); // Center the label at the bottom
+		vbox.setSpacing(20);
+		vbox.setPadding(new Insets(10, 20, 50, 20));
+		Scene scene = new Scene(vbox, 1400, 800);
+
+		barChart.setCategoryGap(20);
+		barChart.setBarGap(5);
 
 //			primaryStage.setScene(scene);
 //			primaryStage.setFullScreen(true);
 
-			Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
-				
-				WritableImage image = scene.snapshot(null);
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
 
-				try {
-					System.out.println(ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out));
-					data = out.toByteArray();
+			WritableImage image = scene.snapshot(null);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-					System.out.println("borrow time graph generated");
-					//Platform.exit();
+			try {
+				System.out.println(ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", out));
+				data = out.toByteArray();
 
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				} 
-			}));
-			timeline.setCycleCount(1);
-			timeline.play();
+				System.out.println("borrow time graph generated");
+				// Platform.exit();
 
-		} catch (InstanceNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}));
+		timeline.setCycleCount(1);
+		timeline.play();
+
 	}
 
 }

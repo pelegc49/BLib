@@ -292,7 +292,8 @@ public class BLibClient extends AbstractClient {
 		handleMessageFromClientUI(msg);
 		return msg;
 	}
-	
+
+	// Method to navigate to the next page
 	public void nextPage(FXMLLoader loader, Parent parent, Event event, String title) throws IOException{
         Stage appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(parent);
@@ -303,6 +304,7 @@ public class BLibClient extends AbstractClient {
         appStage.show();
 	}
 
+	// Method to display an error message
 	public void display(Label lblError, String message, Color color) {
 		lblError.setText(message);
 		lblError.setTextFill(color);

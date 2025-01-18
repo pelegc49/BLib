@@ -30,8 +30,6 @@ import ocsf.server.ConnectionToClient;
  */
 public class BLibServer extends AbstractServer {
 
-	// Singleton instance of BLibServer
-	public static BLibServer instance = null;
 
 	// A map storing connected clients and their respective information (IP address
 	// and host name)
@@ -46,37 +44,37 @@ public class BLibServer extends AbstractServer {
 	 * @param port the port the server listens on for incoming client connections
 	 * @throws IOException if there is an error when starting the server
 	 */
-	private BLibServer(int port) throws IOException {
+	public BLibServer(int port) throws IOException {
 		super(port); // Call the superclass constructor to initialize the server
 		listen(); // Start listening for client connections
 		reportGenerator = new ReportGenerator();
 		ServerTimer.start(this);
 	}
 
-	/**
-	 * Retrieves the singleton instance of the BLibServer. If the instance does not
-	 * exist, it is created.
-	 * 
-	 * @param port the port the server listens on
-	 * @return the instance of the BLibServer
-	 * @throws IOException if there is an error when starting the server
-	 */
-	public static BLibServer getInstance(int port) throws IOException {
-		if (instance instanceof BLibServer) {
-			return instance; // Return existing instance if it exists
-		}
-		// Create and return a new instance if one does not exist
-		instance = new BLibServer(port);
-		return instance;
-	}
+//	/**
+//	 * Retrieves the singleton instance of the BLibServer. If the instance does not
+//	 * exist, it is created.
+//	 * 
+//	 * @param port the port the server listens on
+//	 * @return the instance of the BLibServer
+//	 * @throws IOException if there is an error when starting the server
+//	 */
+//	public static BLibServer getInstance(int port) throws IOException {
+//		if (instance instanceof BLibServer) {
+//			return instance; // Return existing instance if it exists
+//		}
+//		// Create and return a new instance if one does not exist
+//		instance = new BLibServer(port);
+//		return instance;
+//	}
 
-	public static BLibServer getInstance() throws InstanceNotFoundException {
-		if (instance instanceof BLibServer) {
-			return instance; // Return existing instance if it exists
-		}
-		// Create and return a new instance if one does not exist
-		throw new InstanceNotFoundException();
-	}
+//	public static BLibServer getInstance() throws InstanceNotFoundException {
+//		if (instance instanceof BLibServer) {
+//			return instance; // Return existing instance if it exists
+//		}
+//		// Create and return a new instance if one does not exist
+//		throw new InstanceNotFoundException();
+//	}
 
 	/**
 	 * Connects to the database using the provided password.
