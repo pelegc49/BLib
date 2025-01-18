@@ -6,23 +6,23 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="415.0" prefWidth="215.0" spacing="20" styleClass="root-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberClientGUIController">
+<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1200.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberClientGUIController">
     <children>
-      <VBox alignment="CENTER" maxWidth="500.0" prefHeight="100.0" prefWidth="335.0" spacing="10" style="-fx-border-radius: 0; -fx-background-radius: 0;" styleClass="info-box">
+      <VBox alignment="CENTER" maxWidth="1200.0" prefHeight="100.0" prefWidth="335.0" spacing="10" style="-fx-border-radius: 0; -fx-background-radius: 0;" styleClass="info-box">
          <children>
               <Label fx:id="lblTitle" styleClass="title-label" text="Welcome, Subscriber!" />
          </children>
       </VBox>
-        <VBox alignment="CENTER" maxWidth="500.0" minWidth="300.0" prefHeight="100.0" prefWidth="335.0" spacing="10" styleClass="info-box">
+        <VBox alignment="CENTER" maxWidth="400.0" minWidth="300.0" prefHeight="100.0" prefWidth="200.0" spacing="10" styleClass="info-box">
             <children>
                 <Label fx:id="lblName" styleClass="info-label" text="Name: John Doe" />
                 <Label fx:id="lblId" styleClass="info-label" text="Subscriber ID: 123456" />
             </children>
          <VBox.margin>
-            <Insets left="50.0" right="50.0" />
+            <Insets left="50.0" right="50.0" top="50.0" />
          </VBox.margin>
         </VBox>
-      <VBox alignment="CENTER" maxWidth="500.0" prefHeight="166.0" prefWidth="337.0" spacing="10.0" styleClass="info-box">
+      <VBox alignment="CENTER" maxWidth="400.0" prefHeight="166.0" prefWidth="337.0" spacing="10.0" styleClass="info-box">
          <children>
               <VBox alignment="CENTER" spacing="15.0">
                   <children>

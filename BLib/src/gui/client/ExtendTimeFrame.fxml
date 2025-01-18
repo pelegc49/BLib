@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="624.0" prefWidth="1157.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ExtendTimeController">
+<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1200.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ExtendTimeController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
@@ -22,10 +22,10 @@
                         <CheckBox fx:id="checkBoxSelectAll" mnemonicParsing="false" onMouseClicked="#selectAllBtn" styleClass="select-all-checkbox" />
                     </graphic>
                 </TableColumn>
-                <TableColumn fx:id="columnAuthor" minWidth="8.0" prefWidth="137.0" styleClass="table-column" text="Author" />
-                <TableColumn fx:id="columnTitle" prefWidth="183.0" styleClass="table-column" text="Title" />
-                <TableColumn fx:id="columnDueDate" prefWidth="147.0" styleClass="table-column" text="Due Date" />
-                <TableColumn fx:id="columnErrorMessage" prefWidth="556.0" styleClass="table-column" text="Message" />
+                <TableColumn fx:id="columnAuthor" minWidth="8.0" prefWidth="217.0" styleClass="table-column" text="Author" />
+                <TableColumn fx:id="columnTitle" prefWidth="185.0" styleClass="table-column" text="Title" />
+                <TableColumn fx:id="columnDueDate" prefWidth="133.0" styleClass="table-column" text="Due Date" />
+                <TableColumn fx:id="columnErrorMessage" prefWidth="530.0" styleClass="table-column" text="Message" />
             </columns>
         </TableView>
 

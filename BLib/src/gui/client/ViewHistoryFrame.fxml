@@ -7,16 +7,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="712.0" prefWidth="1107.0" spacing="10.0" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ViewHistoryController">
+<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1200.0" spacing="10.0" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ViewHistoryController">
    <children>
       <VBox alignment="CENTER" prefHeight="805.0" prefWidth="896.0">
          <children>
             <!-- History Table -->
             <TableView fx:id="historyTable" prefHeight="538.0" prefWidth="1203.0" styleClass="history-table" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="typeColumn" prefWidth="152.0" text="Type" />
-                  <TableColumn fx:id="descriptionColumn" prefWidth="741.0" text="Description" />
-                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="153.0" sortType="DESCENDING" text="Date" />
+                  <TableColumn fx:id="typeColumn" prefWidth="209.0" text="Type" />
+                  <TableColumn fx:id="descriptionColumn" prefWidth="782.0" text="Description" />
+                  <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="145.0" sortType="DESCENDING" text="Date" />
                </columns>
             </TableView>
       
