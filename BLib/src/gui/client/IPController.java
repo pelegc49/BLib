@@ -80,9 +80,8 @@ public class IPController {
 				
 			} catch (Exception e) {
 				// Handles connection errors.
-				e.printStackTrace();
 				System.out.println("Error: Can't setup connection! Terminating client.");
-				IPController.client.display(lblError,"Can't setup connection", Color.RED); // Displays an error message.
+				display(lblError,"Can't setup connection", Color.RED); // Displays an error message.
 			}
 		}
 	}
@@ -120,6 +119,11 @@ public class IPController {
 		if(event.getCode().equals(KeyCode.ENTER)) {
 			sendBtn(event);
 		}
+	}
+	
+	public void display(Label lblError, String message, Color color) {
+		lblError.setText(message);
+		lblError.setTextFill(color);
 	}
 	
 

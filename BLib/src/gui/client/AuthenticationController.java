@@ -43,10 +43,10 @@ public class AuthenticationController {
 	@FXML
 	private ImageView img; // Button for searching a book as a guest.
 	
-	
 	public void loadImage() {
 		img.setImage(new Image("/images/logoBackground.png"));
 	}
+	
 	/**
 	 * Handles the login process when the user clicks the "Send" button.
 	 * Validates the input fields and checks the user's credentials.

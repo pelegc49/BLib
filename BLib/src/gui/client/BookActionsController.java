@@ -94,6 +94,4 @@ public class BookActionsController {
 		librarianClientGUIController.updateMessageCount();
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
-	
-
 }

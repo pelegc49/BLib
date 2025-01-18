@@ -1,9 +1,7 @@
 package client;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -82,17 +80,6 @@ public class BLibClient extends AbstractClient {
 	}
 
 	/**
-	 * Retrieves subscriber data by ID for the prototype.
-	 * 
-	 * @param id The subscriber's ID.
-	 */
-	public void getSubscriberData(int id) {
-		msg = new Message("getSubscriberData", id); // Create a message
-		handleMessageFromClientUI(msg); // Send the message to the server
-		System.out.println(msg); // Print the message
-	}
-
-	/**
 	 * Handles the login process for a user.
 	 * 
 	 * @param userName The user's username.
@@ -139,9 +126,7 @@ public class BLibClient extends AbstractClient {
 	// Borrow a book for a subscriber
 	public Message createBorrow(Integer subID, Integer bookID) {
 		msg = new Message("createBorrow",subID ,bookID); // Create borrow message
-		System.out.println("in");
 		handleMessageFromClientUI(msg); // Send to server
-		System.out.println("out"); // TODO: server not responding
 		return msg;
 	}
 
@@ -152,11 +137,6 @@ public class BLibClient extends AbstractClient {
 		return msg; // Return subscriber
 	}
 
-	// Order a book for a subscriber
-	public void orderBook(BookCopy book, Subscriber sub) {
-		msg = new Message("orderBook", book, sub); // Create order message
-		handleMessageFromClientUI(msg); // Send to server
-	}
 
 	// Return a borrowed book
 	public Message returnBook(BookCopy book) {
@@ -189,19 +169,6 @@ public class BLibClient extends AbstractClient {
 		msg = new Message("clearLibrarianMessages"); // Create message
 		handleMessageFromClientUI(msg); // Send to server
 		return (String) msg.getCommand();
-	}
-
-	// Retrieve all subscriber reader cards
-	public List<Subscriber> getSubscriberReaderCards() {
-		msg = new Message("getSubscriberReaderCards"); // Create message
-		handleMessageFromClientUI(msg); // Send to server
-		return null; // Placeholder return value
-	}
-
-	// Update the due date for a borrow record
-	public void updateBorrowDueDate(Borrow borrow, Date newDate) {
-		msg = new Message("updateBorrowDueDate", borrow, newDate); // Create message
-		handleMessageFromClientUI(msg); // Send to server
 	}
 
 	/**
