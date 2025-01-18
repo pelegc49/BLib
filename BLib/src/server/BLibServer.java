@@ -491,7 +491,7 @@ public class BLibServer extends AbstractServer {
 			byte[] data =  reportGenerator.generateSubscriberStatusReport(date);
 			BLibDBC.getInstance().saveGraph(date, "subscriber status", data);
 			data =  reportGenerator.generateBorrowTimeReport(date);
-			BLibDBC.getInstance().saveGraph(date, "Borrowing Report", data);
+			BLibDBC.getInstance().saveGraph(date, "borrowing report", data);
 			System.out.println("41213");
 			LocalDate today = LocalDate.now();
 			LocalDate nextMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1).plusMonths(1);
@@ -624,6 +624,9 @@ public class BLibServer extends AbstractServer {
 		return BLibDBC.getInstance().getBorrowTimeOnMonth(date);
 	}
 	
+	public Double getAvgBorrowTimeOnMonth(LocalDate date) {
+		return BLibDBC.getInstance().getAvgBorrowTimeOnMonth(date);
+	}
 	
 	
 }
