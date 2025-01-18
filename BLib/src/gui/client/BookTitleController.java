@@ -40,8 +40,6 @@ public class BookTitleController {
 	@FXML
 	private Label lblDueDate; // Label to display error messages.
 	@FXML
-	private Text txtTitle; // Text field to input the server IP address.
-	@FXML
 	private Text txtAuthorName; // Text field to input the server IP address.
 	@FXML
 	private Text txtGenre; // Text field to input the server IP address.
@@ -120,7 +118,6 @@ public class BookTitleController {
 		}
 		this.bt = bt1; // Assigns the subscriber to the controller.
 		this.lblTitle.setText(String.valueOf(bt.getTitleName()));
-		this.txtTitle.setText(String.valueOf(bt.getTitleName())); // Sets the subscriber's ID.
 		this.txtAuthorName.setText(bt.getAuthorName()); // Sets the subscriber's name.
 		this.txtDescription.setText(bt.getDescription()); // Sets the subscriber's phone.
 		this.txtGenre.setText(bt.getGenre());

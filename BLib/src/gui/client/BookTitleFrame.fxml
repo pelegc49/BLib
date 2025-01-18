@@ -19,15 +19,6 @@
                   <children>
                       <HBox spacing="10" styleClass="info-row">
                           <children>
-                              <Label styleClass="info-label" text="Title:" />
-                              <Text fx:id="txtTitle" styleClass="info-text" text="Text" />
-                          </children>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                      </HBox>
-                      <HBox spacing="10" styleClass="info-row">
-                          <children>
                               <Label styleClass="info-label" text="Author Name:" />
                               <Text fx:id="txtAuthorName" styleClass="info-text" text="Text" />
                           </children>

@@ -30,7 +30,6 @@ import logic.Subscriber;
 public class AuthenticationController {
 	public static Subscriber subscriber; // Static reference to the currently authenticated subscriber.
 	public static String librarianName;
-	//public static List<String> librarianMessages;
 	
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.

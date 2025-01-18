@@ -57,7 +57,7 @@
                <children>
             
                   <!-- Generate Button -->
-                  <Button fx:id="btnGenerateGraph" mnemonicParsing="false" onAction="#GenerateGraphBtn" styleClass="generate-button" text="Generate Graph">
+                  <Button fx:id="btnGenerateGraph" mnemonicParsing="false" onAction="#GenerateGraphBtn" styleClass="generate-button" text="Show Graph">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
