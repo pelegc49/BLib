@@ -51,30 +51,6 @@ public class BLibServer extends AbstractServer {
 		ServerTimer.start(this);
 	}
 
-//	/**
-//	 * Retrieves the singleton instance of the BLibServer. If the instance does not
-//	 * exist, it is created.
-//	 * 
-//	 * @param port the port the server listens on
-//	 * @return the instance of the BLibServer
-//	 * @throws IOException if there is an error when starting the server
-//	 */
-//	public static BLibServer getInstance(int port) throws IOException {
-//		if (instance instanceof BLibServer) {
-//			return instance; // Return existing instance if it exists
-//		}
-//		// Create and return a new instance if one does not exist
-//		instance = new BLibServer(port);
-//		return instance;
-//	}
-
-//	public static BLibServer getInstance() throws InstanceNotFoundException {
-//		if (instance instanceof BLibServer) {
-//			return instance; // Return existing instance if it exists
-//		}
-//		// Create and return a new instance if one does not exist
-//		throw new InstanceNotFoundException();
-//	}
 
 	/**
 	 * Connects to the database using the provided password.
@@ -445,17 +421,7 @@ public class BLibServer extends AbstractServer {
 					
 				default:
 					client.sendToClient(new Message("unknownCommand: "+((Message) msg).getCommand()));
-					
-					
-					
-				// case "getTitleByID":
-//					ret = BLibDBC.getInstance().getTitleByID((String) args.get(0));
-//					if (ret != null) { 
-//						client.sendToClient(new Message("searchResult",(Set<BookTitle>)ret)); // Send success message
-//					} else {
-//						client.sendToClient(new Message("searchFailed")); 
-//					}
-//					break;
+								
 				}
 			} catch (IOException e) {
 				e.printStackTrace(); // Log any exceptions that occur during message handling
