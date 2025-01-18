@@ -69,7 +69,7 @@ public class SignUpController {
 			return;
 		}
 		if(!txtName.getText().isEmpty()) {
-			String regex = "^[A-Za-z]{1,99}";
+			String regex = "^(?=.*[A-Za-z])[A-Za-z\s]{1,99}$";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(txtName.getText());
 			if(!matcher.matches()) {
@@ -139,7 +139,6 @@ public class SignUpController {
 		Parent root = loader.load();
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
-		librarianClientGUIController.updateMessageCount();
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
 	

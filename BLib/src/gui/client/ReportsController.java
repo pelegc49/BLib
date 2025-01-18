@@ -60,7 +60,6 @@ public class ReportsController {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
 		Parent root = loader.load();
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
-		librarianClientGUIController.updateMessageCount();
 		librarianClientGUIController.loadLibrarian();
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}

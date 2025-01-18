@@ -106,7 +106,6 @@ public class SearchController{
 	    	Parent root = loader.load();
 			LibrarianClientGUIController librarianClientGUIController = loader.getController();
 			librarianClientGUIController.loadLibrarian();
-			librarianClientGUIController.updateMessageCount();
 			IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	    }
 	    else {
