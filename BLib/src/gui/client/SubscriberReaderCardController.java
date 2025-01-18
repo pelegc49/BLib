@@ -132,7 +132,7 @@ public class SubscriberReaderCardController {
 	            Message msg = IPController.client.extendDuration(borrow, choiceBoxDays.getValue(), AuthenticationController.librarianName);
 	            if (msg.getCommand().equals("failed")) {
                     if(((String) msg.getArguments().get(0)).equals("the subscriber is frozen")) {
-                        display("Your account is suspended", Color.RED);
+                        IPController.client.display(lblError,"Your account is suspended", Color.RED);
                         break;
                     }
                     borrowPlus.setErrorMessage((String) msg.getArguments().get(0));
@@ -152,11 +152,6 @@ public class SubscriberReaderCardController {
 		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
 			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());
 		}
-	}
-	
-	public void display(String message, Color color) {
-		lblError.setTextFill(color); // Sets the color of the error label.
-		lblError.setText(message); // Sets the text of the error label.
 	}
 	
 	public void historyBtn(ActionEvent event) throws Exception {
@@ -180,14 +175,5 @@ public class SubscriberReaderCardController {
 	}
 
 	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+
 }

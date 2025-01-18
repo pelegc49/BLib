@@ -12,6 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.Activity;
 import logic.BookCopy;
@@ -299,5 +301,10 @@ public class BLibClient extends AbstractClient {
         appStage.setTitle(title);
         appStage.setScene(scene);
         appStage.show();
+	}
+
+	public void display(Label lblError, String message, Color color) {
+		lblError.setText(message);
+		lblError.setTextFill(color);
 	}
 }

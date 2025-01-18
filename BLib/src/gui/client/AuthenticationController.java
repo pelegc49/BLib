@@ -71,16 +71,16 @@ public class AuthenticationController {
 			digit_id = Integer.parseInt(id);
 		} catch (Exception e) {
 			// Display an error message if the ID is not numeric.
-			display("bad username - only digits", Color.RED);
+			IPController.client.display(lblError,"bad username - only digits", Color.RED);
 		}
 
 		// Validate that the ID field is not empty.
 		if (id.trim().isEmpty()) {
-			display("You must enter an id number", Color.RED);
+			IPController.client.display(lblError,"You must enter an id number", Color.RED);
 		} 
 		// Validate that the password field is not empty.
 		else if (txtPassword.getText().isEmpty()) {
-			display("You must enter a password", Color.RED);
+			IPController.client.display(lblError,"You must enter a password", Color.RED);
 		} 
 		// If both fields are valid, attempt to log in.
 		else {
@@ -96,7 +96,7 @@ public class AuthenticationController {
 					IPController.client.nextPage(loader1, root1, event, "Subscriber Main Menu");
 					break;
 				case "fail":
-					display("ID or password are incorrect", Color.RED);
+					IPController.client.display(lblError,"ID or password are incorrect", Color.RED);
 					break;
 				// case for the librarian with her name
 				default:
@@ -118,16 +118,7 @@ public class AuthenticationController {
 			sendBtn(event);
 		}
 	}
-	
-	/**
-	 * Displays an error or informational message to the user.
-	 * 
-	 * @param message The message to display.
-	 */
-	public void display(String message, Color color) {
-		lblError.setText(message);
-		lblError.setTextFill(color);
-	}
+
 	
 	public void guestBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
@@ -135,14 +126,5 @@ public class AuthenticationController {
 		IPController.client.nextPage(loader, root, event, "Guest - Search");
 	}
 	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+
 }

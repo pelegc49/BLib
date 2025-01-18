@@ -53,11 +53,6 @@ public class ReportsController {
 
 	}
 
-	public void display(String message, Color color) {
-		lblError.setTextFill(color); // Sets the color of the error label.
-		lblError.setText(message); // Sets the text of the error label.
-	}
-
 
 	/**
 	 * Handles the "Exit" button action. Terminates the application.
@@ -77,11 +72,11 @@ public class ReportsController {
 	public void GenerateGraphBtn(ActionEvent event) throws Exception {
 		Message msg = IPController.client.getGraph(choiceBoxYear.getValue(), choiceBoxMonth.getValue(), choiceBoxGraph.getValue());
 		if (msg.getCommand().equals("failed")) {
-			display("No graph in this date", Color.RED);
+			IPController.client.display(lblError,"No graph in this date", Color.RED);
 			return;
 		}
 		else{
-			display("", Color.RED);
+			IPController.client.display(lblError,"", Color.RED);
 			FXMLLoader loader = new FXMLLoader();
 			Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
 			ShowReportsController showReportsController = loader.getController();

@@ -92,7 +92,7 @@ public class BookTitleController {
     		IPController.client.nextPage(loader, root, event, "Subscriber - Search");
 		}
 		else {
-			display((String)msg.getArguments().get(0), Color.RED);
+			IPController.client.display(lblError,(String)msg.getArguments().get(0), Color.RED);
 		}
 		
 	}
@@ -132,19 +132,5 @@ public class BookTitleController {
 		}
 	}
 	
-	public void display(String message, Color color) {
-		lblError.setText(message);
-		lblError.setTextFill(color);
-	}
-	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+
 }

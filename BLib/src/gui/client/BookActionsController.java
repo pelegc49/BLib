@@ -44,7 +44,7 @@ public class BookActionsController {
 	    	bookID = Integer.valueOf(txtBookId.getText());
 	    } catch (NumberFormatException e) {
 	        // Handle invalid input
-	        display("Invalid Book ID", Color.RED);
+	        IPController.client.display(lblError,"Invalid Book ID", Color.RED);
 	        return;
 	    }
 	    
@@ -54,16 +54,16 @@ public class BookActionsController {
 	        subID = Integer.valueOf(txtSubscriberId.getText());
 	    } catch (NumberFormatException e) {
 	        // Handle invalid input
-	        display("Invalid subscriber ID", Color.RED);
+	        IPController.client.display(lblError,"Invalid subscriber ID", Color.RED);
 	        return;
 	    }
 
 	    Message msg = IPController.client.createBorrow(subID, bookID);
 	    if(msg.getCommand().equals("failed")) {
-	    	display((String)msg.getArguments().get(0), Color.RED);
+	    	IPController.client.display(lblError,(String)msg.getArguments().get(0), Color.RED);
 	    	return;
 	    }
-	    display("Borrow succeeded", Color.GREEN);
+	    IPController.client.display(lblError,"Borrow succeeded", Color.GREEN);
 	}
 
 	
@@ -74,7 +74,7 @@ public class BookActionsController {
 	    	bookID = Integer.valueOf(txtBookId.getText());
 	    } catch (NumberFormatException e) {
 	        // Handle invalid input
-	        display("Invalid Book ID", Color.RED);
+	        IPController.client.display(lblError,"Invalid Book ID", Color.RED);
 	        return;
 	    }
 
@@ -84,10 +84,10 @@ public class BookActionsController {
 	    Message msg = IPController.client.returnBook(searchedBook);
 	    
 	    if(msg.getCommand().equals("failed")) {
-	    	display((String)msg.getArguments().get(0), Color.RED);
+	    	IPController.client.display(lblError,(String)msg.getArguments().get(0), Color.RED);
 	    	return;
 	    }
-	    display((String)msg.getArguments().get(0), Color.GREEN);
+	    IPController.client.display(lblError,(String)msg.getArguments().get(0), Color.GREEN);
 	}
 	
 		
@@ -99,25 +99,6 @@ public class BookActionsController {
 		librarianClientGUIController.updateMessageCount();
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
-
-	/**
-	 * Displays an error or informational message to the user.
-	 * 
-	 * @param message The message to display.
-	 */
-	public void display(String message, Color color) {
-		lblError.setTextFill(color);
-		lblError.setText(message);
-	}
 	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+
 }

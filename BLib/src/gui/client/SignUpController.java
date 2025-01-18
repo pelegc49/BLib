@@ -69,7 +69,7 @@ public class SignUpController {
 			id = Integer.valueOf(txtId.getText());
 		}
 		catch(Exception exception) {
-			display("ID must have only digits", Color.RED);
+			IPController.client.display(lblError,"ID must have only digits", Color.RED);
 			return;
 		}
 		if(!txtName.getText().isEmpty()) {
@@ -77,24 +77,24 @@ public class SignUpController {
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(txtName.getText());
 			if(!matcher.matches()) {
-				display("Name must have only english letters", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Name must have only english letters", Color.RED); // Displays an error message for invalid phone number.
 				return;
 			}
 		}
 		else {
-			display("Please enter name", Color.RED);
+			IPController.client.display(lblError,"Please enter name", Color.RED);
 			return;
 		}
 		if(!txtPhone.getText().isEmpty()) {
 			try {
 				Long.parseLong(txtPhone.getText()); // Validates that the phone number contains only digits.
 			} catch (Exception e) {
-				display("Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
 				return;
 			}
 		}
 		else {
-			display("Please enter phone number", Color.RED);
+			IPController.client.display(lblError,"Please enter phone number", Color.RED);
 			return;
 		}
 		
@@ -107,12 +107,12 @@ public class SignUpController {
 			Matcher matcher = pattern.matcher(txtEmail.getText());
 			
 			if(!matcher.matches()) {
-				display("Email not valid", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Email not valid", Color.RED); // Displays an error message for invalid phone number.
 				return;
 			}
 		}
 		else {
-			display("Please enter email address", Color.RED);
+			IPController.client.display(lblError,"Please enter email address", Color.RED);
 			return;
 		}
 		
@@ -122,13 +122,13 @@ public class SignUpController {
 		// Attempts to save the updated subscriber details.
 		String password = IPController.client.registerSubscriber(subscriber);
 		if (password != null) {
-			display("Account successfully created!", Color.GREEN); // Displays a success message if save is successful.
+			IPController.client.display(lblError,"Account successfully created!", Color.GREEN); // Displays a success message if save is successful.
 			lblPassword.setVisible(true);
 			txtPassword.setText(password);
 			return;
 		}
 		// Displays an error message if save fails.
-		display("Account with such ID already exists", Color.RED);
+		IPController.client.display(lblError,"Account with such ID already exists", Color.RED);
 		return;
 	}
 
@@ -153,26 +153,6 @@ public class SignUpController {
 			signUpBtn(event);
 		}
 	}
-	
-	/**
-	 * Displays a message with a specified color.
-	 * 
-	 * @param message The message to display.
-	 * @param color   The color of the message text.
-	 */
-	public void display(String message, Color color) {
-		lblError.setTextFill(color); // Sets the color of the error label.
-		lblError.setText(message); // Sets the text of the error label.
-	}
-	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+
+
 }

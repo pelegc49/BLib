@@ -59,16 +59,16 @@ public class IPController {
 
 		// Validates the IP address input.
 		if (ip.trim().isEmpty()) {
-			display("You must enter an IP Address", Color.RED); // Displays an error message if the input is empty.
+			IPController.client.display(lblError, "You must enter an IP Address", Color.RED); // Displays an error message if the input is empty.
 		}
 		else if (port.trim().isEmpty()) {
-			display("You must enter Port", Color.RED); // Displays an error message if the input is empty.
+			IPController.client.display(lblError,"You must enter Port", Color.RED); // Displays an error message if the input is empty.
 		}
 		else {
 			try {
 				digit_port = Integer.parseInt(txtPort.getText()); // Validates that the ID contains only digits.
 			} catch (Exception e) {
-				display("Port must have only digits", Color.RED); // Displays an error message for invalid ID.
+				IPController.client.display(lblError,"Port must have only digits", Color.RED); // Displays an error message for invalid ID.
 				return;
 			}
 			try {
@@ -86,7 +86,7 @@ public class IPController {
 				// Handles connection errors.
 				e.printStackTrace();
 				System.out.println("Error: Can't setup connection! Terminating client.");
-				display("Can't setup connection", Color.RED); // Displays an error message.
+				IPController.client.display(lblError,"Can't setup connection", Color.RED); // Displays an error message.
 			}
 		}
 	}
@@ -125,24 +125,6 @@ public class IPController {
 			sendBtn(event);
 		}
 	}
-
-	/**
-	 * Displays a message in the lblError label.
-	 * 
-	 * @param message The message to display.
-	 */
-	public void display(String message, Color color) {
-		lblError.setText(message);
-		lblError.setTextFill(color);
-	}
 	
-	public void nextPage(FXMLLoader loader, Parent parent, Event event, String title) throws IOException{
-        Stage appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(parent);
-        scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-        appStage.setOnCloseRequest(e -> System.exit(0));
-        appStage.setTitle(title);
-        appStage.setScene(scene);
-        appStage.show();
-	}
+
 }

@@ -88,7 +88,7 @@ public class UpdateDetailsController {
 			try {
 				Long.parseLong(txtPhone.getText()); // Validates that the phone number contains only digits.
 			} catch (Exception e) {
-				display("Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
 				return;
 			}
 			changed = true;
@@ -103,7 +103,7 @@ public class UpdateDetailsController {
 			Matcher matcher = pattern.matcher(txtEmail.getText());
 			
 			if(!matcher.matches()) {
-				display("Email not valid", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Email not valid", Color.RED); // Displays an error message for invalid phone number.
 				return;
 			}
 			changed = true;
@@ -116,14 +116,14 @@ public class UpdateDetailsController {
 	
 			// Attempts to save the updated subscriber details.
 			if (IPController.client.updateSubscriber(s)) {
-				display("saved Successfully!", Color.GREEN); // Displays a success message if save is successful.
+				IPController.client.display(lblError,"saved Successfully!", Color.GREEN); // Displays a success message if save is successful.
 				return;
 			}
 			// Displays an error message if save fails.
-			display("could not save", Color.RED);
+			IPController.client.display(lblError,"could not save", Color.RED);
 			return;
 		}
-		display("You didn't change anything", Color.RED);
+		IPController.client.display(lblError,"You didn't change anything", Color.RED);
 	}
 
 	/**
@@ -147,25 +147,5 @@ public class UpdateDetailsController {
 		}
 	}
 	
-	/**
-	 * Displays a message with a specified color.
-	 * 
-	 * @param message The message to display.
-	 * @param color   The color of the message text.
-	 */
-	public void display(String message, Color color) {
-		lblError.setTextFill(color); // Sets the color of the error label.
-		lblError.setText(message); // Sets the text of the error label.
-	}
-	
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+
 }
