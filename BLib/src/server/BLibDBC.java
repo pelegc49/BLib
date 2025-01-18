@@ -32,15 +32,14 @@ import logic.Order;
 import logic.Subscriber;
 
 /**
- * This class BLibDBC represents a singleton database connection manager for the
- * BLibDB database. It handles connecting, disconnecting, and transaction
- * management for the database.
+ * This class BLibDBC represents a timed singleton database connection manager
+ * for the BLibDB database. It handles connecting, disconnecting, and
+ * transaction management for the database.
  */
 public class BLibDBC {
 	private static String pass = null; // Password used for connecting to the database
 	private static Calendar ILTimeZone; // Timezone for the database connection
 	private static volatile BLibDBC instance;
-
 	private static Connection conn; // Connection object to interact with the database
 	private static PreparedStatement pstmt; // Statement object for executing SQL queries
 	private static boolean timerRunning = false;
@@ -93,8 +92,11 @@ public class BLibDBC {
 	}
 
 	/**
-	 * Resets the inactivity timer. If a timer thread is already running, it
-	 * interrupts the previous thread and starts a new one.
+	 * Resets the inactivity timer. If a timer is already running, it interrupts the
+	 * current thread and starts a new one. The timer disconnects the database
+	 * connection after 5 minutes of inactivity.
+	 *
+	 * This method is synchronized to ensure thread safety.
 	 */
 	private synchronized static void resetTimer() {
 
@@ -104,7 +106,7 @@ public class BLibDBC {
 		timerThread = new Thread(() -> {
 			try {
 				timerRunning = true;
-				Thread.sleep((long) (5 * 60 * 1000)); // TODO: Change sleep to 5 minutes
+				Thread.sleep((long) (5 * 60 * 1000)); // Sleep for 5 minutes
 				synchronized (BLibDBC.class) {
 					if (instance != null) {
 						instance.disconnect();
@@ -154,23 +156,12 @@ public class BLibDBC {
 		}
 	}
 
-//	/**
-//	 * Returns the singleton instance of BLibDBC. If the instance does not exist, it
-//	 * creates a new one.
-//	 * 
-//	 * @return the singleton instance of BLibDBC.
-//	 */
-//	public static BLibDBC getInstance() {
-//		if (!(instance instanceof BLibDBC)) {
-//			instance = new BLibDBC();
-//		}
-//		return instance;
-//	}
 	/**
-	 * Returns the singleton instance of BLibDBC. If the instance does not exist, it
-	 * creates a new one. Resets the inactivity timer.
+	 * Returns the singleton instance of {@code BLibDBC}. If the instance is not
+	 * initialized, it creates and connects it in a thread-safe manner. Resets the
+	 * inactivity timer on each call to keep the connection active.
 	 *
-	 * @return the singleton instance of BLibDBC.
+	 * @return the singleton instance of {@code BLibDBC}
 	 */
 	public static BLibDBC getInstance() {
 		if (instance == null)
@@ -245,14 +236,14 @@ public class BLibDBC {
 	 */
 	public Set<BookTitle> getTitlesByKeyword(String keyword) {
 		try {
-			keyword = "%" + keyword + "%"; // Use wildcards for partial matching
+			String keywordWildcard = "%" + keyword + "%"; // Use wildcard for partial matching
 			// Execute SQL query
 			pstmt = conn.prepareStatement(
 					"SELECT * FROM titles WHERE title_name LIKE ? OR author_name LIKE ? OR title_description LIKE ? OR genre LIKE ?;");
-			pstmt.setString(1, keyword);
-			pstmt.setString(2, keyword);
-			pstmt.setString(3, keyword);
-			pstmt.setString(4, keyword);
+			pstmt.setString(1, keywordWildcard);
+			pstmt.setString(2, keywordWildcard);
+			pstmt.setString(3, keywordWildcard);
+			pstmt.setString(4, keywordWildcard);
 			ResultSet rs = pstmt.executeQuery();
 			Set<BookTitle> bookSet = new HashSet<>();
 			// Loop through result set and create BookTitle objects
@@ -271,19 +262,19 @@ public class BLibDBC {
 	 * Retrieves a Subscriber object from the database based on the given subscriber
 	 * ID.
 	 * 
-	 * @param subscriberid The ID of the subscriber to retrieve.
+	 * @param subscriberID The ID of the subscriber to retrieve.
 	 * @return The Subscriber object corresponding to the given subscriber ID, or
 	 *         null if no such subscriber is found or if an error occurs.
 	 */
-	public Subscriber getSubscriberByID(int subscriberid) {
+	public Subscriber getSubscriberByID(int subscriberID) {
 		try {
 			// Execute SQL query to fetch the subscriber by their ID
 			pstmt = conn.prepareStatement("SELECT * FROM subscribers WHERE subscriber_id = ?");
-			pstmt.setInt(1, subscriberid); // Set the subscriber ID parameter
+			pstmt.setInt(1, subscriberID); // Set the subscriber ID parameter
 			ResultSet rs = pstmt.executeQuery();
 			// If a result is found, create and return a Subscriber object
 			if (rs.next()) {
-				return new Subscriber(subscriberid, rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+				return new Subscriber(subscriberID, rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
 			}
 			return null; // Return null if no result is found
 		} catch (SQLException e) {
@@ -441,7 +432,7 @@ public class BLibDBC {
 	 * 
 	 * @param newSubscriber The new subscriber object with updated details.
 	 * @param userType      The type of user making the update (e.g., "subscriber"
-	 *                      or admin role).
+	 *                      or the librarian's name).
 	 * @return true if the update and logging were successful, false if an error
 	 *         occurred.
 	 */
@@ -573,22 +564,22 @@ public class BLibDBC {
 	 * Authenticates a user by checking their user ID and password against the
 	 * database.
 	 * 
-	 * @param userid   The user ID of the person attempting to log in.
+	 * @param userID   The user ID of the person attempting to log in.
 	 * @param password The password entered by the user.
-	 * @return The user's role if the login is successful, or null if authentication
-	 *         fails or an error occurs.
+	 * @return if the login is successful return subscriber or librarian's name, or
+	 *         null if authentication fails or an error occurs.
 	 */
-	public String login(int userid, String password) {
+	public String login(int userID, String password) {
 		try {
 			// Execute SQL query to check if the user ID and password match
 			pstmt = conn.prepareStatement("SELECT * FROM users WHERE user_id = ?");
-			pstmt.setInt(1, userid);
+			pstmt.setInt(1, userID);
 			ResultSet rs = pstmt.executeQuery();
 
 			// If a result is found and the credentials match, return 'subscriber' or
 			// librarian name
 			if (rs.next()) {
-				if (userid == rs.getInt(1) && password.equals(rs.getString(2)))
+				if (userID == rs.getInt(1) && password.equals(rs.getString(2)))
 					return rs.getString(3);
 			}
 
@@ -645,7 +636,7 @@ public class BLibDBC {
 	 *                 extended.
 	 * @param days     The number of days by which the due date should be extended.
 	 * @param userType The type of the user requesting the extension ("subscriber"
-	 *                 or other roles).
+	 *                 or the librarian's name).
 	 * @return True if the extension is successful, false if an error occurs.
 	 */
 	public Boolean extendDuration(Borrow borrow, int days, String userType) {
@@ -719,23 +710,15 @@ public class BLibDBC {
 	}
 
 	/**
-	 * Calculates the "magic number" for a given book title. The magic number
-	 * represents the availability of copies for a book, considering the number of
-	 * copies, active borrows, and active orders for the book.
+	 * Calculates the availability status of a book title based on the number of
+	 * copies, active borrows, and active orders.
 	 *
-	 * 
-	 * If the result is a positive number, it indicates the number of available
-	 * copies. If the result is zero, it indicates that all copies are currently
-	 * borrowed. If the result is a negative number, it indicates the number of
-	 * active orders for the title.
-	 * 
-	 * 
-	 * @param title The {@link BookTitle} object representing the book whose magic
-	 *              number is to be calculated.
-	 * @return The magic number for the book, or null if there was an error during
-	 *         the calculation.
+	 * @param title The {@link BookTitle} for which to calculate availability.
+	 * @return The availability status: positive for available copies, zero if all
+	 *         are borrowed, negative for active orders, or {@code null} if an error
+	 *         occurs.
 	 */
-	public Integer getTitleMagicNumber(BookTitle title) {
+	public Integer getTitleAvailability(BookTitle title) {
 		// 0 < num <= num of copies : { there are between 0 to num of copies active
 		// borrows for the title}
 		// num = 0 : {all the copies are borrowed}
@@ -781,7 +764,7 @@ public class BLibDBC {
 				return null;
 			}
 
-			// Return the calculated sum, which represents the "magic number" for the title.
+			// Return the calculated sum, which represents the availability for the title.
 			return sum;
 		} catch (SQLException e) {
 			// If any SQL exception occurs, return null to indicate an error.
@@ -799,7 +782,7 @@ public class BLibDBC {
 	 * @param titleID The ID of the book title to check for active orders.
 	 * @return {@code true} if there are active orders for the title, {@code false}
 	 *         otherwise. If an error occurs while querying the database, the method
-	 *         returns {@code false}.
+	 *         returns {@code null}.
 	 */
 	public Boolean isTitleOrdered(int titleID) {
 		try {
@@ -1029,9 +1012,9 @@ public class BLibDBC {
 	 * 
 	 * @param subID The ID of the subscriber whose activity history is being
 	 *              retrieved.
-	 * @return A {@link List} of {@link Activity} objects representing the
-	 *         subscriber's activity history, ordered by date. Returns {@code null}
-	 *         if the subscriber does not exist or if an error occurs.
+	 * @return A {@link Activity} objects representing the subscriber's activity
+	 *         history, ordered by date. Returns {@code null} if the subscriber does
+	 *         not exist or if an error occurs.
 	 */
 	public List<Activity> getSubscriberHistory(int subID) {
 		try {
@@ -1127,9 +1110,7 @@ public class BLibDBC {
 	 * This method queries the `borrows` table for all active borrows (where
 	 * `date_of_return` is `NULL`) associated with a particular subscriber. It
 	 * creates and returns a list of `Borrow` objects representing the active borrow
-	 * records for the given subscriber. If any borrow record does not have a
-	 * corresponding book copy, an error message is printed, and {@code null} is
-	 * returned.
+	 * records for the given subscriber.
 	 * 
 	 * @param sub The {@link Subscriber} whose active borrows are to be retrieved.
 	 * @return A list of {@link Borrow} objects representing the subscriber's active
@@ -1151,11 +1132,8 @@ public class BLibDBC {
 			while (rs.next()) {
 				BookCopy copy = getCopyByID(rs.getInt(3));
 				if (copy == null) {
-					// If no corresponding copy is found, print an error message and return null
-					System.out.println("copy id " + rs.getInt(3) + " not found");
 					return null;
 				}
-
 				// Add the borrow record to the list
 				ret.add(new Borrow(sub, copy, rs.getDate(4, ILTimeZone).toLocalDate(),
 						rs.getDate(5, ILTimeZone).toLocalDate(), null));
@@ -1433,10 +1411,12 @@ public class BLibDBC {
 	 * @param timeOfExe  The time when the command is to be executed.
 	 * @param identifyer A unique identifier for the command.
 	 * @param commit     If {@code true}, the transaction will be committed;
-	 *                   otherwise, it will be rolled back in case of error.
+	 *                   otherwise, the method call is a part of a larger
+	 *                   transaction.
 	 * @return {@code true} if the command was successfully inserted, {@code false}
 	 *         if there was an error or rollback occurred.
-	 * @throws SQLException if there is a database access error.
+	 * @throws SQLException if there is a database access error and commit is set to
+	 *                      {@code false}.
 	 */
 	public Boolean createCommand(String command, String arguments, LocalDateTime timeOfExe, String identifyer,
 			boolean commit) throws SQLException {
@@ -1471,7 +1451,8 @@ public class BLibDBC {
 	}
 
 	/**
-	 * Overloaded method to create a command with automatic commit.
+	 * Overloaded method to create a command with automatic commit. Meant for use as
+	 * a whole transaction.
 	 * 
 	 * @param command    The command to be inserted into the database.
 	 * @param arguments  The arguments associated with the command.
@@ -1520,7 +1501,8 @@ public class BLibDBC {
 	 *                   transaction.
 	 * @return {@code true} if the command was successfully deleted, {@code false}
 	 *         if an error occurred or rollback was triggered.
-	 * @throws SQLException if there is a database access error.
+	 * @throws SQLException if there is a database access error and commit is set to
+	 *                      {@code false}.
 	 */
 	public Boolean cancelCommand(String command, String identifyer, boolean commit) throws SQLException {
 		try {
@@ -1598,7 +1580,7 @@ public class BLibDBC {
 		try {
 			// If the title has a "magic number" greater than 0, return null (indicating no
 			// borrowable copies)
-			if (getTitleMagicNumber(title) > 0)
+			if (getTitleAvailability(title) > 0)
 				return null;
 
 			// Prepare and execute a query to get the latest due date for borrowed copies of
@@ -1622,345 +1604,200 @@ public class BLibDBC {
 
 	}
 
-//	public Integer getNumOfActiveSubscribers(LocalDate date) {
-//		try {
-//			pstmt = conn.prepareStatement("SELECT activity_description FROM history WHERE activity_date <= ? AND activity_type in ('new subscriber','freeze','unfreeze') GROUP BY activity_date HAVING item_id = MAX(item_id) order by activity_date DESC;");
-//			pstmt.setDate(1, Date.valueOf(date),ILTimeZone);
-//			ResultSet rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				return Integer.parseInt(rs.getString(1).split(";")[1]);
-//			}
-//			return 0;
-//		} catch (NumberFormatException | SQLException e) {
-//			return null;
-//		}
-//	}
-//	
-//	public Integer getNumOfFrozenSubscribers(LocalDate date) {
-//		try {
-//			pstmt = conn.prepareStatement("SELECT activity_description FROM history WHERE activity_date <= ? AND activity_type in ('new subscriber','freeze','unfreeze') GROUP BY activity_date HAVING item_id = MAX(item_id) order by activity_date DESC;");
-//			pstmt.setDate(1, Date.valueOf(date),ILTimeZone);
-//			ResultSet rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//					return Integer.parseInt(rs.getString(1).split(";")[2]);
-//			}
-//			return 0;
-//		} catch (NumberFormatException | SQLException e) {
-//			return null;
-//		}
-//	}
-//	
-//	public Integer[] getSubscribersStatus(LocalDate date) {
-//		Integer[] ret = new Integer[2];
-//		
-//	}
-
+	/**
+	 * Retrieves the subscribers status on a given month by querying the history of
+	 * activities. It returns the number of active/frozen subscribers for each day
+	 * in the month.
+	 * 
+	 * @param date The reference date (any date within the target month).
+	 * @return A map where keys are the dates in the month, and values are arrays
+	 *         containing two integers: [0] - number of active subscribers, [1] -
+	 *         number of frozen subscribers.
+	 */
 	public Map<LocalDate, Integer[]> getSubscribersStatusOnMonth(LocalDate date) {
-		Month curMonth = date.getMonth();
-		date = LocalDate.of(date.getYear(), curMonth, 1).plusMonths(1).minusDays(1);
+		Month curMonth = date.getMonth(); // Get the current month from the provided date
+		date = LocalDate.of(date.getYear(), curMonth, 1).plusMonths(1).minusDays(1); // Get the last day of the month
+
 		try {
 			Map<LocalDate, Integer[]> ret = new HashMap<>();
+
+			// Prepare the SQL query to retrieve the subscriber activity data
 			pstmt = conn.prepareStatement("SELECT h.activity_date, h.activity_description " + "FROM history h "
 					+ "INNER JOIN (" + "SELECT activity_date, MAX(item_id) AS item_id " + "FROM history "
 					+ "WHERE activity_date <= ? AND activity_type IN ('new subscriber', 'freeze', 'unfreeze') "
 					+ "GROUP BY activity_date) subquery "
 					+ "ON h.activity_date = subquery.activity_date AND h.item_id = subquery.item_id "
 					+ "ORDER BY h.activity_date DESC;");
-			pstmt.setDate(1, Date.valueOf(date), ILTimeZone);
+
+			pstmt.setDate(1, Date.valueOf(date), ILTimeZone); // Set the provided date as parameter
 			ResultSet rs = pstmt.executeQuery();
-			Integer[] lst = new Integer[2];
+
+			Integer[] lst = new Integer[2];// Array to hold subscriber counts
+
 			while (rs.next()) {
-				lst[0] = Integer.parseInt(rs.getString(2).split(";")[1]);
-				lst[1] = Integer.parseInt(rs.getString(2).split(";")[2]);
+				lst[0] = Integer.parseInt(rs.getString(2).split(";")[1]); // active count
+				lst[1] = Integer.parseInt(rs.getString(2).split(";")[2]); // frozen count
 				ret.put(rs.getDate(1).toLocalDate(), lst.clone());
+				// If the result is from a different month, stop processing
 				if (!rs.getDate(1).toLocalDate().getMonth().equals(curMonth)) {
 					break;
 				}
 			}
-			return ret;
+			return ret; // Return the map containing subscriber statuses
 		} catch (NumberFormatException | SQLException e) {
-			return null;
+			return null; // Return null if any exception occurs
 		}
 	}
 
-	
+	/**
+	 * Counts the number of new subscribers in a given month.
+	 * 
+	 * @param date The reference date (any date within the target month).
+	 * @return The number of new subscribers for the specified month.
+	 */
 	public Integer SumNewSubscriber(LocalDate date) {
-		
-		String dateWildCard= "%04d-%02d-%%".formatted(date.getYear() , date.getMonth().getValue());
+		// Format the month and year for the query
+		String dateWildCard = "%04d-%02d-%%".formatted(date.getYear(), date.getMonth().getValue());
 		try {
-			pstmt = conn.prepareStatement("SELECT count(*) FROM history where activity_date like ? and activity_type = 'new subscriber';");
-		
-			pstmt.setString(1,dateWildCard);
+			// Prepare the SQL query to count new subscribers
+			pstmt = conn.prepareStatement(
+					"SELECT count(*) FROM history where activity_date like ? and activity_type = 'new subscriber';");
+			pstmt.setString(1, dateWildCard);
 			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.next())
+
+			// Return the count of new subscribers
+			if (rs.next())
 				return rs.getInt(1);
-			
-			return 0;
-		
+			return 0; // Return 0 if no new subscribers are found
+
 		} catch (SQLException e) {
-			return null;
+			return null; // Return null in case of any SQL exceptions
 		}
-		
+
 	}
 
-	
-	
+	/**
+	 * Saves a graph's data (in binary format) to the database.
+	 * 
+	 * @param day        The date associated with the graph.
+	 * @param graph_type The type of the graph (e.g., 'subscriber count').
+	 * @param data       The graph data in byte array format.
+	 * @return true if the graph is successfully saved, false otherwise.
+	 */
 	public Boolean saveGraph(LocalDate day, String graph_type, byte[] data) {
-		
+
 		try {
-			pstmt = conn.prepareStatement("INSERT INTO graphs (graph_type, graph_month, graph_year, graph) VALUE ( ?, ?, ?, ?);");
-			pstmt.setString(1,graph_type);
-			pstmt.setInt(2,day.getMonthValue());
-			pstmt.setInt(3,day.getYear());
-			
+			// Prepare the SQL query to insert the graph data into the database
+			pstmt = conn.prepareStatement(
+					"INSERT INTO graphs (graph_type, graph_month, graph_year, graph) VALUE ( ?, ?, ?, ?);");
+			pstmt.setString(1, graph_type);
+			pstmt.setInt(2, day.getMonthValue());
+			pstmt.setInt(3, day.getYear());
+
+			// Convert the byte array into an InputStream and set it as the graph data
 			ByteArrayInputStream in = new ByteArrayInputStream(data);
-			pstmt.setBlob(4, in);	
-			
-			pstmt.execute();			
-			conn.commit();
-			return true;
-		
+			pstmt.setBlob(4, in);
+
+			pstmt.execute(); // Execute the insert query
+			conn.commit(); // Commit the transaction
+			return true; // Return true if successful
+
 		} catch (SQLException e) {
-			rollback();
+			rollback(); // Rollback in case of an error
 			return false;
 		}
-		
+
 	}
-	
+
+	/**
+	 * Retrieves a saved graph from the database based on the specified year, month,
+	 * and graph type.
+	 * 
+	 * @param year      The year associated with the graph.
+	 * @param month     The month associated with the graph.
+	 * @param graphType The type of the graph.
+	 * @return A DataInputStream containing the graph data, or null if the graph is
+	 *         not found.
+	 */
 	public DataInputStream getGraph(int year, int month, String graphType) {
 		try {
-			pstmt = conn.prepareStatement("SELECT graph FROM graphs WHERE graph_type = ? AND graph_month = ? AND graph_year = ?;");
+			// Prepare the SQL query to retrieve the graph data
+			pstmt = conn.prepareStatement(
+					"SELECT graph FROM graphs WHERE graph_type = ? AND graph_month = ? AND graph_year = ?;");
 			pstmt.setString(1, graphType);
 			pstmt.setInt(2, month);
 			pstmt.setInt(3, year);
-		
+
 			ResultSet rs = pstmt.executeQuery();
-		
-			if(rs.next()) {
-				return new DataInputStream(rs.getBinaryStream(1)) ;
+
+			// If a result is found, return the graph data as an InputStream
+			if (rs.next()) {
+				return new DataInputStream(rs.getBinaryStream(1));
 			}
-			
-			return null;	
+
+			return null; // Return null if no graph is found
 		} catch (SQLException e) {
-			return null;	
+			return null; // Return null if there was an error
 		}
-	
+
 	}
-	
+
+	/**
+	 * Retrieves the average borrow time and the percentage of late returns for each
+	 * genre in the given month.
+	 * 
+	 * @param date The reference date (any date within the target month).
+	 * @return A map where keys are genres and values are arrays with the following:
+	 *         [0] - average borrow time, [1] - percentage of late returns.
+	 */
 	public Map<String, Double[]> getBorrowTimeOnMonth(LocalDate date) {
-		String dateWildCard= "%04d-%02d-%%".formatted(date.getYear() , date.getMonth().getValue());
+		// Format the month and year for the query
+		String dateWildCard = "%04d-%02d-%%".formatted(date.getYear(), date.getMonth().getValue());
 		try {
 			Map<String, Double[]> ret = new HashMap<>();
-			pstmt = conn.prepareStatement("SELECT genre, AVG(DATEDIFF(date_of_return, date_of_borrow)), SUM(CASE WHEN date_of_return > due_date THEN 1 ELSE 0 END)/COUNT(*)*100 FROM (titles NATURAL JOIN copies) NATURAL JOIN borrows WHERE date_of_return LIKE ? GROUP BY genre;");
+			// Prepare the SQL query to calculate average borrow time and late return
+			// percentage by genre
+			pstmt = conn.prepareStatement(
+					"SELECT genre, AVG(DATEDIFF(date_of_return, date_of_borrow)), SUM(CASE WHEN date_of_return > due_date THEN 1 ELSE 0 END)/COUNT(*)*100 FROM (titles NATURAL JOIN copies) NATURAL JOIN borrows WHERE date_of_return LIKE ? GROUP BY genre;");
 			pstmt.setString(1, dateWildCard);
 			ResultSet rs = pstmt.executeQuery();
-			
+
+			// Process the result set
 			Double[] lst = new Double[2];
 			while (rs.next()) {
-				lst[0] = rs.getDouble(2);
-				lst[1] = rs.getDouble(3);
+				lst[0] = rs.getDouble(2); // Average borrow time
+				lst[1] = rs.getDouble(3); // late return percentage
 				ret.put(rs.getString(1), lst.clone());
 			}
-			return ret;
+			return ret; // Return the map containing the data
 		} catch (NumberFormatException | SQLException e) {
-			return null;
+			return null; // Return null if there is an error
 		}
 	}
-	
+
+	/**
+	 * Retrieves the average borrow time for a given month.
+	 * 
+	 * @param date The reference date (any date within the target month).
+	 * @return The average borrow time in days, or 0.0 if no data is found.
+	 */
 	public Double getAvgBorrowTimeOnMonth(LocalDate date) {
-		String dateWildCard= "%04d-%02d-%%".formatted(date.getYear() , date.getMonth().getValue());
+		// Format the month and year for the query
+		String dateWildCard = "%04d-%02d-%%".formatted(date.getYear(), date.getMonth().getValue());
 		try {
-			pstmt = conn.prepareStatement("SELECT AVG(DATEDIFF(date_of_return, date_of_borrow)) FROM (titles NATURAL JOIN copies) NATURAL JOIN borrows WHERE date_of_return LIKE ?;");
+			// Prepare the SQL query to calculate the average borrow time
+			pstmt = conn.prepareStatement(
+					"SELECT AVG(DATEDIFF(date_of_return, date_of_borrow)) FROM (titles NATURAL JOIN copies) NATURAL JOIN borrows WHERE date_of_return LIKE ?;");
 			pstmt.setString(1, dateWildCard);
 			ResultSet rs = pstmt.executeQuery();
-			
+
+			// Return the average borrow time if found
 			if (rs.next()) {
 				return rs.getDouble(1);
 			}
-			return 0.0;
+			return 0.0; // Return 0.0 if no data is found
 		} catch (NumberFormatException | SQLException e) {
-			return null;
+			return null; // Return null in case of an error
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

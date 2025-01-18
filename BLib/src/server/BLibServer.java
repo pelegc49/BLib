@@ -276,7 +276,7 @@ public class BLibServer extends AbstractServer {
 					}
 					
 					if (BLibDBC.getInstance()
-							.getTitleMagicNumber(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
+							.getTitleAvailability(((Borrow) args.get(0)).getBook().getTitle()) < 0) {
 						client.sendToClient(new Message("failed","this title is ordered")); // If no extension allowed, send failure message
 						break;
 					}
@@ -489,7 +489,7 @@ public class BLibServer extends AbstractServer {
 		
 		case "generateGraphs":
 //			Thread t = new Thread(()->{
-			LocalDate date = LocalDate.of(Integer.parseInt((String)args.get(0)), Integer.parseInt((String)args.get(1)),1); // TODO: no plusMonths 
+			LocalDate date = LocalDate.of(Integer.parseInt((String)args.get(0)), Integer.parseInt((String)args.get(1)),1);  
 			System.out.println(date);
 			byte[] data =  reportGenerator.generateSubscriberStatusReport(date);
 			BLibDBC.getInstance().saveGraph(date, "subscriber status", data);
@@ -576,11 +576,11 @@ public class BLibServer extends AbstractServer {
 				return "This Book is already ordered";
 		}
 		
-		if(BLibDBC.getInstance().getTitleMagicNumber(title)>0) {
+		if(BLibDBC.getInstance().getTitleAvailability(title)>0) {
 			return "Not all of the title copies are borrowed"; 
 		}
 		
-		if(BLibDBC.getInstance().getTitleMagicNumber(title)+BLibDBC.getInstance().getNumOfCopies(title)<=0) {
+		if(BLibDBC.getInstance().getTitleAvailability(title)+BLibDBC.getInstance().getNumOfCopies(title)<=0) {
 			return "There are too many active orders";
 		}
 		
@@ -611,7 +611,6 @@ public class BLibServer extends AbstractServer {
 	}
 
 	public Map<LocalDate, Integer[]> getSubscribersStatusOnMonth(LocalDate date) {
-		// TODO Auto-generated method stub
 		return BLibDBC.getInstance().getSubscribersStatusOnMonth(date);
 	}
 
@@ -623,7 +622,6 @@ public class BLibServer extends AbstractServer {
 	}
 	
 	public Map<String, Double[]> getBorrowTimeOnMonth(LocalDate date) {
-		// TODO Auto-generated method stub
 		return BLibDBC.getInstance().getBorrowTimeOnMonth(date);
 	}
 	
