@@ -1905,7 +1905,22 @@ public class BLibDBC {
 			return null;
 		}
 	}
-
+	
+	public Double getAvgBorrowTimeOnMonth(LocalDate date) {
+		String dateWildCard= "%04d-%02d-%%".formatted(date.getYear() , date.getMonth().getValue());
+		try {
+			pstmt = conn.prepareStatement("SELECT AVG(DATEDIFF(date_of_return, date_of_borrow)) FROM (titles NATURAL JOIN copies) NATURAL JOIN borrows WHERE date_of_return LIKE ?;");
+			pstmt.setString(1, dateWildCard);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getDouble(1);
+			}
+			return 0.0;
+		} catch (NumberFormatException | SQLException e) {
+			return null;
+		}
+	}
 }
 
 

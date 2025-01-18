@@ -187,8 +187,6 @@ public class ReportGenerator {
 			lateReturns.setName("Late Returns (%)");
 			date = LocalDate.of(date.getYear(), date.getMonth(), 1);
 			Map<String,Double[]> map = BLibServer.getInstance().getBorrowTimeOnMonth(date);
-			double sum =0;
-
 			
 			for(String genre : map.keySet()){
 				Double[] status = map.get(genre);
@@ -200,10 +198,10 @@ public class ReportGenerator {
 			barChart.getData().addAll(lateReturns, borrowDuration);
 			
 			
-			// average borrow duration
-//			double sum = BLibServer.getInstance().SumNewSubscriber(LocalDate.now());
 
-			Label label = new Label("The average borrow duration this month is :%.2f".formatted(sum));
+			double avg = BLibServer.getInstance().getAvgBorrowTimeOnMonth(LocalDate.now());
+
+			Label label = new Label("The average borrow duration this month is :%.2f".formatted(avg));
 			label.setFont(new Font("Arial", 24)); // Set font and size
 			label.setAlignment(Pos.CENTER);
 
@@ -216,7 +214,7 @@ public class ReportGenerator {
 			vbox.setPadding(new Insets(10, 20, 50, 20));
 			Scene scene = new Scene(vbox, 1400, 800);
 
-			barChart.setCategoryGap(2);
+			barChart.setCategoryGap(20);
 			barChart.setBarGap(5);
 
 //			primaryStage.setScene(scene);
