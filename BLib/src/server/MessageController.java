@@ -14,11 +14,20 @@ import javax.mail.internet.MimeMessage;
 
 import logic.Subscriber;
 
+/**
+ * MessageController handles the sending of messages, including emails and Imitation of sending an SMS, 
+ * to subscribers in the system.
+ */
 public class MessageController {
 	
 	private Session session;
 	private static MessageController instance;
 	
+	/**
+     * Singleton pattern to ensure only one instance of MessageController.
+     * 
+     * @return the single instance of MessageController.
+     */
 	public static MessageController getInstance() {
 		if (!(instance instanceof MessageController)) {
 			instance = new MessageController(); 
@@ -26,10 +35,17 @@ public class MessageController {
 		return instance;
 	}
 	
+	/**
+     * Private constructor initializes the email session with necessary properties
+     * and authentication details for the SMTP server.
+     */
 	private MessageController() {
 		initialize();
 	}
 	
+	/**
+     * Initializes the email session with the SMTP server properties and authentication.
+     */
 	private void initialize() {
 		Properties props = new Properties();
     	props.put("mail.smtp.host", "smtp.gmail.com"); //SMTP Host
@@ -46,17 +62,26 @@ public class MessageController {
 	}
 
 
-//	public static void main(String[] args) {
-//		String[] mails = {"pelegc49@gmail.com"/*,"hitrifox@gmail.com","Gal.moyal111@gmail.com","Edenfur3253@gmail.com","Lidor.ben.david@e.braude.ac.il"*/};
-//		getInstance().sendEmail("HALLO\nHALLO\nHALLO\nHALLO\nHALLO\n", "America YA", mails);
-//	}
-	
+	/**
+     * Sends a message (both email and SMS) to the subscriber.
+     * 
+     * @param subTo the subscriber to whom the message will be sent.
+     * @param subject the subject of the email.
+     * @param text the body of the message.
+     */
 	public void sendMessage(Subscriber subTo,String subject, String text ){
 		sendEmail(subTo, subject, text);
 		sendSMS(subTo.getPhone(), text);
 	}
 	
 
+	/**
+     * Sends an email to the subscriber.
+     * 
+     * @param subTo the subscriber to whom the email will be sent.
+     * @param subject the subject of the email.
+     * @param text the body of the email.
+     */
 	public void sendEmail(Subscriber subTo, String subject, String text) {
 		String emailTo = subTo.getEmail();
 		System.out.println("sending email to " + emailTo);
@@ -85,7 +110,14 @@ public class MessageController {
 
 	}
 
+	/**
+     * Simulates sending an SMS by displaying the recipient's phone number and the message.
+     * 
+     * @param phoneTo the phone number to which the SMS will be sent.
+     * @param msg the message to be sent via SMS.
+     */
 	public void sendSMS(String phoneTo, String msg) {
+		// Simulate the process of sending an SMS by printing the phone number and message.
 		System.out.println("sending SMS to " + phoneTo);
 
 		System.out.println("SMS sent");
