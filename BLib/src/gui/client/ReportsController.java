@@ -77,10 +77,11 @@ public class ReportsController {
 	public void GenerateGraphBtn(ActionEvent event) throws Exception {
 		Message msg = IPController.client.getGraph(choiceBoxYear.getValue(), choiceBoxMonth.getValue(), choiceBoxGraph.getValue());
 		if (msg.getCommand().equals("failed")) {
-			display("Failed to generate graph", Color.RED);
+			display("No graph in this date", Color.RED);
 			return;
 		}
 		else{
+			display("", Color.RED);
 			FXMLLoader loader = new FXMLLoader();
 			Pane root = loader.load(getClass().getResource("/gui/client/"+ "ShowReportsFrame" +".fxml").openStream());
 			ShowReportsController showReportsController = loader.getController();
@@ -95,17 +96,4 @@ public class ReportsController {
 			primaryStage.show();
 		}
 	}
-
-	public void nextPage(FXMLLoader loader, Pane root, Event event, String title){
-		((Node) event.getSource()).getScene().getWindow().hide();
-		Stage primaryStage = new Stage();
-		Scene scene = new Scene(root);
-		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());
-		primaryStage.setOnCloseRequest((E) -> System.exit(0));
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
-
-
 }
