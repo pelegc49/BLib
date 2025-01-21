@@ -123,7 +123,7 @@ public class SQLPassController {
 		try {
 			// Load the server interface window
 			FXMLLoader loader = new FXMLLoader();
-			ServerGUI.server = BLibServer.getInstance(portNum); // Get the server instance
+			ServerGUI.server = new BLibServer(portNum); // Get the server instance
 
 			// Create a new stage (window) for the server interface
 			Stage primaryStage = new Stage();
