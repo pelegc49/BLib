@@ -13,28 +13,23 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-/**
- * The AuthenticationController class handles user authentication. 
- * It manages the login process, including ID and password validation, 
- * and transitions the user to the main application interface upon successful login.
- */
 public class LibrarianClientGUIController implements Initializable{
 	boolean flag = true;
 	
 	@FXML
-	private Label lblTitle; // Button for exiting the application.
+	private Label lblTitle;
 	@FXML
-	private Button btnBack = null; // Button for exiting the application.
+	private Button btnBack = null; 
 	@FXML
-	private Button btnOrder = null; // Button for submitting the login form.
+	private Button btnOrder = null;
 	@FXML
-	private Button btnExtendBook = null; // Button for submitting the login form.
+	private Button btnExtendBook = null; 
 	@FXML
-	private Button btnUpdateDetails = null; // Button for submitting the login form.
+	private Button btnUpdateDetails = null; 
 	@FXML
-	private Button btnViewHistory = null; // Button for submitting the login form.
+	private Button btnViewHistory = null; 
 	@FXML
-	private Button btnSearch = null; // Button for submitting the login form.
+	private Button btnSearch = null; 
 	@FXML
 	private Button btnSignUp = null;
 	@FXML
@@ -46,7 +41,7 @@ public class LibrarianClientGUIController implements Initializable{
 	@FXML
 	private Button messagesBtn = null;
 	@FXML
-	private Label lblNumMessages; // Label for displaying error messages to the user.
+	private Label lblNumMessages;
 
 	public void loadLibrarian() {
 		this.lblTitle.setText("Welcome, "+AuthenticationController.librarianName+"!");
@@ -55,7 +50,6 @@ public class LibrarianClientGUIController implements Initializable{
 	public void updateMessageCount() {
 		List<String> messages = IPController.client.getLibrarianMessages();
 		int totalCount = messages.size();
-		System.out.println("num of messages = " + totalCount);
 		Platform.runLater(() -> lblNumMessages.setText(String.valueOf(totalCount)));
 	}
 
