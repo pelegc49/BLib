@@ -7,9 +7,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1200.0" spacing="20.0" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ReportsController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="20.0" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.ReportsController">
    <children>
-      <VBox alignment="CENTER" maxWidth="255.0" prefHeight="479.0" prefWidth="635.0">
+      <Label styleClass="title-label" text="Repots" />
+      <VBox alignment="CENTER" maxWidth="255.0" prefHeight="212.0" prefWidth="255.0">
          <children>
             <!-- Graph Selection -->
             <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="input-container">

@@ -8,24 +8,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1200.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="20" styleClass="root-container" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.BookActionsController">
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
     <children>
-      <VBox alignment="CENTER" maxWidth="300.0" prefHeight="200.0" prefWidth="100.0">
+      <Label styleClass="title-label" text="Book Actions" />
+      <VBox alignment="CENTER" maxWidth="381.0" prefHeight="210.0" prefWidth="381.0">
          <children>
               <!-- Book ID -->
               <HBox alignment="CENTER" spacing="10" styleClass="row-container">
                   <children>
-                      <TextField fx:id="txtBookId" focusTraversable="false" promptText="Enter Book ID" styleClass="text-field" />
+                      <TextField fx:id="txtBookId" promptText="Enter Book ID" styleClass="text-field" />
                   </children>
               </HBox>
       
               <!-- Subscriber ID -->
               <HBox alignment="CENTER" prefHeight="28.0" prefWidth="300.0" spacing="10" styleClass="row-container">
                   <children>
-                      <TextField fx:id="txtSubscriberId" focusTraversable="false" promptText="Enter Subscriber ID" styleClass="text-field">
+                      <TextField fx:id="txtSubscriberId" promptText="Enter Subscriber ID" styleClass="text-field">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
