@@ -126,7 +126,7 @@ public class LibrarianClientGUIController implements Initializable{
 			Thread refresher = new Thread(() -> {
 				while (flag) {
 					try {
-						Thread.sleep(2000); // Pause for 2 seconds before refreshing
+						Thread.sleep(60*1000); // Pause for 2 seconds before refreshing
 						updateMessageCount();
 					} catch (Exception e) {
 						// If there's an error in refreshing, log a simple message
