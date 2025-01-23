@@ -116,7 +116,14 @@ public class AuthenticationController {
 		}
 	}
 
-	
+
+	/**
+	 * Handles the guest button click event.
+	 * Transitions the user to the search page as a guest.
+	 *
+	 * @param event The ActionEvent triggered by clicking the button.
+	 * @throws Exception If an error occurs during the operation.
+	 */
 	public void guestBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		Pane root = loader.load(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml").openStream());

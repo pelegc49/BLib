@@ -46,7 +46,10 @@ public class LibrarianClientGUIController implements Initializable{
 	public void loadLibrarian() {
 		this.lblTitle.setText("Welcome, "+AuthenticationController.librarianName+"!");
 	}
-	
+
+	/**
+	 * updateMessageCount method updates the number of messages in the librarian's inbox.
+	 */
 	public void updateMessageCount() {
 		List<String> messages = IPController.client.getLibrarianMessages();
 		int totalCount = messages.size();
@@ -54,6 +57,12 @@ public class LibrarianClientGUIController implements Initializable{
 	}
 
 
+	/**
+	 * Handles the "Messages" button action. Opens the messages frame.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void messagesBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml"));
 		Parent root = loader.load();
@@ -63,6 +72,12 @@ public class LibrarianClientGUIController implements Initializable{
 		IPController.client.nextPage(loader, root, event, "View Messages");
 	}
 
+	/**
+	 * Handles the "Back" button action. Returns the user to the previous page.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void backBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
 		Parent root = loader.load();
@@ -71,35 +86,65 @@ public class LibrarianClientGUIController implements Initializable{
 		cleanUp();
 		IPController.client.nextPage(loader, root, event, "Authentication");
 	}
-	
+
+	/**
+	 * Handles the "sign up" button action. Transitions the user to the sign up page.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void signUpBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SignUpFrame" +".fxml"));
 		Parent root = loader.load();
 		cleanUp();
 		IPController.client.nextPage(loader, root, event, "Sign Up Subscriber");
 	}
-	
+
+	/**
+	 * Handles the "subscribers" button action. Transitions the user to the subscribe page.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void subscribersBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
 		Parent root = loader.load();
 		cleanUp();
 		IPController.client.nextPage(loader, root, event, "List of Subscribers");
 	}
-	
+
+	/**
+	 * Handles the "search" button action. Transitions the user to the search page.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void searchBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
 		Parent root = loader.load();
 		cleanUp();
 		IPController.client.nextPage(loader, root, event, "Librarian - Search");
 	}
-	
+
+	/**
+	 * Handles the "book actions" button action. Transitions the user to the book actions page.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void bookActionsBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "BookActionsFrame" +".fxml"));
 		Parent root = loader.load();
 		cleanUp();
 		IPController.client.nextPage(loader, root, event, "Book Actions");
 	}
-	
+
+	/**
+	 * Handles the "reports" button action. Transitions the user to the reports page.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during termination.
+	 */
 	public void ReportsBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ReportsFrame" +".fxml"));
 		Parent root = loader.load();
@@ -109,6 +154,9 @@ public class LibrarianClientGUIController implements Initializable{
 		IPController.client.nextPage(loader, root, event, "Choose Report");
 	}
 
+	/**
+	 * initialize method initializes the librarian client GUI.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		flag = true;
@@ -138,7 +186,10 @@ public class LibrarianClientGUIController implements Initializable{
 			System.out.println("Initialization failed: " + e.getMessage());
 		}
 	}
-	
+
+	/**
+	 * cleanUp method cleans up the GUI.
+	 */
 	public void cleanUp() {
 		this.flag = false;
 	}

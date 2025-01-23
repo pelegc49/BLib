@@ -120,7 +120,8 @@ public class IPController {
 			sendBtn(event);
 		}
 	}
-	
+
+	// Displays an error message in the specified color.
 	public void display(Label lblError, String message, Color color) {
 		lblError.setText(message);
 		lblError.setTextFill(color);

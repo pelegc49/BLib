@@ -67,7 +67,14 @@ public class ExtendTimeController{
     	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	}
 
+	/**
+	 * Handles the "extend" button action. Extends the selected borrows by 7 days.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 * @throws Exception If an error occurs during the operation.
+	 */
 	public void extendBtn(ActionEvent event) {
+		// Extend the selected borrows by 7 days
 	    for(Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
 	    	Borrow borrow = entry.getValue();
 	    	BorrowPlus borrowPlus = entry.getKey();
@@ -86,12 +93,20 @@ public class ExtendTimeController{
 	            }
             }
         }
+		// Refresh the table
 	    checkBoxSelectAll.setSelected(false);
 	    selectAllBtn(event);
 	    tableBook.refresh();
 	}
-	
+
+	/**
+	 * loads the borrows of the subscriber to the table.
+	 *
+	 * @param subscriber The subscriber whose borrows are to be loaded.
+	 */
 	public void loadBorrows(Subscriber subscriber) {
+		// Load the borrows of the subscriber to the table
+
 		ObservableList<Entry<BorrowPlus, Borrow>> data = FXCollections.observableArrayList();
 		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber);
 		
@@ -108,7 +123,12 @@ public class ExtendTimeController{
 		tableBook.setItems(data);
 		tableBook.getSortOrder().add(columnDueDate);
 	}
-	
+
+	/**
+	 * Handles the "Select All" button action. Selects all the borrows in the table.
+	 *
+	 * @param event The action event triggered by clicking the button.
+	 */
 	public void selectAllBtn(Event event) {
 		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
 			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());

@@ -21,9 +21,9 @@ public class BookActionsController {
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.
 	@FXML
-	private TextField txtSubscriberId; // TextField for user to enter their ID.
+	private TextField txtSubscriberId; // TextField for Librarian user to enter the subscribers ID.
 	@FXML
-	private TextField txtBookId;
+	private TextField txtBookId; // TextField for Librarian user to enter the book ID.
 	@FXML
 	private Button btnBack = null;
 	@FXML
@@ -31,9 +31,16 @@ public class BookActionsController {
 	@FXML
 	private Button btnReturn = null;
 	
-	
+
+	/**
+	 * Handles the borrowing process when the librarian clicks the "Borrow" button.
+	 *
+	 * @param event The ActionEvent triggered by clicking the Borrow button.
+	 * @throws Exception If an error occurs during the operation.
+	 */
 	public void borrowBtn(ActionEvent event) {
-	    Integer bookID;
+		Integer bookID;
+		// Validate the input fields
 	    try {
 	        // Attempt to parse the ID as an integer
 	    	bookID = Integer.valueOf(txtBookId.getText());
@@ -44,6 +51,7 @@ public class BookActionsController {
 	    }
 	    
 	    Integer subID;
+		// Validate the input fields
 	    try {
 	        // Attempt to parse the ID as an integer
 	        subID = Integer.valueOf(txtSubscriberId.getText());
@@ -53,6 +61,7 @@ public class BookActionsController {
 	        return;
 	    }
 
+		//try to create a borrow
 	    Message msg = IPController.client.createBorrow(subID, bookID);
 	    if(msg.getCommand().equals("failed")) {
 	    	IPController.client.display(lblError,(String)msg.getArguments().get(0), Color.RED);
@@ -61,9 +70,16 @@ public class BookActionsController {
 	    IPController.client.display(lblError,"Borrow succeeded", Color.GREEN);
 	}
 
-	
+
+	/**
+	 * Handles the returning process when the librarian clicks the "Return" button.
+	 *
+	 * @param event The ActionEvent triggered by clicking the Return button.
+	 * @throws Exception If an error occurs during the operation.
+	 */
 	public void returnBtn(ActionEvent event) throws Exception {
 		Integer bookID;
+		// Validate the input fields
 	    try {
 	        // Attempt to parse the ID as an integer
 	    	bookID = Integer.valueOf(txtBookId.getText());
@@ -85,7 +101,13 @@ public class BookActionsController {
 	    IPController.client.display(lblError,(String)msg.getArguments().get(0), Color.GREEN);
 	}
 	
-		
+
+	/**
+	 * Handles the Exit button click event. Closes the application.
+	 *
+	 * @param event The ActionEvent triggered by clicking the Exit button.
+	 * @throws Exception If an error occurs during the operation.
+	 */
 	public void backBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
 		Parent root = loader.load();
