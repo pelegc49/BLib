@@ -23,14 +23,6 @@ public class UpdateDetailsController {
 	// Labels to display error messages and subscriber details.
 	@FXML
 	private Label lblError;
-//	@FXML
-//	private Label lblId;
-//	@FXML
-//	private Label lblName;
-//	@FXML
-//	private Label lblPhone;
-//	@FXML
-//	private Label lblEmail;
 	@FXML
 	private Label lblStatus;
 

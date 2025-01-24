@@ -27,10 +27,6 @@ public class LibrarianClientGUIController implements Initializable{
 	private Label lblTitle; // Label to display librarian's welcome message.
 	@FXML
 	private Button btnBack = null; 
-//	@FXML
-//	private Button btnOrder = null;
-//	@FXML
-//	private Button btnExtendBook = null;
 	@FXML
 	private Button btnUpdateDetails = null; 
 	@FXML

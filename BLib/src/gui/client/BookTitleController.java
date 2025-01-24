@@ -33,10 +33,6 @@ public class BookTitleController {
 	// UI elements defined in the FXML file.
 	@FXML
 	private Label lblTitle; // Label for displaying the book's title.
-//	@FXML
-//	private Label lblAuthorName; // Label for displaying the author's name.
-//	@FXML
-//	private Label lblDescription; // Label for displaying the description of the book.
 	@FXML
 	private Label lblError; // Label for displaying error messages.
 	@FXML

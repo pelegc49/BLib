@@ -22,10 +22,6 @@ public class ShowReportsController {
 	private Button btnBack = null; // Button for going back to the previous screen
 	@FXML
 	private Label lblTitle; // Label for the title of the report
-//	@FXML
-//	private Text txtYear; // Text to display the year
-//	@FXML
-//	private Text txtMonth; // Text to display the month
 	@FXML
 	private ImageView imgGraph; // ImageView to display the graph
 	@FXML

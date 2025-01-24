@@ -36,8 +36,6 @@ public class ExtendTimeController {
 	private Label lblError; // Label for displaying error messages to the user.
 	@FXML
 	private Button btnBack = null; // Button to navigate back to the main menu.
-//	@FXML
-//	private Button btnSearch = null; // Button to submit the search request.
 	@FXML
 	private Button btnExtend = null; // Button to extend the borrow period for selected books.
 	@FXML
