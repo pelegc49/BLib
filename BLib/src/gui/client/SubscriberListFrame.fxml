@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="10" styleClass="root-container"  xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="1000.0" spacing="10" styleClass="root-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberListController">
     <children>
       <Label styleClass="title-label" text="Subscribers" />
         <!-- Search Row -->
@@ -34,11 +34,11 @@
         <!-- Table -->
         <TableView fx:id="subTable" styleClass="subscriber-table">
             <columns>
-                <TableColumn fx:id="idColumn" prefWidth="136.0" text="ID" />
-                <TableColumn fx:id="nameColumn" prefWidth="189.0" text="Name" />
-                <TableColumn fx:id="phoneColumn" prefWidth="202.0" text="Phone Number" />
-                <TableColumn fx:id="emailColumn" prefWidth="472.0" text="Email" />
-                <TableColumn fx:id="statusColumn" prefWidth="138.0" text="Status" />
+                <TableColumn fx:id="idColumn" prefWidth="108.0" text="ID" />
+                <TableColumn fx:id="nameColumn" prefWidth="206.0" text="Name" />
+                <TableColumn fx:id="phoneColumn" prefWidth="165.0" text="Phone Number" />
+                <TableColumn fx:id="emailColumn" prefWidth="347.0" text="Email" />
+                <TableColumn fx:id="statusColumn" prefWidth="113.0" text="Status" />
             </columns>
          <VBox.margin>
             <Insets left="30.0" right="30.0" />
