@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,7 +58,6 @@ public class SignUpController {
 	 * Handles the "Sign Up" button action. Validates the user input and saves the subscriber details.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Sign Up button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void signUpBtn(Event event) {
 		Integer id;
@@ -132,11 +132,13 @@ public class SignUpController {
 	 * Handles the "Back" button action. Navigates back to the main librarian menu.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Back button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");

@@ -381,9 +381,8 @@ public class BLibClient extends AbstractClient {
 	 * @param parent the parent node for the new scene
 	 * @param event the event triggering the page change
 	 * @param title the title of the new page
-	 * @throws IOException if an error occurs while loading the page
 	 */
-	public void nextPage(FXMLLoader loader, Parent parent, Event event, String title) throws IOException {
+	public void nextPage(FXMLLoader loader, Parent parent, Event event, String title) {
         Stage appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(parent);
         scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm());

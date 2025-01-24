@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -73,9 +74,8 @@ public class ViewHistoryController {
 	 * The navigation depends on the current screen the user is on.
 	 * 
 	 * @param event The action event triggered by clicking the back button.
-	 * @throws Exception If an error occurs during the navigation process.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		// Get the current window stage and title.
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
@@ -83,7 +83,10 @@ public class ViewHistoryController {
 	    // If the current screen is the subscriber's main menu, navigate to it.
 	    if (currentTitle.split(" ")[0].equals("Subscriber")) {
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberClientGUIFrame" + ".fxml"));
-	    	Parent root = loader.load();
+	    	Parent root = null;
+			try {
+				root = loader.load();
+			} catch (IOException e) {e.printStackTrace();}
 	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
 	    	subscriberClientGUIController.loadSubscriber();
 	    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
@@ -91,7 +94,10 @@ public class ViewHistoryController {
 	    // Otherwise, navigate to the subscriber's reader card screen.
 	    else {
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberReaderCardFrame" + ".fxml"));
-	    	Parent root = loader.load();
+	    	Parent root = null;
+			try {
+				root = loader.load();
+			} catch (IOException e) {e.printStackTrace();}
 			SubscriberReaderCardController subscriberReaderCardController = loader.getController();
 			subscriberReaderCardController.loadSubscriber(subscriber);
 			subscriberReaderCardController.loadBorrows(subscriber);

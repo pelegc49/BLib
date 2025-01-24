@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.io.IOException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -61,12 +63,14 @@ public class ReportsController {
 	 * Handles the "Back" button click event. Navigates the user back to the librarian main menu.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during page transition.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		// Load the librarian main menu page.
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "LibrarianClientGUIFrame" + ".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian(); // Load librarian's personal data.
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu"); // Transition to librarian menu.
@@ -77,9 +81,8 @@ public class ReportsController {
 	 * (graph) for the chosen month, year, and type of report.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during graph generation.
 	 */
-	public void GenerateGraphBtn(ActionEvent event) throws Exception {
+	public void GenerateGraphBtn(ActionEvent event) {
 		// Fetch the graph data using the selected parameters (month, year, report type).
 		Message msg = IPController.client.getGraph(choiceBoxYear.getValue(), choiceBoxMonth.getValue(), choiceBoxGraph.getValue());
 		
@@ -93,7 +96,10 @@ public class ReportsController {
 
 			// Load the report viewing page to display the generated graph.
 			FXMLLoader loader = new FXMLLoader();
-			Pane root = loader.load(getClass().getResource("/gui/client/" + "ShowReportsFrame" + ".fxml").openStream());
+			Pane root = null;
+			try {
+				root = loader.load(getClass().getResource("/gui/client/" + "ShowReportsFrame" + ".fxml").openStream());
+			} catch (IOException e) {e.printStackTrace();}
 			ShowReportsController showReportsController = loader.getController();
 			showReportsController.loadGraphDetails(choiceBoxGraph.getValue(), choiceBoxYear.getValue(), choiceBoxMonth.getValue());
 			showReportsController.loadGraph((byte[]) msg.getArguments().get(0)); // Load the graph data.

@@ -107,9 +107,7 @@ public class SubscriberListController{
 	 		    		subscriberReaderCardController.loadChoiceBox();
 	 		    		subscriberReaderCardController.loadSubscriber(rowData);
 	 		    		subscriberReaderCardController.loadBorrows(rowData);
-	 		    		try {
-	 		    			IPController.client.nextPage(loader, root, event, "Subscriber's Reader Card");
-						} catch (IOException e) {e.printStackTrace();}
+	 		    		IPController.client.nextPage(loader, root, event, "Subscriber's Reader Card");
 	 		        }
 	 		    });
 	 	    return rowa ;
@@ -120,12 +118,14 @@ public class SubscriberListController{
 	 * Handles the "Exit" button action. Navigates back to the librarian's main menu screen.
 	 * 
 	 * @param event The action event triggered by clicking the "Back" button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		// Load the LibrarianClientGUIFrame to return to the librarian's main menu.
 		FXMLLoader loader = new FXMLLoader();
-		Pane root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		Pane root = null;
+		try {
+			root = loader.load(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml").openStream());
+		} catch (IOException e) {e.printStackTrace();}
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");

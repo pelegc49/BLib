@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.io.IOException;
+
 import client.BLibClient;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -49,7 +51,6 @@ public class IPController {
 	 * the provided IP address and port.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Send button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void sendBtn(Event event) {
 		String ip; // Holds the entered IP address.
@@ -97,11 +98,13 @@ public class IPController {
 	 * stage.
 	 * 
 	 * @param primaryStage The primary stage of the application.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		primaryStage.setOnCloseRequest((E) -> System.exit(0)); // Ensures the application exits on close.
-		Parent root = FXMLLoader.load(getClass().getResource("/gui/client/IPFrame.fxml")); // Loads the FXML file.
+		Parent root = null;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/gui/client/IPFrame.fxml"));
+		} catch (IOException e) {e.printStackTrace();} // Loads the FXML file.
 		Scene scene = new Scene(root); // Creates the scene with the loaded FXML.
 		scene.getStylesheets().add(getClass().getResource("/gui/client/stylesheet.css").toExternalForm()); // Adds the stylesheet
 		primaryStage.setTitle("IP"); // Sets the window title.
@@ -113,9 +116,8 @@ public class IPController {
 	 * Handles the Exit button click event. Closes the application.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Exit button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void exitBtn(ActionEvent event) throws Exception {
+	public void exitBtn(ActionEvent event) {
 		System.out.println("Exit Successfully"); // Logs the exit event.
 		System.exit(0); // Exits the application.
 	}

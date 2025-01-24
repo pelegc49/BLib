@@ -55,9 +55,8 @@ public class AuthenticationController {
      * Validates the input fields, processes the credentials, and redirects the user to the appropriate interface.
      * 
      * @param event The event triggered by the user's action.
-     * @throws IOException If an error occurs while loading the FXML files.
      */
-    public void sendBtn(Event event) throws IOException {
+    public void sendBtn(Event event) {
         String id; // To store the entered ID.
         int digit_id = 0; // Variable to hold the parsed numeric value of the ID.
         id = txtId.getText(); // Get the entered ID from the TextField.
@@ -85,7 +84,10 @@ public class AuthenticationController {
                     // Handle login for subscribers.
                     subscriber = IPController.client.getSubscriber(digit_id);
                     FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberClientGUIFrame" + ".fxml"));
-                    Parent root1 = loader1.load();
+					Parent root1 = null;
+					try {
+						root1 = loader1.load();
+					} catch (IOException e) {e.printStackTrace();}
                     SubscriberClientGUIController subscriberClientGUIController = loader1.getController();
                     subscriberClientGUIController.loadSubscriber();
                     IPController.client.nextPage(loader1, root1, event, "Subscriber Main Menu");
@@ -100,7 +102,10 @@ public class AuthenticationController {
                     // Handle login for librarians.
                     librarianName = name;
                     FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/gui/client/" + "LibrarianClientGUIFrame" + ".fxml"));
-                    Parent root2 = loader2.load();
+					Parent root2 = null;
+					try {
+						root2 = loader2.load();
+					} catch (IOException e) {e.printStackTrace();}
                     LibrarianClientGUIController librarianClientGUIController = loader2.getController();
                     librarianClientGUIController.loadLibrarian();
                     librarianClientGUIController.updateMessageCount();
@@ -114,9 +119,8 @@ public class AuthenticationController {
      * Enables the Enter key to trigger the "Send" button's functionality.
      * 
      * @param event The KeyEvent triggered when a key is pressed.
-     * @throws IOException If an error occurs while handling the event.
      */
-    public void handleKey(KeyEvent event) throws IOException {
+    public void handleKey(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)) {
             sendBtn(event); // Call the send button functionality when Enter is pressed.
         }
@@ -127,11 +131,13 @@ public class AuthenticationController {
      * Redirects the user to the search interface as a guest.
      * 
      * @param event The ActionEvent triggered by the guest button click.
-     * @throws Exception If an error occurs while loading the FXML file.
      */
-    public void guestBtn(ActionEvent event) throws Exception {
+    public void guestBtn(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader();
-        Pane root = loader.load(getClass().getResource("/gui/client/" + "SearchFrame" + ".fxml").openStream());
+        Pane root = null;
+		try {
+			root = loader.load(getClass().getResource("/gui/client/" + "SearchFrame" + ".fxml").openStream());
+		} catch (IOException e) {e.printStackTrace();}
         IPController.client.nextPage(loader, root, event, "Guest - Search");
     }
 }

@@ -98,9 +98,7 @@ public class SearchController {
 		    		BookTitleController bookTitleController = loader.getController();
 		    		bookTitleController.loadBookTitle(rowData); // Load book details into the controller.
 		    		bookTitleController.loadOrderButton(title[0]); // Set the order button based on current user.
-		    		try {
-						IPController.client.nextPage(loader, root, event, title[0] + " - " + rowData.getTitleName());
-					} catch (IOException e) { e.printStackTrace(); }
+					IPController.client.nextPage(loader, root, event, title[0] + " - " + rowData.getTitleName());
 		        }
 		    });
 		    return row;
@@ -113,16 +111,18 @@ public class SearchController {
 	 * or returns to the authentication page if neither is the case.
 	 * 
 	 * @param event The action event triggered by clicking the back button.
-	 * @throws Exception If an error occurs during page navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event){
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
 	    
 	    if(currentTitle.equals("Subscriber - Search")) {
 	    	// Navigate to Subscriber Main Menu.
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
-	    	Parent root = loader.load();
+	    	Parent root = null;
+			try {
+				root = loader.load();
+			} catch (IOException e) {e.printStackTrace();}
 	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
 	    	subscriberClientGUIController.loadSubscriber();
 	    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
@@ -130,7 +130,10 @@ public class SearchController {
 	    else if(currentTitle.equals("Librarian - Search")) {
 	    	// Navigate to Librarian Main Menu.
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
-	    	Parent root = loader.load();
+	    	Parent root = null;
+			try {
+				root = loader.load();
+			} catch (IOException e) {e.printStackTrace();}
 			LibrarianClientGUIController librarianClientGUIController = loader.getController();
 			librarianClientGUIController.loadLibrarian();
 			IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
@@ -138,7 +141,10 @@ public class SearchController {
 	    else {
 	    	// Navigate to Authentication page.
 	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
-	    	Parent root = loader.load();
+	    	Parent root = null;
+			try {
+				root = loader.load();
+			} catch (IOException e) {e.printStackTrace();}
 			AuthenticationController authenticationController = loader.getController();
 			authenticationController.loadImage();
 			IPController.client.nextPage(loader, root, event, "Authentication");

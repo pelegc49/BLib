@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -61,12 +62,14 @@ public class ViewMessagesController {
 	 * Handles the "Back" button action. Navigates the user back to the Librarian Main Menu.
 	 * 
 	 * @param event The action event triggered by clicking the back button.
-	 * @throws Exception If an error occurs during page navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		// Load the Librarian Main Menu page.
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		
 		// Update the message count in the main menu and load the librarian interface.
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();

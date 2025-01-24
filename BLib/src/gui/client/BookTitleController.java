@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -61,9 +62,8 @@ public class BookTitleController {
 	 * Handles the Exit button click event. Navigates back to the previous screen.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Exit button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		// Get the current stage and title
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
@@ -79,7 +79,10 @@ public class BookTitleController {
 	    }
 		// Load the search frame and navigate back to it
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		IPController.client.nextPage(loader, root, event, title);
 	}
 
@@ -87,15 +90,17 @@ public class BookTitleController {
 	 * Handles the Order button click event. Allows the user to order the book.
 	 *
 	 * @param event The ActionEvent triggered by clicking the Order button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void orderBtn(ActionEvent event) throws Exception {
+	public void orderBtn(ActionEvent event){
 		// Try to order the book
 		Message msg = IPController.client.orderTitle(AuthenticationController.subscriber, bt);
 		if(msg.getCommand().equals("success")) {
 			// On success, navigate back to the search screen with a success message
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
-			Parent root = loader.load();
+			Parent root = null;
+			try {
+				root = loader.load();
+			} catch (IOException e) {e.printStackTrace();}
     		SearchController searchController = loader.getController();
     		searchController.display("Order succeed.", Color.GREEN);
     		IPController.client.nextPage(loader, root, event, "Subscriber - Search");

@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map.Entry;
@@ -178,11 +179,13 @@ public class SubscriberReaderCardController {
 	 * Navigates to the subscriber's borrowing history view when the history button is clicked.
 	 * 
 	 * @param event The action event triggered by clicking the history button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void historyBtn(ActionEvent event) throws Exception {
+	public void historyBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		ViewHistoryController viewHistoryController = loader.getController();
 		viewHistoryController.loadHistory(subscriber);
 		IPController.client.nextPage(loader, root, event, "Librarian - View History");
@@ -192,11 +195,13 @@ public class SubscriberReaderCardController {
 	 * Navigates back to the previous page when the back button is clicked.
 	 * 
 	 * @param event The action event triggered by clicking the back button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		IPController.client.nextPage(loader, root, event, "List of Subscribers");
 	}
 }

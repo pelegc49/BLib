@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map.Entry;
@@ -58,12 +59,14 @@ public class ExtendTimeController {
 	 * Handles the "Exit" button action. Navigates the user back to the subscriber's main menu.
 	 * 
 	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event){
     	// Load the subscriber's main menu interface
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
-    	Parent root = loader.load();
+    	Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
     	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
     	subscriberClientGUIController.loadSubscriber();
     	// Navigate to the main menu

@@ -66,7 +66,7 @@ public class ShowReportsController {
 	 * 
 	 * @param event The action event triggered by clicking the button.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event){
 		// Close the current window (hide it)
 		((Node) event.getSource()).getScene().getWindow().hide();
 	}

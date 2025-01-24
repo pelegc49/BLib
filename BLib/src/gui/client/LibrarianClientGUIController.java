@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -71,11 +72,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * "ViewMessagesFrame" to display the librarian's messages.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void messagesBtn(ActionEvent event) throws Exception {
+	public void messagesBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewMessagesFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		ViewMessagesController viewMessagesController = loader.getController();
 		viewMessagesController.loadMessages(); // Load messages.
 		cleanUp(); // Clean up before transitioning to the next page.
@@ -86,11 +89,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * Handles the "Back" button action. It returns the user to the authentication page.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		AuthenticationController authenticationController = loader.getController();
 		authenticationController.loadImage(); // Load authentication screen.
 		cleanUp(); // Clean up before transitioning to the next page.
@@ -101,11 +106,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * Handles the "Sign Up" button action. It opens the sign-up page for subscribers.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void signUpBtn(ActionEvent event) throws Exception {
+	public void signUpBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SignUpFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		cleanUp(); // Clean up before transitioning to the next page.
 		IPController.client.nextPage(loader, root, event, "Sign Up Subscriber");
 	}
@@ -114,11 +121,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * Handles the "Subscribers" button action. It transitions the user to the subscriber list page.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void subscribersBtn(ActionEvent event) throws Exception {
+	public void subscribersBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		cleanUp(); // Clean up before transitioning to the next page.
 		IPController.client.nextPage(loader, root, event, "List of Subscribers");
 	}
@@ -127,11 +136,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * Handles the "Search" button action. It opens the search page for books or titles.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void searchBtn(ActionEvent event) throws Exception {
+	public void searchBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		cleanUp(); // Clean up before transitioning to the next page.
 		IPController.client.nextPage(loader, root, event, "Librarian - Search");
 	}
@@ -140,11 +151,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * Handles the "Book Actions" button action. It transitions the user to the book actions page.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void bookActionsBtn(ActionEvent event) throws Exception {
+	public void bookActionsBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "BookActionsFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		cleanUp(); // Clean up before transitioning to the next page.
 		IPController.client.nextPage(loader, root, event, "Book Actions");
 	}
@@ -153,11 +166,13 @@ public class LibrarianClientGUIController implements Initializable{
 	 * Handles the "Reports" button action. It opens the report selection page.
 	 *
 	 * @param event The ActionEvent triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void ReportsBtn(ActionEvent event) throws Exception {
+	public void ReportsBtn(ActionEvent event){
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ReportsFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		ReportsController reportsController = loader.getController();
 		reportsController.loadChoiceBoxs(); // Load available reports.
 		cleanUp(); // Clean up before transitioning to the next page.

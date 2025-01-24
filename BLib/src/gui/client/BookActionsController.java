@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -76,7 +78,7 @@ public class BookActionsController {
 	 *
 	 * @param event The ActionEvent triggered by clicking the Return button.
 	 */
-	public void returnBtn(ActionEvent event) throws Exception {
+	public void returnBtn(ActionEvent event){
 		Integer bookID;
 		// Validate the input fields for the book ID
 	    try {
@@ -109,10 +111,13 @@ public class BookActionsController {
 	 *
 	 * @param event The ActionEvent triggered by clicking the Exit button.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event) {
 		// Load the Librarian's main menu interface
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "LibrarianClientGUIFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		LibrarianClientGUIController librarianClientGUIController = loader.getController();
 		librarianClientGUIController.loadLibrarian();
 		// Navigate to the Librarian's main menu

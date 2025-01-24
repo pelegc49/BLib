@@ -24,9 +24,8 @@ public class ClientGUI extends Application {
      * It invokes the JavaFX `launch` method to initialize and start the GUI application.
      * 
      * @param args Command-line arguments (not used in this application).
-     * @throws Exception If an error occurs during application launch.
      */
-    public static void main(String args[]) throws Exception {
+    public static void main(String args[]) {
         launch(args); // Start the JavaFX application lifecycle.
     }
 
@@ -35,10 +34,9 @@ public class ClientGUI extends Application {
      * It sets up the primary stage (main window) of the JavaFX application and initializes the GUI.
      * 
      * @param primaryStage The primary stage (window) for this application.
-     * @throws Exception If an error occurs during GUI initialization.
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         IPController aFrame = new IPController(); // Create an instance of the IPController class.
         aFrame.start(primaryStage); // Start the GUI by passing the primary stage to the IPController.
     }

@@ -1,5 +1,7 @@
 package gui.client;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -45,11 +47,13 @@ public class SubscriberClientGUIController {
 	 * Handles the "Back" button action. Navigates back to the authentication screen.
 	 * 
 	 * @param event The action event triggered by clicking the "Back" button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event)  {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml")); 
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		AuthenticationController authenticationController = loader.getController();
 		authenticationController.loadImage();
 		IPController.client.nextPage(loader, root, event, "Authentication");
@@ -59,11 +63,13 @@ public class SubscriberClientGUIController {
 	 * Handles the "Extend Time" button action. Navigates to the page where the subscriber can extend their borrow time.
 	 * 
 	 * @param event The action event triggered by clicking the "Extend Time" button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void extendTimeBtn(ActionEvent event) throws Exception {
+	public void extendTimeBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ExtendTimeFrame" +".fxml")); 
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		ExtendTimeController extendTimeController = loader.getController();
 		extendTimeController.loadBorrows(AuthenticationController.subscriber);
 		IPController.client.nextPage(loader, root, event, "Subscriber - Extend Time");
@@ -73,11 +79,13 @@ public class SubscriberClientGUIController {
 	 * Handles the "Update Details" button action. Navigates to the page where the subscriber can update their details.
 	 * 
 	 * @param event The action event triggered by clicking the "Update Details" button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void updateDetailsBtn(ActionEvent event) throws Exception {
+	public void updateDetailsBtn(ActionEvent event) {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "UpdateDetailsFrame" +".fxml")); 
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		UpdateDetailsController updateDetailsController = loader.getController();
 		updateDetailsController.loadSubscriber(AuthenticationController.subscriber);
 		IPController.client.nextPage(loader, root, event, "Update Details");
@@ -87,11 +95,13 @@ public class SubscriberClientGUIController {
 	 * Handles the "View History" button action. Navigates to the page where the subscriber can view their borrowing history.
 	 * 
 	 * @param event The action event triggered by clicking the "View History" button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void viewHistoryBtn(ActionEvent event) throws Exception {
+	public void viewHistoryBtn(ActionEvent event)  {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		ViewHistoryController viewHistoryController = loader.getController();
 		viewHistoryController.loadHistory(AuthenticationController.subscriber);
 		IPController.client.nextPage(loader, root, event, "Subscriber - View History");
@@ -101,11 +111,13 @@ public class SubscriberClientGUIController {
 	 * Handles the "Search" button action. Navigates to the page where the subscriber can search for resources.
 	 * 
 	 * @param event The action event triggered by clicking the "Search" button.
-	 * @throws Exception If an error occurs during navigation.
 	 */
-	public void searchBtn(ActionEvent event) throws Exception {
+	public void searchBtn(ActionEvent event)  {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SearchFrame" +".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		IPController.client.nextPage(loader, root, event, "Subscriber - Search");
 	}
 }

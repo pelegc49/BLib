@@ -1,5 +1,6 @@
 package gui.client;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +78,6 @@ public class UpdateDetailsController {
 	 * validates them, and saves the updated information if valid.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Save button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void saveBtn(Event event) {
 		boolean changed = false;
@@ -130,11 +130,13 @@ public class UpdateDetailsController {
 	 * This method navigates the user back to the subscriber's main menu screen.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Close button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
-	public void backBtn(ActionEvent event) throws Exception {
+	public void backBtn(ActionEvent event){
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberClientGUIFrame" + ".fxml"));
-		Parent root = loader.load();
+		Parent root = null;
+		try {
+			root = loader.load();
+		} catch (IOException e) {e.printStackTrace();}
 		SubscriberClientGUIController subscriberClientGUIController = loader.getController();
 		subscriberClientGUIController.loadSubscriber();
 		IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
