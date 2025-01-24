@@ -14,7 +14,7 @@
     </padding>
     <children>
       <Label styleClass="title-label" text="Book Actions" />
-      <VBox alignment="CENTER" maxWidth="381.0" prefHeight="210.0" prefWidth="381.0">
+      <VBox alignment="CENTER" maxWidth="635.0" prefHeight="210.0" prefWidth="635.0">
          <children>
               <!-- Book ID -->
               <HBox alignment="CENTER" spacing="10" styleClass="row-container">
@@ -57,7 +57,7 @@
               </HBox>
       
               <!-- Back Button -->
-              <HBox alignment="CENTER_RIGHT" styleClass="back-button-container">
+              <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="569.0" styleClass="back-button-container">
                <children>
             
                     <!-- Error Label -->
@@ -66,7 +66,10 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Label>
-                      <Button fx:id="btnBack" onAction="#backBtn" styleClass="button-secondary" text="Back" />
+                      <Button fx:id="btnBack" onAction="#backBtn" styleClass="button-secondary" text="Back">
+                     <HBox.margin>
+                        <Insets right="190.0" />
+                     </HBox.margin></Button>
                </children>
                <VBox.margin>
                   <Insets top="20.0" />

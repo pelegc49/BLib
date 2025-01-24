@@ -23,7 +23,7 @@
                                   <Button fx:id="btnSend" onAction="#sendBtn" styleClass="button" text="Sign in" />
                               </children>
                           </HBox>
-                  <Label id="lblError" fx:id="lblError" />
+                  <Label id="lblError" fx:id="lblError" styleClass="error-label"/>
                       </children>
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="505.0" prefWidth="488.0" styleClass="image-container" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
