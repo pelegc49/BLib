@@ -220,7 +220,6 @@ public class BLibServer extends AbstractServer {
 					Order o = BLibDBC.getInstance().getOrderByCopy((Integer) args.get(1));
 					Subscriber sub = BLibDBC.getInstance().getSubscriberByID((Integer) args.get(0));
 					BookCopy copy = BLibDBC.getInstance().getCopyByID((Integer) args.get(1));
-
 					// Check if the subscriber can borrow the book copy
 					err = canBorrow(sub, copy);
 					if (err != null) {
@@ -235,11 +234,11 @@ public class BLibServer extends AbstractServer {
 							client.sendToClient(new Message("failed", "this copy is ordered")); // Send success message
 							break;
 						} else {
+							
 							// Cancel the order if the current subscriber is the one who ordered it
 							BLibDBC.getInstance().cancelCommand("cancelOrder", "%d".formatted((Integer) args.get(1)));// Canceling
 																														// the
-																														// schedule
-							execute(new Message("cancelOrder", (Integer) args.get(1))); // Canceling the order
+							execute(new Message("cancelOrder", "%d".formatted((Integer) args.get(1)))); // Canceling the order
 						}
 					}
 

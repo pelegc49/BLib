@@ -85,19 +85,17 @@ public class MessageController {
 	public void sendEmail(Subscriber subTo, String subject, String text) {
 		String emailTo = subTo.getEmail();
 		System.out.println("sending email to " + emailTo);
-
+		
         try {
             MimeMessage msg = new MimeMessage(session);
             msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
 			msg.addHeader("format", "flowed");
 			msg.addHeader("Content-Transfer-Encoding", "8bit");
-            
 			msg.setSubject(subject, "UTF-8");
 			
 			msg.setText(text, "UTF-8");
 			
 			msg.setSentDate(new Date());
-			
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo, false));
 			Transport.send(msg);
 			System.out.println("email sent");
