@@ -35,8 +35,6 @@ public class AuthenticationController {
     @FXML
     private PasswordField txtPassword; // PasswordField for the user to enter their password.
     @FXML
-    private Button btnExit = null; // Button for exiting the application.
-    @FXML
     private Button btnSend = null; // Button for submitting the login form.
     @FXML
     private Button btnGuest = null; // Button for proceeding as a guest.

@@ -27,10 +27,10 @@ public class LibrarianClientGUIController implements Initializable{
 	private Label lblTitle; // Label to display librarian's welcome message.
 	@FXML
 	private Button btnBack = null; 
-	@FXML
-	private Button btnOrder = null;
-	@FXML
-	private Button btnExtendBook = null; 
+//	@FXML
+//	private Button btnOrder = null;
+//	@FXML
+//	private Button btnExtendBook = null;
 	@FXML
 	private Button btnUpdateDetails = null; 
 	@FXML
@@ -45,8 +45,8 @@ public class LibrarianClientGUIController implements Initializable{
 	private Button btnReports = null;
 	@FXML
 	private Button btnBorrowRep = null;
-	@FXML
-	private Button messagesBtn = null; // Button for navigating to the messages section.
+//	@FXML
+//	private Button messagesBtn = null; // Button for navigating to the messages section.
 	@FXML
 	private Label lblNumMessages; // Label to display the number of unread messages.
 
