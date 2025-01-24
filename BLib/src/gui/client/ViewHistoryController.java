@@ -19,57 +19,78 @@ import logic.Activity;
 import logic.Subscriber; 
 
 /**
- * The AuthenticationController class handles user authentication. 
- * It manages the login process, including ID and password validation, 
- * and transitions the user to the main application interface upon successful login.
+ * The ViewHistoryController class is responsible for displaying the history of activities 
+ * performed by a subscriber. It loads the subscriber's activity history from the server 
+ * and presents it in a table with details such as the type, description, and date of the activity.
  */
-public class ViewHistoryController{
-	private Subscriber subscriber;
-	@FXML
-	private Button btnBack = null; // Button for exiting the application.
-	@FXML
-	private TableView<Activity> historyTable;
-	@FXML
-	private TableColumn<Activity, String> typeColumn;
-	@FXML
-	private TableColumn<Activity, String> descriptionColumn;
-	@FXML
-	private TableColumn<Activity, LocalDate> dateColumn;
+public class ViewHistoryController {
 	
+	private Subscriber subscriber; // Subscriber object to hold the current subscriber's information.
+	
+	@FXML
+	private Button btnBack = null; // Button to navigate back to the previous screen.
+	
+	@FXML
+	private TableView<Activity> historyTable; // TableView to display the subscriber's activity history.
+	
+	@FXML
+	private TableColumn<Activity, String> typeColumn; // Column to display the type of activity.
+	
+	@FXML
+	private TableColumn<Activity, String> descriptionColumn; // Column to display the description of the activity.
+	
+	@FXML
+	private TableColumn<Activity, LocalDate> dateColumn; // Column to display the date of the activity.
+
+	/**
+	 * Loads the activity history of the subscriber and displays it in the historyTable.
+	 * 
+	 * @param subscriber The subscriber whose activity history is to be loaded.
+	 */
 	public void loadHistory(Subscriber subscriber) {
 		this.subscriber = subscriber;
+		// Retrieve the subscriber's activity history from the server.
 		List<Activity> activities = IPController.client.getSubscriberHistory(subscriber.getId());
-		ObservableList<Activity> data;
-		data = FXCollections.observableArrayList();
-		for(Activity ac : activities) {
+		ObservableList<Activity> data = FXCollections.observableArrayList();
+		
+		// Populate the table with the retrieved activity data.
+		for (Activity ac : activities) {
 			data.add(ac);
 		}
+		
+		// Set up the columns to display activity details.
 		typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
 		descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 		dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+		
+		// Bind the data to the table and enable sorting by date.
 		historyTable.setItems(data);
 		historyTable.getSortOrder().add(dateColumn);
 	}
 	
 	/**
-	 * Handles the "Exit" button action. Terminates the application.
+	 * Handles the "Back" button click event. Navigates the user back to the previous screen.
+	 * The navigation depends on the current screen the user is on.
 	 * 
-	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during termination.
+	 * @param event The action event triggered by clicking the back button.
+	 * @throws Exception If an error occurs during the navigation process.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-		
+		// Get the current window stage and title.
 		Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    String currentTitle = currentStage.getTitle();
-	    if(currentTitle.split(" ")[0].equals("Subscriber")) {
-	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
+	    
+	    // If the current screen is the subscriber's main menu, navigate to it.
+	    if (currentTitle.split(" ")[0].equals("Subscriber")) {
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberClientGUIFrame" + ".fxml"));
 	    	Parent root = loader.load();
 	    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
 	    	subscriberClientGUIController.loadSubscriber();
 	    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	    }
-	    else{
-	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberReaderCardFrame" +".fxml"));
+	    // Otherwise, navigate to the subscriber's reader card screen.
+	    else {
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberReaderCardFrame" + ".fxml"));
 	    	Parent root = loader.load();
 			SubscriberReaderCardController subscriberReaderCardController = loader.getController();
 			subscriberReaderCardController.loadSubscriber(subscriber);
@@ -77,6 +98,4 @@ public class ViewHistoryController{
 			IPController.client.nextPage(loader, root, event, "Subscriber's Reader Card");
 	    }
 	}
-
-
 }

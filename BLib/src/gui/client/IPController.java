@@ -15,6 +15,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * The IPController class handles the initial connection to the server, 
+ * including validating the IP address and port input, and navigating 
+ * to the authentication screen once the connection is successful.
+ */
 public class IPController {
 
 	// Static client instance for handling server communication.
@@ -22,13 +27,13 @@ public class IPController {
 
 	// UI elements defined in the FXML file.
 	@FXML
-	private Label lblError; // Label to display error messages.
+	private Label lblError; // Label for displaying error messages.
 	@FXML
-	private TextField txtIp; // Text field to input the server IP address.
+	private TextField txtIp; // TextField for entering the server IP address.
 	@FXML
-	private TextField txtPort; // Text field for port.
+	private TextField txtPort; // TextField for entering the server port.
 	@FXML
-	private Button btnExit = null; // Button to exit the application.
+	private Button btnExit = null; // Button for exiting the application.
 	@FXML
 	private Button btnSend = null; // Button to initiate the connection to the server.
 
@@ -41,7 +46,7 @@ public class IPController {
 
 	/**
 	 * Handles the Send button click event. Attempts to connect to the server using
-	 * the provided IP address.
+	 * the provided IP address and port.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Send button.
 	 * @throws Exception If an error occurs during the operation.
@@ -62,9 +67,9 @@ public class IPController {
 		}
 		else {
 			try {
-				digit_port = Integer.parseInt(txtPort.getText()); // Validates that the ID contains only digits.
+				digit_port = Integer.parseInt(txtPort.getText()); // Validates that the Port contains only digits.
 			} catch (Exception e) {
-				IPController.client.display(lblError,"Port must have only digits", Color.RED); // Displays an error message for invalid ID.
+				IPController.client.display(lblError,"Port must have only digits", Color.RED); // Displays an error message for invalid Port.
 				return;
 			}
 			try {
@@ -72,6 +77,7 @@ public class IPController {
 				client = new BLibClient(ip, digit_port);
 				System.out.println("IP Entered Successfully");
 
+				// Load the Authentication screen if the connection is successful.
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "AuthenticationFrame" +".fxml"));
 				Parent root = loader.load();
 				AuthenticationController authenticationController = loader.getController();
@@ -114,18 +120,26 @@ public class IPController {
 		System.exit(0); // Exits the application.
 	}
 	
-	// Enables the enter key to activate the OK button
+	/**
+	 * Enables the enter key to trigger the send button functionality.
+	 *
+	 * @param event The KeyEvent triggered by pressing a key.
+	 */
 	public void handleKey(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)) {
-			sendBtn(event);
+			sendBtn(event); // Calls sendBtn when ENTER key is pressed.
 		}
 	}
 
-	// Displays an error message in the specified color.
+	/**
+	 * Displays an error message with the specified color in the error label.
+	 *
+	 * @param lblError The Label to display the error message in.
+	 * @param message The error message to display.
+	 * @param color The color to display the error message in.
+	 */
 	public void display(Label lblError, String message, Color color) {
-		lblError.setText(message);
-		lblError.setTextFill(color);
+		lblError.setText(message); // Sets the error message in the label.
+		lblError.setTextFill(color); // Sets the text color for the error message.
 	}
-	
-
 }

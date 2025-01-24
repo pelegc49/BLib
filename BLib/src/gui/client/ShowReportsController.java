@@ -14,31 +14,41 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 /**
- * The AuthenticationController class handles user authentication. 
- * It manages the login process, including ID and password validation, 
- * and transitions the user to the main application interface upon successful login.
+ * The ShowReportsController class handles displaying reports such as graphs.
  */
 public class ShowReportsController {
-	//private Subscriber subscriber; // Static reference to the currently authenticated subscriber.
+
 	@FXML
-	private Button btnBack = null; // Button to exit the application.
+	private Button btnBack = null; // Button for going back to the previous screen
 	@FXML
-	private Label lblTitle;
+	private Label lblTitle; // Label for the title of the report
 	@FXML
-	private Text txtYear;
+	private Text txtYear; // Text to display the year
 	@FXML
-	private Text txtMonth;
+	private Text txtMonth; // Text to display the month
 	@FXML
-	private ImageView imgGraph;
+	private ImageView imgGraph; // ImageView to display the graph
 	@FXML
-	private HBox hboxCenter;
+	private HBox hboxCenter; // HBox layout for centering the graph
 	@FXML
-	private VBox vboxCenter;
+	private VBox vboxCenter; // VBox layout for the main container
 	
+	/**
+	 * Loads the report details into the title.
+	 * 
+	 * @param name  The name of the report (e.g., borrowing report)
+	 * @param year  The year of the report
+	 * @param month The month of the report
+	 */
 	public void loadGraphDetails(String name, int year, int month) {
-		lblTitle.setText(name+" "+month+"/"+year);
+		lblTitle.setText(name + " " + month + "/" + year);
 	}
 
+	/**
+	 * Loads the graph image into the ImageView.
+	 * 
+	 * @param image The byte array representing the graph image.
+	 */
 	public void loadGraph(byte[] image) {
 		ByteArrayInputStream byteStream = new ByteArrayInputStream(image);
 		Image fxImage = new Image(byteStream);
@@ -48,16 +58,16 @@ public class ShowReportsController {
 		imgGraph.setPreserveRatio(true);
 		imgGraph.setSmooth(true);
 	    hboxCenter.prefWidthProperty().bind(vboxCenter.widthProperty());
-	    hboxCenter.prefHeightProperty().bind(vboxCenter.heightProperty().subtract(100));
+	    hboxCenter.prefHeightProperty().bind(vboxCenter.heightProperty().subtract(100)); // Prevents the image from being too small
 	}
 
 	/**
-	 * Handles the "Exit" button action. Terminates the application.
+	 * Handles the "Back" button action. Closes the current window.
 	 * 
 	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during termination.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
+		// Close the current window (hide it)
 		((Node) event.getSource()).getScene().getWindow().hide();
 	}
 }

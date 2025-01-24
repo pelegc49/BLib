@@ -54,9 +54,9 @@ public class SignUpController {
 
 
 	/**
-	 * Validates and saves the updated subscriber details.
+	 * Handles the "Sign Up" button action. Validates the user input and saves the subscriber details.
 	 * 
-	 * @param event The ActionEvent triggered by clicking the Save button.
+	 * @param event The ActionEvent triggered by clicking the Sign Up button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void signUpBtn(Event event) {
@@ -73,7 +73,7 @@ public class SignUpController {
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(txtName.getText());
 			if(!matcher.matches()) {
-				IPController.client.display(lblError,"Name must have only english letters", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Name must have only english letters", Color.RED); // Displays an error message for invalid name.
 				return;
 			}
 		}
@@ -103,7 +103,7 @@ public class SignUpController {
 			Matcher matcher = pattern.matcher(txtEmail.getText());
 			
 			if(!matcher.matches()) {
-				IPController.client.display(lblError,"Email not valid", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError,"Email not valid", Color.RED); // Displays an error message for invalid email.
 				return;
 			}
 		}
@@ -112,26 +112,26 @@ public class SignUpController {
 			return;
 		}
 		
-			// Updates the subscriber's email and phone details.
+		// Creates a new subscriber object with the provided details.
 		Subscriber subscriber = new Subscriber(id, txtName.getText(), txtPhone.getText(), txtEmail.getText());
 
 		// Attempts to save the updated subscriber details.
 		String password = IPController.client.registerSubscriber(subscriber);
 		if (password != null) {
-			IPController.client.display(lblError,"Account successfully created!", Color.GREEN); // Displays a success message if save is successful.
+			IPController.client.display(lblError,"Account successfully created!", Color.GREEN); // Displays a success message if the account is created successfully.
 			lblPassword.setVisible(true);
 			txtPassword.setText(password);
 			return;
 		}
-		// Displays an error message if save fails.
+		// Displays an error message if the account creation fails.
 		IPController.client.display(lblError,"Account with such ID already exists", Color.RED);
 		return;
 	}
 
 	/**
-	 * Closes the application when the Close button is clicked.
+	 * Handles the "Back" button action. Navigates back to the main librarian menu.
 	 * 
-	 * @param event The ActionEvent triggered by clicking the Close button.
+	 * @param event The ActionEvent triggered by clicking the Back button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
@@ -142,7 +142,11 @@ public class SignUpController {
 		IPController.client.nextPage(loader, root, event, "Librarian Main Menu");
 	}
 	
-	// Enables the enter key to activate the OK button
+	/**
+	 * Enables the "Enter" key to trigger the sign-up action, allowing users to press Enter instead of clicking the button.
+	 * 
+	 * @param event The KeyEvent triggered by pressing a key.
+	 */
 	public void handleKey(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)) {
 			signUpBtn(event);

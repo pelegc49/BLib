@@ -1,3 +1,5 @@
+
+
 package logic;
 
 import java.io.Serializable;
@@ -5,95 +7,118 @@ import java.time.LocalDate;
 
 import gui.client.IPController;
 
+/**
+ * Represents a single copy of a book in the library.
+ * This class stores details about the book copy, including its title, copy ID, 
+ * shelf location, and borrowing status.
+ * Implements {@link Serializable} to allow serialization of instances.
+ */
 public class BookCopy implements Serializable {
 
-	// Private member variables for storing book details
-	private BookTitle title;
-	private int copyID; // ID of the title
-	private String shelf; // Shelf number where the book is located
-	private boolean isBorrowed; // Whether the book is currently borrowed or not
-	
+    // Private member variables for storing book details
+    private BookTitle title; // The title details of the book
+    private int copyID; // Unique ID for this book copy
+    private String shelf; // Shelf location of the book
+    private boolean isBorrowed; // Indicates whether the book is currently borrowed or not
 
-//	// override equals to ensure Set works as expected
-//	@Override
-//	public boolean equals(Object obj) {
-//		if(obj instanceof BookCopy) {
-//			return titleID == ((BookCopy)obj).titleID;
-//		}
-//		return false;
-//	}
-//	
-	
-	// Constructor to initialize a new Book object with all the necessary details
-	public BookCopy(BookTitle title,int copyID, String shelf, boolean isBorrowed) {
-		this.title = title; 
-		this.copyID = copyID; // Set the book ID
-		this.shelf = shelf; // Set the shelf number
-		this.isBorrowed = isBorrowed; // Set whether the book is borrowed
-	}
+    /**
+     * Constructs a BookCopy instance with all necessary details.
+     *
+     * @param title      The title of the book.
+     * @param copyID     The unique ID of this book copy.
+     * @param shelf      The shelf location of the book.
+     * @param isBorrowed The borrowing status of the book (true if borrowed, false otherwise).
+     */
+    public BookCopy(BookTitle title, int copyID, String shelf, boolean isBorrowed) {
+        this.title = title; // Set the title of the book
+        this.copyID = copyID; // Set the copy ID
+        this.shelf = shelf; // Set the shelf location
+        this.isBorrowed = isBorrowed; // Set the borrowing status
+    }
 
-	public int getCopyID() {
-		return copyID;
-	}
-	
-	public String getShelf() {
-		if (isBorrowed)
-			return "-";
-		return shelf;
-	}
-	
-	public String getDueDate() {
-		// ruben this is not effective
-		if (isBorrowed) {
-			return IPController.client.getCopyActiveBorrow(this).getDueDate().toString();
-		}
-		return "-";
-	}
-	
-	public BookTitle getTitle() {
-		return title;
-	}
-	
-	// Getter method to check if the book is borrowed
-	public Boolean isBorrowed() {
-		return isBorrowed; // Return whether the book is borrowed
-	}
-	
-	// Setter method for the borrowed status
-	public void setBorrowed(boolean isBorrowed) {
-		this.isBorrowed = isBorrowed; // Set the borrowed status of the book
-	}
-	
-	public String isAvailable() {
-		return isBorrowed ? "Not available" : "Available";
-	}
-	
-//	// Getter method for the book name
-//	public String getBookName() {
-//		return bookName; // Return the book name
-//	}
-//	// Getter method for the book description
-//	public String getBookDescription() {
-//		return bookDescription; // Return the book description
-//	}
-	
-//	// Setter method for the book description
-//	public void setBookDescription(String bookDescription) {
-//		this.bookDescription = bookDescription; // Set the book description
-//	}
-//	// Setter method for the book name
-//	public void setBookName(String bookName) {
-//		this.bookName = bookName; // Set the book name
-//	}
-//
-//	// Getter method for the author's name
-//	public String getAuthorName() {
-//		return authorName; // Return the author's name
-//	}
-//
-//	// Setter method for the author's name
-//	public void setAuthorName(String authorName) {
-//		this.authorName = authorName; // Set the author's name
-//	}
+    /**
+     * Returns the unique ID of this book copy.
+     *
+     * @return The copy ID.
+     */
+    public int getCopyID() {
+        return copyID;
+    }
 
+    /**
+     * Returns the shelf location of the book.
+     * If the book is currently borrowed, the shelf location is represented as "-".
+     *
+     * @return The shelf location or "-" if the book is borrowed.
+     */
+    public String getShelf() {
+        if (isBorrowed) {
+            return "-";
+        }
+        return shelf;
+    }
+
+    /**
+     * Returns the title details of the book.
+     *
+     * @return The {@link BookTitle} object associated with this book copy.
+     */
+    public BookTitle getTitle() {
+        return title;
+    }
+
+    /**
+     * Checks if the book is currently borrowed.
+     *
+     * @return True if the book is borrowed, false otherwise.
+     */
+    public Boolean isBorrowed() {
+        return isBorrowed;
+    }
+
+    /**
+     * Sets the borrowing status of the book.
+     *
+     * @param isBorrowed True if the book is borrowed, false otherwise.
+     */
+    public void setBorrowed(boolean isBorrowed) {
+        this.isBorrowed = isBorrowed;
+    }
+
+    /**
+     * Returns the availability status of the book as a string.
+     *
+     * @return "Not available" if the book is borrowed, otherwise "Available".
+     */
+    public String isAvailable() {
+        return isBorrowed ? "Not available" : "Available";
+    }
+    
+    /*
+     * The following commented methods could be used for additional functionality
+     * if implemented properly:
+     * 
+     * - equals: Ensure uniqueness for the BookCopy objects based on their title ID.
+     * - getDueDate: Fetch and return the due date if the book is borrowed.
+     */
+    
+	//	// override equals to ensure Set works as expected
+	//	@Override
+	//	public boolean equals(Object obj) {
+	//		if(obj instanceof BookCopy) {
+	//			return titleID == ((BookCopy)obj).titleID;
+	//		}
+	//		return false;
+	//	}
+	//	
+		
+	//	public String getDueDate() {
+	//		// ruben this is not effective
+	//		if (isBorrowed) {
+	//			return IPController.client.getCopyActiveBorrow(this).getDueDate().toString();
+	//		}
+	//		return "-";
+	//	}
 }
+
+

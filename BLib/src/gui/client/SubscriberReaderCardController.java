@@ -27,54 +27,58 @@ import logic.Message;
 import logic.Subscriber; 
 
 /**
- * The AuthenticationController class handles user authentication. 
- * It manages the login process, including ID and password validation, 
- * and transitions the user to the main application interface upon successful login.
+ * Controller for managing the Subscriber's Reader Card interface.
+ * This controller handles displaying subscriber details, borrowing books,
+ * extending due dates, and navigating to other views like borrowing history.
  */
 public class SubscriberReaderCardController {
-	private Subscriber subscriber; // Static reference to the currently authenticated subscriber.
+	private Subscriber subscriber; // Reference to the currently authenticated subscriber.
 
 	@FXML
-	private Label lblTitle; // Text field to input the server IP address.
+	private Label lblTitle; // Label displaying the title with the subscriber's name.
 	@FXML
-	private Label lblTable; // Text field to input the server IP address.
+	private Label lblTable; // Label for the table, currently unused.
 	@FXML
-	private Label lblError; // Text field to input the server IP address.
+	private Label lblError; // Label for displaying error messages.
 	@FXML
-	private Text txtStatus; // Text field to input the server IP address.
+	private Text txtStatus; // Text field to display the subscriber's status.
 	@FXML
-	private Text txtId; // Text field to input the server IP address.
+	private Text txtId; // Text field to display the subscriber's ID.
 	@FXML
-	private Text txtName; // Text field to input the server IP address.
+	private Text txtName; // Text field to display the subscriber's name.
 	@FXML
-	private Text txtPhone; // Text field to input the server IP address.
+	private Text txtPhone; // Text field to display the subscriber's phone number.
 	@FXML
-	private Text txtEmail; // Text field to input the server IP address.
+	private Text txtEmail; // Text field to display the subscriber's email.
 	@FXML
-	private Button btnBack = null; // Button to exit the application.
+	private Button btnBack = null; // Button to navigate back to the previous screen.
 	@FXML
-	private Button btnHistory = null; // Button to initiate the connection to the server.
+	private Button btnHistory = null; // Button to navigate to the borrowing history screen.
 	@FXML
-	private Button btnExtend = null; // Button to initiate the connection to the server.
+	private Button btnExtend = null; // Button to extend the borrow period for selected books.
 	@FXML
-	private TableView<Entry<BorrowPlus, Borrow>> tableBook; // Button to exit the application.
+	private TableView<Entry<BorrowPlus, Borrow>> tableBook; // Table displaying the borrowed books.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox;
+	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox; // Column for selecting books.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnBookId; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnBookId; // Column for book ID.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle; // Column for book title.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor; // Column for book author.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate; // Label to display error messages.
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate; // Column for due date of borrowed books.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage;
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage; // Column for error messages.
 	@FXML
-	private CheckBox checkBoxSelectAll;
+	private CheckBox checkBoxSelectAll; // Checkbox to select or deselect all books.
 	@FXML
-	private ChoiceBox<Integer> choiceBoxDays;
+	private ChoiceBox<Integer> choiceBoxDays; // Choice box for selecting the number of days to extend.
 
+	/**
+	 * Loads the available days for extending the borrow period into the choice box.
+	 * The default value is set to 1 day, with options ranging from 1 to 14 days.
+	 */
 	public void loadChoiceBox() {
 		choiceBoxDays.setValue(1);
 		ObservableList<Integer> data = FXCollections.observableArrayList();
@@ -84,13 +88,18 @@ public class SubscriberReaderCardController {
 		choiceBoxDays.setItems(data);
 	}
 	
+	/**
+	 * Loads the details of the given subscriber into the text fields and status label.
+	 * 
+	 * @param subscriber The subscriber whose details are to be displayed.
+	 */
 	public void loadSubscriber(Subscriber subscriber) {
 		this.subscriber = subscriber;
 		this.lblTitle.setText("Subscriber " + subscriber.getName());
 		this.txtId.setText(String.valueOf(subscriber.getId()));
-		this.txtName.setText(subscriber.getName()); // Sets the subscriber's ID.
-		this.txtPhone.setText(subscriber.getPhone()); // Sets the subscriber's name.
-		this.txtEmail.setText(subscriber.getEmail()); // Sets the subscriber's phone.
+		this.txtName.setText(subscriber.getName()); // Sets the subscriber's name.
+		this.txtPhone.setText(subscriber.getPhone()); // Sets the subscriber's phone number.
+		this.txtEmail.setText(subscriber.getEmail()); // Sets the subscriber's email address.
 		if(subscriber.getStatus().equals("active")) {
 			this.txtStatus.setFill(Color.GREEN);
 		}
@@ -98,9 +107,14 @@ public class SubscriberReaderCardController {
 			this.txtStatus.setFill(Color.RED);
 		}
 		String capitalizedStatus = subscriber.getStatus().substring(0, 1).toUpperCase() + subscriber.getStatus().substring(1);
-		this.txtStatus.setText(capitalizedStatus);
+		this.txtStatus.setText(capitalizedStatus); // Capitalizes and displays the subscriber's status.
 	}
 	
+	/**
+	 * Loads the list of borrowed books for the subscriber into the table view.
+	 * 
+	 * @param subscriber The subscriber whose borrowed books are to be displayed.
+	 */
 	public void loadBorrows(Subscriber subscriber) {
 		ObservableList<Entry<BorrowPlus, Borrow>> data = FXCollections.observableArrayList();
 		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber);
@@ -117,9 +131,14 @@ public class SubscriberReaderCardController {
         columnErrorMessage.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getKey().getErrorMessage()));
         
 		tableBook.setItems(data);
-		tableBook.getSortOrder().add(columnDueDate);
+		tableBook.getSortOrder().add(columnDueDate); // Sorts the table by due date.
 	}
 	
+	/**
+	 * Handles the extend button action. Extends the due date of the selected borrowed books by the number of days specified.
+	 * 
+	 * @param event The action event triggered when the extend button is clicked.
+	 */
 	public void extendBtn(ActionEvent event) {
 	    for(Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
 	    	Borrow borrow = entry.getValue();
@@ -131,25 +150,36 @@ public class SubscriberReaderCardController {
                         IPController.client.display(lblError,"Your account is suspended", Color.RED);
                         break;
                     }
-                    borrowPlus.setErrorMessage((String) msg.getArguments().get(0));
+                    borrowPlus.setErrorMessage((String) msg.getArguments().get(0)); // Displays error message if extension fails.
                 }
 	            else {
-	            	borrowPlus.setErrorMessage("Extend succeed");
-	            	borrow.setDueDate(borrow.getDueDate().plusDays(choiceBoxDays.getValue()));
+	            	borrowPlus.setErrorMessage("Extend succeed"); // Displays success message after extension.
+	            	borrow.setDueDate(borrow.getDueDate().plusDays(choiceBoxDays.getValue())); // Extends the due date.
 	            }
             }
         }
 	    checkBoxSelectAll.setSelected(false);
-	    selectAllBtn(event);
-	    tableBook.refresh();
+	    selectAllBtn(event); // Deselects the "Select All" checkbox.
+	    tableBook.refresh(); // Refreshes the table to show updated data.
 	}
 	
+	/**
+	 * Handles the "Select All" checkbox action. Toggles the selection of all checkboxes in the table.
+	 * 
+	 * @param event The action event triggered when the "Select All" checkbox is clicked.
+	 */
 	public void selectAllBtn(Event event) {
 		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
 			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());
 		}
 	}
 	
+	/**
+	 * Navigates to the subscriber's borrowing history view when the history button is clicked.
+	 * 
+	 * @param event The action event triggered by clicking the history button.
+	 * @throws Exception If an error occurs during navigation.
+	 */
 	public void historyBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "ViewHistoryFrame" +".fxml"));
 		Parent root = loader.load();
@@ -159,17 +189,14 @@ public class SubscriberReaderCardController {
 	}
 
 	/**
-	 * Handles the "Exit" button action. Terminates the application.
+	 * Navigates back to the previous page when the back button is clicked.
 	 * 
-	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during termination.
+	 * @param event The action event triggered by clicking the back button.
+	 * @throws Exception If an error occurs during navigation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberListFrame" +".fxml"));
 		Parent root = loader.load();
 		IPController.client.nextPage(loader, root, event, "List of Subscribers");
 	}
-
-	
-
 }

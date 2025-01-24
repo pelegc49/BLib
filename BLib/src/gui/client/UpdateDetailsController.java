@@ -51,6 +51,8 @@ public class UpdateDetailsController {
 
 	/**
 	 * Loads the given Subscriber's details into the text fields.
+	 * This method sets the values of the Subscriber's ID, name, phone, and email
+	 * into the respective text fields and sets the status label accordingly.
 	 * 
 	 * @param s1 The Subscriber object to be displayed.
 	 */
@@ -60,88 +62,93 @@ public class UpdateDetailsController {
 		this.txtName.setText(s.getName()); // Sets the subscriber's name.
 		this.txtPhone.setText(s.getPhone()); // Sets the subscriber's phone.
 		this.txtEmail.setText(s.getEmail()); // Sets the subscriber's email.
-		if(s.getStatus().equals("active")) {
+		if (s.getStatus().equals("active")) {
 			this.lblStatus.setTextFill(Color.GREEN);
-		}
-		else {
+		} else {
 			this.lblStatus.setTextFill(Color.RED);
 		}
 		String capitalizedStatus = s.getStatus().substring(0, 1).toUpperCase() + s.getStatus().substring(1);
 		this.lblStatus.setText(capitalizedStatus);
-		
 	}
-
 
 	/**
 	 * Validates and saves the updated subscriber details.
+	 * This method checks if there are any changes in the phone or email fields, 
+	 * validates them, and saves the updated information if valid.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Save button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void saveBtn(Event event) {
 		boolean changed = false;
-		if(!txtPhone.getText().equals(s.getPhone())) {
+		
+		// Validate phone number if changed.
+		if (!txtPhone.getText().equals(s.getPhone())) {
 			try {
 				Long.parseLong(txtPhone.getText()); // Validates that the phone number contains only digits.
 			} catch (Exception e) {
-				IPController.client.display(lblError,"Phone must have only digits", Color.RED); // Displays an error message for invalid phone number.
+				IPController.client.display(lblError, "Phone must have only digits", Color.RED); // Error message for invalid phone number.
 				return;
 			}
 			changed = true;
 		}
 		
-		if(!txtEmail.getText().equals(s.getEmail())) {
-			String regex = "^[A-Za-z0-9.]{1,99}@"
-						 + "[A-Za-z0-9]{1,99}"
-						 + "(?:\\.[A-Za-z0-9]{1,99}){0,99}"
-						 + "\\.[A-Za-z]{1,}$";
+		// Validate email if changed.
+		if (!txtEmail.getText().equals(s.getEmail())) {
+			String regex = "^[A-Za-z0-9.]{1,99}@" + "[A-Za-z0-9]{1,99}" + "(?:\\.[A-Za-z0-9]{1,99}){0,99}" + "\\.[A-Za-z]{1,}$";
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(txtEmail.getText());
-			
-			if(!matcher.matches()) {
-				IPController.client.display(lblError,"Email not valid", Color.RED); // Displays an error message for invalid phone number.
+
+			if (!matcher.matches()) {
+				IPController.client.display(lblError, "Email not valid", Color.RED); // Error message for invalid email.
 				return;
 			}
 			changed = true;
 		}
-		
-		if(changed) {
-			// Updates the subscriber's email and phone details.
+
+		// If changes were made, update and save.
+		if (changed) {
 			this.s.setEmail(txtEmail.getText());
 			this.s.setPhone(txtPhone.getText());
-	
-			// Attempts to save the updated subscriber details.
+
+			// Attempt to save the updated subscriber details.
 			if (IPController.client.updateSubscriber(s)) {
-				IPController.client.display(lblError,"saved Successfully!", Color.GREEN); // Displays a success message if save is successful.
+				IPController.client.display(lblError, "Saved Successfully!", Color.GREEN); // Success message.
 				return;
 			}
-			// Displays an error message if save fails.
-			IPController.client.display(lblError,"could not save", Color.RED);
+			// Error message if saving fails.
+			IPController.client.display(lblError, "Could not save", Color.RED);
 			return;
 		}
-		IPController.client.display(lblError,"You didn't change anything", Color.RED);
+		
+		// If no changes were made, display an error message.
+		IPController.client.display(lblError, "You didn't change anything", Color.RED);
 	}
 
 	/**
 	 * Closes the application when the Close button is clicked.
+	 * This method navigates the user back to the subscriber's main menu screen.
 	 * 
 	 * @param event The ActionEvent triggered by clicking the Close button.
 	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
-    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
-    	Parent root = loader.load();
-    	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
-    	subscriberClientGUIController.loadSubscriber();
-    	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/" + "SubscriberClientGUIFrame" + ".fxml"));
+		Parent root = loader.load();
+		SubscriberClientGUIController subscriberClientGUIController = loader.getController();
+		subscriberClientGUIController.loadSubscriber();
+		IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	}
 	
-	// Enables the enter key to activate the OK button
+	/**
+	 * Enables the enter key to activate the Save button.
+	 * This method listens for the ENTER key press and triggers the save action.
+	 * 
+	 * @param event The KeyEvent triggered by pressing a key.
+	 */
 	public void handleKey(KeyEvent event) {
-		if(event.getCode().equals(KeyCode.ENTER)) {
-			saveBtn(event);
+		if (event.getCode().equals(KeyCode.ENTER)) {
+			saveBtn(event); // Calls the saveBtn method when ENTER is pressed.
 		}
 	}
-	
-
 }

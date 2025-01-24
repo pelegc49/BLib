@@ -6,57 +6,66 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class is used for communication between the client and server. It
- * encapsulates a command and its associated arguments, which can be passed
- * between the client and server during interaction. The class implements
- * {@link Serializable} to allow the object to be serialized for network
- * transmission.
+ * Represents a message object used for communication between the client and server. 
+ * The message contains a command and its associated arguments, enabling structured 
+ * data transfer over the network. Implements {@link Serializable} for object serialization.
  */
 public class Message implements Serializable {
 
-	private String command;
-	private List<Object> arguments;
+    private String command; // The command representing the action or operation
+    private List<Object> arguments; // A list of arguments associated with the command
 
-	/**
-	 * Constructs a Message object with a given command and an unlimited number of
-	 * arguments.
-	 * 
-	 * @param command the command to be sent, typically representing an action or
-	 *                operation to be performed
-	 * @param args    the arguments associated with the command
-	 */
-	public Message(String command, Object... args) {
-		this.command = command;
-		arguments = new ArrayList<Object>();
-		// Adding each argument to the list of arguments
-		for (Object o : args) {
-			arguments.add(o);
-		}
-	}
+    /**
+     * Constructs a {@code Message} object with a specified command and an optional 
+     * list of arguments.
+     * 
+     * @param command the command string representing the action or operation to perform
+     * @param args    optional arguments associated with the command
+     */
+    public Message(String command, Object... args) {
+        this.command = command; // Initialize the command
+        arguments = new ArrayList<>(); // Initialize the arguments list
+        // Populate the arguments list with the provided arguments
+        for (Object o : args) {
+            arguments.add(o);
+        }
+    }
 
-	// Getter method for the command
-	public String getCommand() {
-		return command; // Return the command
-	}
+    /**
+     * Retrieves the command of this message.
+     * 
+     * @return the command string
+     */
+    public String getCommand() {
+        return command; // Return the command
+    }
 
-	// Getter method for the arguments
-	public List<Object> getArguments() {
-		return arguments;// Return the list of arguments
-	}
+    /**
+     * Retrieves the list of arguments associated with this message.
+     * 
+     * @return a {@link List} containing the arguments
+     */
+    public List<Object> getArguments() {
+        return arguments; // Return the list of arguments
+    }
 
-	public void addArgument(Object o) {
-		arguments.add(o);
-	}
-	
-	
-	/**
-	 * Converts the Message object to a string representation for easy viewing.
-	 * 
-	 * @return a string representing the command and its arguments
-	 */
-	@Override
-	public String toString() {
-		return command + Arrays.deepToString(arguments.toArray());
-	}
+    /**
+     * Adds an argument to the existing list of arguments.
+     * 
+     * @param o the argument to be added
+     */
+    public void addArgument(Object o) {
+        arguments.add(o); // Add the argument to the list
+    }
 
+    /**
+     * Returns a string representation of the {@code Message} object, including the 
+     * command and its associated arguments.
+     * 
+     * @return a string representation of the message
+     */
+    @Override
+    public String toString() {
+        return command + Arrays.deepToString(arguments.toArray()); // Convert to a readable format
+    }
 }

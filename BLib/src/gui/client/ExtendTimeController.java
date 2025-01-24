@@ -25,53 +25,55 @@ import logic.Message;
 import logic.Subscriber;
 
 /**
- * The AuthenticationController class handles user authentication. 
- * It manages the login process, including ID and password validation, 
- * and transitions the user to the main application interface upon successful login.
+ * The ExtendTimeController class handles the process of extending borrow durations for subscribers.
+ * It manages the display of borrows, allows the user to select borrows for extension, and provides feedback
+ * on the success or failure of the operation.
  */
-public class ExtendTimeController{
+public class ExtendTimeController {
+
 	@FXML
 	private Label lblError; // Label for displaying error messages to the user.
 	@FXML
-	private Button btnBack = null; // Button for exiting the application.
+	private Button btnBack = null; // Button to navigate back to the main menu.
 	@FXML
-	private Button btnSearch = null; // Button for submitting the login form.
+	private Button btnSearch = null; // Button to submit the search request.
 	@FXML
-	private Button btnExtend = null; // Button for submitting the login form.
+	private Button btnExtend = null; // Button to extend the borrow period for selected books.
 	@FXML
-	private TableView<Entry<BorrowPlus, Borrow>> tableBook;
+	private TableView<Entry<BorrowPlus, Borrow>> tableBook; // TableView for displaying borrow information.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox;
+	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox; // Checkbox column for selecting borrows.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor;
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor; // Column for displaying book authors.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle;
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle; // Column for displaying book titles.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate;
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate; // Column for displaying due dates.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage;
+	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage; // Column for displaying error messages.
 	@FXML
-	private CheckBox checkBoxSelectAll;
-	
+	private CheckBox checkBoxSelectAll; // Checkbox to select or deselect all rows in the table.
+
 	/**
-	 * Handles the "Exit" button action. Terminates the application.
+	 * Handles the "Exit" button action. Navigates the user back to the subscriber's main menu.
 	 * 
 	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during termination.
+	 * @throws Exception If an error occurs during navigation.
 	 */
 	public void backBtn(ActionEvent event) throws Exception {
+    	// Load the subscriber's main menu interface
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/client/"+ "SubscriberClientGUIFrame" +".fxml"));
     	Parent root = loader.load();
     	SubscriberClientGUIController subscriberClientGUIController = loader.getController();
     	subscriberClientGUIController.loadSubscriber();
+    	// Navigate to the main menu
     	IPController.client.nextPage(loader, root, event, "Subscriber Main Menu");
 	}
 
 	/**
-	 * Handles the "extend" button action. Extends the selected borrows by 7 days.
+	 * Handles the "Extend" button action. Extends the selected borrows by 7 days.
 	 *
 	 * @param event The action event triggered by clicking the button.
-	 * @throws Exception If an error occurs during the operation.
 	 */
 	public void extendBtn(ActionEvent event) {
 		// Extend the selected borrows by 7 days
@@ -79,60 +81,62 @@ public class ExtendTimeController{
 	    	Borrow borrow = entry.getValue();
 	    	BorrowPlus borrowPlus = entry.getKey();
 	        if (borrowPlus.getCheckBox().isSelected()) {
+	            // Attempt to extend the borrow duration
 	            Message msg = IPController.client.extendDuration(borrow, 7, "subscriber");
 	            if (msg.getCommand().equals("failed")) {
+                    // If the extension fails, display the error message
                     if(((String) msg.getArguments().get(0)).equals("the subscriber is frozen")) {
                         IPController.client.display(lblError,"Your account is suspended", Color.RED);
                         break;
                     }
-                    borrowPlus.setErrorMessage((String) msg.getArguments().get(0));
-                }
-	            else {
-	            	borrowPlus.setErrorMessage("Extend succeed");
-	            	borrow.setDueDate(borrow.getDueDate().plusDays(7));
+                    borrowPlus.setErrorMessage((String) msg.getArguments().get(0)); // Set error message for failed extension
+                } else {
+	            	borrowPlus.setErrorMessage("Extend succeed"); // Success message for extension
+	            	borrow.setDueDate(borrow.getDueDate().plusDays(7)); // Update the due date for the borrow
 	            }
             }
         }
-		// Refresh the table
+		// Refresh the table after processing the extension
 	    checkBoxSelectAll.setSelected(false);
-	    selectAllBtn(event);
-	    tableBook.refresh();
+	    selectAllBtn(event); // Deselect all checkboxes
+	    tableBook.refresh(); // Refresh the table to reflect the updated data
 	}
 
 	/**
-	 * loads the borrows of the subscriber to the table.
+	 * Loads the borrows of the subscriber into the table for display.
 	 *
 	 * @param subscriber The subscriber whose borrows are to be loaded.
 	 */
 	public void loadBorrows(Subscriber subscriber) {
-		// Load the borrows of the subscriber to the table
-
+		// Create an observable list to store the borrows and their associated error messages
 		ObservableList<Entry<BorrowPlus, Borrow>> data = FXCollections.observableArrayList();
 		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber);
 		
 		for (Borrow borrow : borrows) {
-			data.add(new SimpleEntry<>(new BorrowPlus(), borrow));
+			data.add(new SimpleEntry<>(new BorrowPlus(), borrow)); // Add each borrow with an associated BorrowPlus object
 		}
 		
+        // Set cell value factories for the table columns
         columnCheckBox.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue().getKey().getCheckBox()));
         columnAuthor.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getAuthor()));
         columnTitle.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getTitleName()));
         columnDueDate.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getValue().getDueDate().toString()));
         columnErrorMessage.setCellValueFactory(entry -> new SimpleStringProperty(entry.getValue().getKey().getErrorMessage()));
         
+		// Set the data to the table and sort by due date
 		tableBook.setItems(data);
 		tableBook.getSortOrder().add(columnDueDate);
 	}
 
 	/**
-	 * Handles the "Select All" button action. Selects all the borrows in the table.
+	 * Handles the "Select All" button action. Selects or deselects all rows in the table.
 	 *
 	 * @param event The action event triggered by clicking the button.
 	 */
 	public void selectAllBtn(Event event) {
+		// Set the selected state of all checkboxes in the table to match the "Select All" checkbox
 		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
 			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());
 		}
 	}
-
 }
