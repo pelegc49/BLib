@@ -12,7 +12,7 @@ public class Activity implements Serializable {
 
     // Private member variables to store the activity details
     private int id; // Unique ID of the subscriber associated with the activity
-    private String type; // Type of the activity (e.g., "Meeting", "Task", etc.)
+    private String type; // Type of the activity (e.g., "Borrow", "Order", etc.)
     private String description; // A detailed description of the activity
     private LocalDate date; // The date the activity occurred
 
@@ -20,7 +20,7 @@ public class Activity implements Serializable {
      * Constructs an Activity instance with the specified details.
      *
      * @param id          The unique ID of the subscriber associated with the activity.
-     * @param type        The type of the activity (e.g., "Meeting", "Task").
+     * @param type        The type of the activity (e.g., "Borrow", "Order").
      * @param description A detailed description of the activity.
      * @param date        The date the activity occurred.
      */

@@ -98,20 +98,10 @@ public class BookCopy implements Serializable {
      * The following commented methods could be used for additional functionality
      * if implemented properly:
      * 
-     * - equals: Ensure uniqueness for the BookCopy objects based on their title ID.
      * - getDueDate: Fetch and return the due date if the book is borrowed.
      */
     
-	//	// override equals to ensure Set works as expected
-	//	@Override
-	//	public boolean equals(Object obj) {
-	//		if(obj instanceof BookCopy) {
-	//			return titleID == ((BookCopy)obj).titleID;
-	//		}
-	//		return false;
-	//	}
-	//	
-		
+
 	//	public String getDueDate() {
 	//		// ruben this is not effective
 	//		if (isBorrowed) {

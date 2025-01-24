@@ -250,7 +250,7 @@ public class ReportGenerator {
 		double avg = ServerGUI.server.getAvgBorrowTimeOnMonth(LocalDate.now());
 
 		// Label showing the average borrow time
-		Label label = new Label("The average borrow duration this month is :%.2f".formatted(avg));
+		Label label = new Label("The average borrow duration this month is :%.2f days".formatted(avg));
 		label.setFont(new Font("Arial", 24)); // Set font and size
 		label.setAlignment(Pos.CENTER);
 

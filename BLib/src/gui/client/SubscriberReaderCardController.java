@@ -23,7 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import logic.Borrow;
-import logic.BorrowPlus;
+import logic.CheckBoxExtension;
 import logic.Message;
 import logic.Subscriber; 
 
@@ -58,19 +58,19 @@ public class SubscriberReaderCardController {
 	@FXML
 	private Button btnExtend = null; // Button to extend the borrow period for selected books.
 	@FXML
-	private TableView<Entry<BorrowPlus, Borrow>> tableBook; // Table displaying the borrowed books.
+	private TableView<Entry<CheckBoxExtension, Borrow>> tableBook; // Table displaying the borrowed books.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox; // Column for selecting books.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, CheckBox> columnCheckBox; // Column for selecting books.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnBookId; // Column for book ID.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnBookId; // Column for book ID.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle; // Column for book title.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnTitle; // Column for book title.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor; // Column for book author.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnAuthor; // Column for book author.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate; // Column for due date of borrowed books.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnDueDate; // Column for due date of borrowed books.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage; // Column for error messages.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnErrorMessage; // Column for error messages.
 	@FXML
 	private CheckBox checkBoxSelectAll; // Checkbox to select or deselect all books.
 	@FXML
@@ -117,11 +117,11 @@ public class SubscriberReaderCardController {
 	 * @param subscriber The subscriber whose borrowed books are to be displayed.
 	 */
 	public void loadBorrows(Subscriber subscriber) {
-		ObservableList<Entry<BorrowPlus, Borrow>> data = FXCollections.observableArrayList();
+		ObservableList<Entry<CheckBoxExtension, Borrow>> data = FXCollections.observableArrayList();
 		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber);
 		
 		for (Borrow borrow : borrows) {
-			data.add(new SimpleEntry<>(new BorrowPlus(), borrow));
+			data.add(new SimpleEntry<>(new CheckBoxExtension(), borrow));
 		}
 		
         columnCheckBox.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue().getKey().getCheckBox()));
@@ -141,9 +141,9 @@ public class SubscriberReaderCardController {
 	 * @param event The action event triggered when the extend button is clicked.
 	 */
 	public void extendBtn(ActionEvent event) {
-	    for(Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
+	    for(Entry<CheckBoxExtension, Borrow> entry : tableBook.getItems()) {
 	    	Borrow borrow = entry.getValue();
-	    	BorrowPlus borrowPlus = entry.getKey();
+	    	CheckBoxExtension borrowPlus = entry.getKey();
 	        if (borrowPlus.getCheckBox().isSelected()) {
 	            Message msg = IPController.client.extendDuration(borrow, choiceBoxDays.getValue(), AuthenticationController.librarianName);
 	            if (msg.getCommand().equals("failed")) {
@@ -170,7 +170,7 @@ public class SubscriberReaderCardController {
 	 * @param event The action event triggered when the "Select All" checkbox is clicked.
 	 */
 	public void selectAllBtn(Event event) {
-		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
+		for (Entry<CheckBoxExtension, Borrow> entry : tableBook.getItems()) {
 			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());
 		}
 	}

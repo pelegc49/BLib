@@ -21,7 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
 import logic.Borrow;
-import logic.BorrowPlus;
+import logic.CheckBoxExtension;
 import logic.Message;
 import logic.Subscriber;
 
@@ -41,17 +41,17 @@ public class ExtendTimeController {
 	@FXML
 	private Button btnExtend = null; // Button to extend the borrow period for selected books.
 	@FXML
-	private TableView<Entry<BorrowPlus, Borrow>> tableBook; // TableView for displaying borrow information.
+	private TableView<Entry<CheckBoxExtension, Borrow>> tableBook; // TableView for displaying borrow information.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, CheckBox> columnCheckBox; // Checkbox column for selecting borrows.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, CheckBox> columnCheckBox; // Checkbox column for selecting borrows.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnAuthor; // Column for displaying book authors.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnAuthor; // Column for displaying book authors.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnTitle; // Column for displaying book titles.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnTitle; // Column for displaying book titles.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnDueDate; // Column for displaying due dates.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnDueDate; // Column for displaying due dates.
 	@FXML
-	private TableColumn<Entry<BorrowPlus, Borrow>, String> columnErrorMessage; // Column for displaying error messages.
+	private TableColumn<Entry<CheckBoxExtension, Borrow>, String> columnErrorMessage; // Column for displaying error messages.
 	@FXML
 	private CheckBox checkBoxSelectAll; // Checkbox to select or deselect all rows in the table.
 
@@ -80,9 +80,9 @@ public class ExtendTimeController {
 	 */
 	public void extendBtn(ActionEvent event) {
 		// Extend the selected borrows by 7 days
-	    for(Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
+	    for(Entry<CheckBoxExtension, Borrow> entry : tableBook.getItems()) {
 	    	Borrow borrow = entry.getValue();
-	    	BorrowPlus borrowPlus = entry.getKey();
+	    	CheckBoxExtension borrowPlus = entry.getKey();
 	        if (borrowPlus.getCheckBox().isSelected()) {
 	            // Attempt to extend the borrow duration
 	            Message msg = IPController.client.extendDuration(borrow, 7, "subscriber");
@@ -112,11 +112,11 @@ public class ExtendTimeController {
 	 */
 	public void loadBorrows(Subscriber subscriber) {
 		// Create an observable list to store the borrows and their associated error messages
-		ObservableList<Entry<BorrowPlus, Borrow>> data = FXCollections.observableArrayList();
+		ObservableList<Entry<CheckBoxExtension, Borrow>> data = FXCollections.observableArrayList();
 		List<Borrow> borrows = IPController.client.getSubscriberBorrows(subscriber);
 		
 		for (Borrow borrow : borrows) {
-			data.add(new SimpleEntry<>(new BorrowPlus(), borrow)); // Add each borrow with an associated BorrowPlus object
+			data.add(new SimpleEntry<>(new CheckBoxExtension(), borrow)); // Add each borrow with an associated BorrowPlus object
 		}
 		
         // Set cell value factories for the table columns
@@ -138,7 +138,7 @@ public class ExtendTimeController {
 	 */
 	public void selectAllBtn(Event event) {
 		// Set the selected state of all checkboxes in the table to match the "Select All" checkbox
-		for (Entry<BorrowPlus, Borrow> entry : tableBook.getItems()) {
+		for (Entry<CheckBoxExtension, Borrow> entry : tableBook.getItems()) {
 			entry.getKey().setCheckBox(checkBoxSelectAll.isSelected());
 		}
 	}

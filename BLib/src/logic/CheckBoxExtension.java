@@ -10,7 +10,7 @@ import javafx.scene.control.CheckBox;
  * and an error message for validation or status purposes.
  * Implements {@link Serializable} to allow serialization of instances.
  */
-public class BorrowPlus implements Serializable {
+public class CheckBoxExtension implements Serializable {
 
     // Private member variables for storing borrowing details
     private CheckBox checkBox; // A CheckBox component for UI interaction
@@ -20,7 +20,7 @@ public class BorrowPlus implements Serializable {
      * Default constructor to initialize a BorrowPlus object with default values.
      * The {@link CheckBox} is initialized as unselected, and the error message is set to an empty string.
      */
-    public BorrowPlus() {
+    public CheckBoxExtension() {
         checkBox = new CheckBox(); // Initialize the CheckBox
         checkBox.setSelected(false); // Set the CheckBox as unselected
         errorMessage = ""; // Initialize the error message as an empty string
