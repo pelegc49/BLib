@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="1000.0" spacing="10" styleClass="root-container"  xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberReaderCardController">
+<VBox prefHeight="600.0" prefWidth="1000.0" spacing="10" styleClass="root-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.client.SubscriberReaderCardController">
     <padding>
         <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
@@ -81,9 +81,9 @@
                 </TableColumn>
                 <TableColumn fx:id="columnBookId" prefWidth="56.0" text="ID" />
                 <TableColumn fx:id="columnTitle" prefWidth="233.0" text="Title" />
-                <TableColumn fx:id="columnAuthor" prefWidth="191.0" text="Author" />
-                <TableColumn fx:id="columnDueDate" prefWidth="133.0" text="Due Date" />
-                <TableColumn fx:id="columnErrorMessage" prefWidth="472.0" text="Message" />
+                <TableColumn fx:id="columnAuthor" prefWidth="172.0" text="Author" />
+                <TableColumn fx:id="columnDueDate" prefWidth="119.0" text="Due Date" />
+                <TableColumn fx:id="columnErrorMessage" prefWidth="308.0" text="Message" />
             </columns>
             <placeholder>
                 <Label fx:id="lblTable" styleClass="table-placeholder" text="" />
