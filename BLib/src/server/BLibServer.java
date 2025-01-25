@@ -537,7 +537,6 @@ public class BLibServer extends AbstractServer {
 			break;
 
 		case "generateGraphs":
-//			Thread t = new Thread(()->{
 			LocalDate date = LocalDate.of(Integer.parseInt((String) args.get(0)),
 					Integer.parseInt((String) args.get(1)), 1);
 			System.out.println(date);
@@ -545,16 +544,13 @@ public class BLibServer extends AbstractServer {
 			BLibDBC.getInstance().saveGraph(date, "subscriber status", data);
 			data = reportGenerator.generateBorrowTimeReport(date);
 			BLibDBC.getInstance().saveGraph(date, "borrowing report", data);
-			System.out.println("41213");
 			LocalDate today = LocalDate.now();
 			LocalDate nextMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1).plusMonths(1);
 			LocalDate timeOfNextExecution = nextMonth.plusMonths(1).minusDays(1);
 			BLibDBC.getInstance().createCommand("generateGraphs",
 					"%04d;%02d".formatted(nextMonth.getYear(), nextMonth.getMonthValue()),
-					LocalDateTime.of(timeOfNextExecution, LocalTime.of(0, 1)), "");
+					LocalDateTime.of(timeOfNextExecution, LocalTime.of(23, 30)), "");
 
-//			});
-//			t.start();
 		}
 	}
 
