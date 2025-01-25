@@ -157,9 +157,9 @@ public class ReportGenerator {
 		// Add the series to the chart
 		barChart.getData().addAll(activeSeries, frozenSeries);
 
+		date = date.minusMonths(1);
 		// Calculate the total new subscribers for the current month
-		int sum = ServerGUI.server.SumNewSubscriber(LocalDate.now());
-
+		int sum = ServerGUI.server.SumNewSubscriber(date);
 		// Label showing the total new subscribers
 		Label label = new Label("The total new subscribers this month is :%d".formatted(sum));
 		label.setFont(new Font("Arial", 24)); // Set font and size
@@ -247,7 +247,7 @@ public class ReportGenerator {
 		barChart.getData().addAll(lateReturns, borrowDuration);
 
 		// Calculate the average borrow time for the current month
-		double avg = ServerGUI.server.getAvgBorrowTimeOnMonth(LocalDate.now());
+		double avg = ServerGUI.server.getAvgBorrowTimeOnMonth(date);
 
 		// Label showing the average borrow time
 		Label label = new Label("The average borrow duration this month is :%.2f days".formatted(avg));

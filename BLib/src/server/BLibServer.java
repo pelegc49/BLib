@@ -544,7 +544,7 @@ public class BLibServer extends AbstractServer {
 			data = reportGenerator.generateBorrowTimeReport(date);
 			BLibDBC.getInstance().saveGraph(date, "borrowing report", data);
 			LocalDate today = LocalDate.now();
-			LocalDate nextMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1).plusMonths(1);
+			LocalDate nextMonth = LocalDate.of(today.getYear(), today.getMonthValue(), 1);
 			LocalDate timeOfNextExecution = nextMonth.plusMonths(1).minusDays(1);
 			BLibDBC.getInstance().createCommand("generateGraphs",
 					"%04d;%02d".formatted(nextMonth.getYear(), nextMonth.getMonthValue()),
@@ -719,12 +719,13 @@ public class BLibServer extends AbstractServer {
 	 * @param now the date used to check the new subscribers
 	 * @return the total number of new subscribers; returns 0 if no new subscribers are found
 	 */
-	public int SumNewSubscriber(LocalDate now) {
+	public int SumNewSubscriber(LocalDate t) {
 		 // Retrieve the sum of new subscribers from the database
-		Integer ret = BLibDBC.getInstance().SumNewSubscriber(now);
+		Integer ret = BLibDBC.getInstance().SumNewSubscriber(t);
 		// If there is a result, return it; otherwise, return 0
-		if (ret != null)
+		if (ret != null) {
 			return ret;
+		}
 		return 0;
 	}
 

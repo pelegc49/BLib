@@ -44,7 +44,7 @@ public class BLibDBC {
 	private static PreparedStatement pstmt; // Statement object for executing SQL queries
 	private static boolean timerRunning = false;
 	private static Thread timerThread;
-
+	
 	/**
 	 * Private constructor to prevent instantiation. Ensures that only one instance
 	 * of BLibDBC is created.
@@ -1664,10 +1664,11 @@ public class BLibDBC {
 					"SELECT count(*) FROM history where activity_date like ? and activity_type = 'new subscriber';");
 			pstmt.setString(1, dateWildCard);
 			ResultSet rs = pstmt.executeQuery();
-
+			
 			// Return the count of new subscribers
-			if (rs.next())
+			if (rs.next()) {
 				return rs.getInt(1);
+			}
 			return 0; // Return 0 if no new subscribers are found
 
 		} catch (SQLException e) {
