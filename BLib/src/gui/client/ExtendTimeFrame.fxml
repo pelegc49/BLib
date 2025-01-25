@@ -15,7 +15,6 @@
     </padding>
     <children>
       <Label styleClass="title-label" text="Extend Duration of Book" />
-        <!-- Table Section -->
         <TableView fx:id="tableBook" prefHeight="352.0" prefWidth="651.0" styleClass="table-view">
             <columns>
                 <TableColumn fx:id="columnCheckBox" minWidth="0.0" prefWidth="104.0" styleClass="table-column" text="Select All">
@@ -29,8 +28,6 @@
                 <TableColumn fx:id="columnErrorMessage" prefWidth="362.0" styleClass="table-column" text="Message" />
             </columns>
         </TableView>
-
-        <!-- Buttons and Error Label -->
         <HBox alignment="CENTER_RIGHT" spacing="20" styleClass="action-container">
             <children>
                 <Label fx:id="lblError" styleClass="error-label" textFill="#009600" />

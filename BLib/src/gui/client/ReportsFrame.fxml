@@ -12,7 +12,6 @@
       <Label styleClass="title-label" text="Repots" />
       <VBox alignment="CENTER" maxWidth="255.0" prefHeight="212.0" prefWidth="255.0">
          <children>
-            <!-- Graph Selection -->
             <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="input-container">
                <Label text="Choose a graph:" />
                <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="151.0" HBox.hgrow="ALWAYS">
@@ -21,8 +20,6 @@
                   </children>
                </HBox>
             </HBox>
-      
-            <!-- Year Selection -->
             <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="input-container">
                <Label text="Choose a year:" />
                <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="150.0" HBox.hgrow="ALWAYS">
@@ -34,8 +31,6 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </HBox>
-      
-            <!-- Month Selection -->
             <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="input-container">
                <Label text="Choose a month:" />
                <HBox alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="151.0" HBox.hgrow="ALWAYS">
@@ -47,8 +42,6 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </HBox>
-      
-                  <!-- Error Label -->
             <Label fx:id="lblError" styleClass="error-label">
                <VBox.margin>
                   <Insets top="10.0" />
@@ -56,15 +49,11 @@
             </Label>
             <HBox alignment="CENTER" prefHeight="0.0" prefWidth="635.0">
                <children>
-            
-                  <!-- Generate Button -->
                   <Button fx:id="btnGenerateGraph" mnemonicParsing="false" onAction="#GenerateGraphBtn" styleClass="generate-button" text="Show Graph">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
-            
-                  <!-- Back Button -->
                   <Button fx:id="btnBack" mnemonicParsing="false" onAction="#backBtn" styleClass="back-button" text="Back">
                      <HBox.margin>
                         <Insets left="10.0" />

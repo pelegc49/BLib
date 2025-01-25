@@ -14,7 +14,6 @@
       <VBox alignment="CENTER" maxHeight="600.0" maxWidth="400.0" prefHeight="601.0" prefWidth="400.0">
          <children>
             <Label fx:id="lblTitle" styleClass="title-label" text="Book Name" />
-              <!-- Title and Author -->
               <VBox spacing="10" styleClass="section-container">
                   <children>
                       <HBox spacing="10" styleClass="info-row">
@@ -37,8 +36,6 @@
                   </HBox>
                   </children>
               </VBox>
-      
-              <!-- Book Table -->
               <TableView fx:id="bookTable" prefHeight="401.0" prefWidth="400.0" styleClass="table-view" VBox.vgrow="ALWAYS">
                   <placeholder>
                       <Label fx:id="lblDueDate" styleClass="placeholder-label" text="" />
@@ -51,8 +48,6 @@
                   <Insets top="10.0" />
                </VBox.margin>
               </TableView>
-      
-              <!-- Buttons and Error Label -->
               <HBox alignment="CENTER_RIGHT" spacing="20" styleClass="action-container">
                   <children>
                       <Label fx:id="lblError" styleClass="error-label" textFill="RED" />

@@ -26,11 +26,8 @@
             </Label>
          </children>
       </HBox>
-
-        <!-- Details Section -->
         <VBox spacing="5" styleClass="details-section">
             <children>
-              <!-- Header Section -->
               <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-row">
                   <children>
                       <Label styleClass="header-label" text="Status:" />
@@ -70,8 +67,6 @@
             <Insets left="30.0" />
          </VBox.margin>
         </VBox>
-
-        <!-- Table Section -->
         <TableView fx:id="tableBook" styleClass="subscriber-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="columnCheckBox" prefWidth="91.0" text="Select All">
@@ -89,8 +84,6 @@
                 <Label fx:id="lblTable" styleClass="table-placeholder" text="" />
             </placeholder>
         </TableView>
-
-              <!-- Footer Section -->
         <HBox alignment="CENTER_LEFT" spacing="10" styleClass="footer-row">
             <children>
                 <Button fx:id="btnExtend" onAction="#extendBtn" styleClass="primary-button" text="Extend" />

@@ -13,7 +13,6 @@
       <Label styleClass="title-label" text="History" />
       <VBox alignment="CENTER" prefHeight="805.0" prefWidth="896.0">
          <children>
-            <!-- History Table -->
             <TableView fx:id="historyTable" prefHeight="538.0" prefWidth="1203.0" styleClass="history-table" VBox.vgrow="ALWAYS">
                <columns>
                   <TableColumn fx:id="typeColumn" prefWidth="209.0" text="Type" />
@@ -21,8 +20,6 @@
                   <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="160.0" sortType="DESCENDING" text="Date" />
                </columns>
             </TableView>
-      
-            <!-- Back Button -->
             <HBox alignment="CENTER_RIGHT" styleClass="button-container">
                <Button fx:id="btnBack" mnemonicParsing="false" onAction="#backBtn" text="Back" />
                <VBox.margin>
