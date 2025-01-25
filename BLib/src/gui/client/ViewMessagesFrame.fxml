@@ -16,7 +16,7 @@
             <!-- Messages Table -->
             <TableView fx:id="messageTable" prefHeight="350.0" prefWidth="401.0" styleClass="message-table" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="messageColumn" prefWidth="939.0" text="Messages" />
+                  <TableColumn fx:id="messageColumn" prefWidth="1500.0" text="Messages" />
                </columns>
             </TableView>
       
