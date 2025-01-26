@@ -114,4 +114,13 @@ public class Order implements Serializable {
     public LocalDate getArive_date() {
         return arive_date;
     }
+    /**
+     * Gets the assigned copy of the order.
+     *
+     * @return  the assigned copy, or null if not yet set 
+     */
+	public BookCopy getCopy() {
+		return copy;
+	}
+    
 }

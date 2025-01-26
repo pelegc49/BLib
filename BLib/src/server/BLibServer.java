@@ -695,6 +695,15 @@ public class BLibServer extends AbstractServer {
 			return "This copy is already Borrowed, return it first";
 		}
 		
+		for(Order o : BLibDBC.getInstance().getSubscriberActiveOrders(sub)) {
+			if(o.getTitle().equals(copy.getTitle())) {
+				if(o.getCopy()!=null) {
+					if (o.getCopy().getCopyID() != copy.getCopyID()) {
+						return "The subscriber has an active order on a different copy";
+					}
+				}
+			}
+		}
 		// If none of the conditions apply, the borrow is allowed
 		return null;
 	}
