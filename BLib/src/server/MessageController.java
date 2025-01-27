@@ -56,6 +56,7 @@ public class MessageController {
 		Authenticator auth = new Authenticator() {
 			// override the getPasswordAuthentication method
 			protected PasswordAuthentication getPasswordAuthentication() {
+				// The API key was hardcoded to fit the requirement of our course, focusing on functionality over production-level security.
 				return new PasswordAuthentication("libraryblib@gmail.com", "jtzm oybh unum qptr");
 			}
 		};
